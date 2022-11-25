@@ -47,6 +47,10 @@ end
 exports('RemoveGangMenuItem', RemoveGangMenuItem)
 
 RegisterNetEvent('qb-gangmenu:client:OpenMenu', function()
+    if not PlayerGang.name or not PlayerGang.isboss then
+        return
+    end
+
     shownGangMenu = true
 
     local gangMenu = {
@@ -70,8 +74,8 @@ RegisterNetEvent('qb-gangmenu:client:OpenMenu', function()
         },
         {
             title = Lang:t('menu.gang_outfits_title'),
-            description = Lang:t('menu.gang_outfits_description'),
             icon = 'fa-solid fa-shirt',
+            description = Lang:t('menu.gang_outfits_description'),
             event = 'qb-gangmenu:client:Warbobe'
         },
         {
@@ -89,7 +93,7 @@ RegisterNetEvent('qb-gangmenu:client:OpenMenu', function()
     gangMenu[#gangMenu + 1] = {
         title = Lang:t('menu.gang_exit_title'),
         icon = 'fa-solid fa-angle-left',
-        onSelect = function()
+        onSelect = function(_)
             lib.hideContext()
         end
     }
@@ -109,8 +113,8 @@ RegisterNetEvent('qb-gangmenu:client:ManageGang', function()
         for _, v in pairs(cb) do
             GangMembersMenu[#GangMembersMenu + 1] = {
                 title = v.name,
-                description = v.grade.name,
                 icon = 'fa-solid fa-circle-user',
+                description = v.grade.name,
                 event = 'qb-gangmenu:lient:ManageMember',
                 args = {
                     player = v,
@@ -140,9 +144,9 @@ RegisterNetEvent('qb-gangmenu:lient:ManageMember', function(data)
     for k, v in pairs(QBCore.Shared.Gangs[data.work.name].grades) do
         MemberMenu[#MemberMenu + 1] = {
             title = v.name,
+            icon = 'fa-solid fa-file-pen',
             description = "Grade: " .. k,
             serverEvent = 'qb-gangmenu:server:GradeUpdate',
-            icon = 'fa-solid fa-file-pen',
             args = {
                 cid = data.player.empSource,
                 grade = tonumber(k),
@@ -293,25 +297,22 @@ end)
 CreateThread(function()
     if Config.UseTarget then
         for gang, zones in pairs(Config.GangMenuZones) do
-            for index, data in ipairs(zones) do
-                exports['qb-target']:AddBoxZone(gang..'-GangMenu'..index, data.coords, data.length, data.width, {
-                    name = gang .. '-GangMenu' .. index,
-                    heading = data.heading,
-                    minZ = data.minZ,
-                    maxZ = data.maxZ
-                }, {
+            for _, data in ipairs(zones) do
+                exports.ox_target:addBoxZone({
+                    coords = data.coords,
+                    size = data.size,
+                    rotation = data.rotation,
                     options = {
                         {
-                            type = 'client',
+                            name = 'gang_menu',
                             event = 'qb-gangmenu:client:OpenMenu',
                             icon = 'fas fa-sign-in-alt',
                             label = "Gang Menu",
-                            canInteract = function()
+                            canInteract = function(_, _, _, _)
                                 return gang == PlayerGang.name and PlayerGang.isboss
                             end
                         }
-                    },
-                    distance = 2.5
+                    }
                 })
             end
         end
@@ -326,28 +327,30 @@ CreateThread(function()
                 wait = 0
 
                 for k, v in pairs(Config.GangMenus) do
-                    if k == PlayerGang.name and PlayerGang.isboss then
-                        if #(pos - v) < 5.0 then
-                            inRangeGang = true
+                    for _, coords in pairs(v) do
+                        if k == PlayerGang.name and PlayerGang.isboss then
+                            if #(pos - coords) < 5.0 then
+                                inRangeGang = true
 
-                            if #(pos - v) <= 1.5 then
-                                nearGangmenu = true
+                                if #(pos - coords) <= 1.5 then
+                                    nearGangmenu = true
 
-                                if not shownGangMenu then
-                                    lib.showTextUI("[E] - Open Gang Management")
+                                    if not shownGangMenu then
+                                        lib.showTextUI("[E] - Open Gang Management")
+                                    end
+
+                                    if IsControlJustReleased(0, 38) then
+                                        lib.hideTextUI()
+
+                                        TriggerEvent('qb-gangmenu:client:OpenMenu')
+                                    end
                                 end
 
-                                if IsControlJustReleased(0, 38) then
-                                    lib.hideTextUI()
+                                if not nearGangmenu and shownGangMenu then
+                                    CloseMenuFullGang()
 
-                                    TriggerEvent('qb-gangmenu:client:OpenMenu')
+                                    shownGangMenu = false
                                 end
-                            end
-
-                            if not nearGangmenu and shownGangMenu then
-                                CloseMenuFullGang()
-
-                                shownGangMenu = false
                             end
                         end
                     end

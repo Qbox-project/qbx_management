@@ -6,8 +6,9 @@ New qb-bossmenu / qb-gangmenu converted into one resource using ox_lib, with SQL
 
 - [qb-core](https://github.com/Qbox-project/qb-core)
 - [qb-smallresources](https://github.com/Qbox-project/qb-smallresources) (For the Logs)
-- [qb-inventory](https://github.com/Qbox-project/qb-inventory)
 - [qb-clothing](https://github.com/Qbox-project/qb-clothing)
+- [ox_lib](https://github.com/overextended/ox_lib)
+- [ox_inventory](https://github.com/overextended/ox_inventory)
 
 ## Screenshots
 

@@ -78,7 +78,7 @@ RegisterNetEvent('qb-bossmenu:client:OpenMenu', function()
     bossMenu[#bossMenu + 1] = {
         title = "Exit",
         icon = 'fa-solid fa-angle-left',
-        onSelect = function()
+        onSelect = function(_)
             lib.hideContext()
         end
     }
@@ -295,6 +295,23 @@ CreateThread(function()
     if Config.UseTarget then
         for job, zones in pairs(Config.BossMenuZones) do
             for index, data in ipairs(zones) do
+                exports.ox_target:addBoxZone({
+                    coords = data.coords,
+                    size = data.size,
+                    rotation = data.rotation,
+                    options = {
+                        {
+                            name = 'boss_menu',
+                            event = 'qb-bossmenu:client:OpenMenu',
+                            icon = 'fas fa-sign-in-alt',
+                            label = "Boss Menu",
+                            canInteract = function(_, _, _, _)
+                                return job == PlayerJob.name and PlayerJob.isboss
+                            end
+                        }
+                    }
+                })
+
                 exports['qb-target']:AddBoxZone(job .. '-BossMenu-' .. index, data.coords, data.length, data.width, {
                     name = job .. '-BossMenu-' .. index,
                     heading = data.heading,
@@ -327,30 +344,32 @@ CreateThread(function()
                 wait = 0
 
                 for k, v in pairs(Config.BossMenus) do
-                    if k == PlayerJob.name and PlayerJob.isboss then
-                        if #(pos - v) < 5.0 then
-                            inRangeBoss = true
+                    for _, coords in pairs(v) do
+                        if k == PlayerJob.name and PlayerJob.isboss then
+                            if #(pos - coords) < 5.0 then
+                                inRangeBoss = true
 
-                            if #(pos - v) <= 1.5 then
-                                nearBossmenu = true
+                                if #(pos - coords) <= 1.5 then
+                                    nearBossmenu = true
 
-                                if not shownBossMenu then
-                                    lib.showTextUI("[E] - Open Job Management")
+                                    if not shownBossMenu then
+                                        lib.showTextUI("[E] - Open Job Management")
 
-                                    shownBossMenu = true
+                                        shownBossMenu = true
+                                    end
+
+                                    if IsControlJustReleased(0, 38) then
+                                        lib.hideTextUI()
+
+                                        TriggerEvent('qb-bossmenu:client:OpenMenu')
+                                    end
                                 end
 
-                                if IsControlJustReleased(0, 38) then
-                                    lib.hideTextUI()
+                                if not nearBossmenu and shownBossMenu then
+                                    CloseMenuFull()
 
-                                    TriggerEvent('qb-bossmenu:client:OpenMenu')
+                                    shownBossMenu = false
                                 end
-                            end
-
-                            if not nearBossmenu and shownBossMenu then
-                                CloseMenuFull()
-
-                                shownBossMenu = false
                             end
                         end
                     end

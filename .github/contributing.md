@@ -62,7 +62,7 @@ Before creating bug reports, please check [this list](#before-submitting-a-bug-r
 
 * **Check the docs** There's a chance what you see as a bug might just work differently than you expect and if you think it could work better consider a feature enhancement report instead.
 * **Search the [discord](https://discord.gg/qbox)** to see if anyone else has run into the issue and see if it was solved through user error or code changes. (if the code change isn't pending a PR and you know what you're doing consider submitting one following [Pull Requests](#pull-requests) )
-* **Determine which resource the problem should be reported in**. If the bug is related to the inventory for example report this bug under qb-inventory rather than under qb-core or some other resource.
+* **Determine which resource the problem should be reported in**. If the bug is related to the inventory for example report this bug under ox_inventory rather than under qb-core or some other resource.
 * **Perform a [cursory search](https://github.com/search?q=+is%3Aissue+user%3Aqbox)** to see if the problem has already been reported. If it has **and the issue is still open**, add a comment to the existing issue instead of opening a new one.
 
 #### How Do I Submit A (Good) Bug Report?
