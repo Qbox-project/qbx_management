@@ -4,6 +4,8 @@ game 'gta5'
 description 'qb-bossmenu'
 version '2.0.0'
 
+shared_script '@ox_lib/init.lua'
+
 client_scripts {
     'client/*.lua'
 }
@@ -19,7 +21,7 @@ server_exports {
     'RemoveMoney',
     'RemoveGangMoney',
     'GetAccount',
-    'GetGangAccount',
+    'GetGangAccount'
 }
 
 lua54 'yes'

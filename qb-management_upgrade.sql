@@ -13,7 +13,6 @@ KEY `type` (`type`)
 INSERT INTO `management_funds` (`job_name`, `amount`, `type`)
 SELECT job_name, amount, 'boss' FROM bossmenu;
 
-
 -- [[ You can remove all of this if you want, this is just to confirm everything moved over correctly ]]--
 SET @totalbossmenu = (SELECT COUNT(*) FROM `bossmenu`);
 SET @managemenu_boss = (SELECT COUNT(*) FROM `management_funds` WHERE type = 'boss');
@@ -33,11 +32,9 @@ END $
 DELIMITER ;
 -- [[ end confirming all of bossmenu moved correctly ]]--
 
-
 -- Lastly we do the gang menu (THIS WILL PULL YOUR CURRENT gangmenu DATA AND ADD IT TO THE NEWLY CREATED TABLE)
 INSERT INTO `management_funds` (`job_name`, `amount`, `type`)
 SELECT job_name, amount, 'gang' FROM gangmenu;
-
 
 -- [[ You can remove all of this if you want, this is just to confirm everything moved over correctly ]]--
 SET @totalgangmenu = (SELECT COUNT(*) FROM `gangmenu`);
@@ -57,5 +54,3 @@ END IF;
 END $
 DELIMITER ;
 -- [[ end confirming all of gangmenu moved correctly ]]--
-
-
