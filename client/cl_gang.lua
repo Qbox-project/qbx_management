@@ -6,39 +6,12 @@ local DynamicMenuItems = {}
 -- UTIL
 local function CloseMenuFullGang()
     lib.hideContext()
-
-    exports['qb-core']:HideText()
+    lib.hideTextUI()
 
     shownGangMenu = false
 end
 
-local function comma_valueGang(amount)
-    local formatted = amount
-
-    while true do
-        local k
-
-        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
-
-        if k == 0 then
-            break
-        end
-    end
-
-    return formatted
-end
-
 -- Events
-AddEventHandler('onResourceStart', function(resource) -- if you restart the resource
-    if resource ~= GetCurrentResourceName() then
-        return
-    end
-
-    Wait(200)
-
-    PlayerGang = QBCore.Functions.GetPlayerData().gang
-end)
-
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     PlayerGang = QBCore.Functions.GetPlayerData().gang
 end)
@@ -48,11 +21,11 @@ RegisterNetEvent('QBCore:Client:OnGangUpdate', function(InfoGang)
 end)
 
 RegisterNetEvent('qb-gangmenu:client:Stash', function()
-    TriggerServerEvent("inventory:server:OpenInventory", "stash", "boss_" .. PlayerGang.name, {
+    TriggerServerEvent('inventory:server:OpenInventory', 'stash', 'boss_' .. PlayerGang.name, {
         maxweight = 4000000,
         slots = 100
     })
-    TriggerEvent("inventory:client:SetCurrentStash", "boss_" .. PlayerGang.name)
+    TriggerEvent('inventory:client:SetCurrentStash', 'boss_' .. PlayerGang.name)
 end)
 
 RegisterNetEvent('qb-gangmenu:client:Warbobe', function()
@@ -66,46 +39,46 @@ local function AddGangMenuItem(data, id)
 
     return menuID
 end
-exports("AddGangMenuItem", AddGangMenuItem)
+exports('AddGangMenuItem', AddGangMenuItem)
 
 local function RemoveGangMenuItem(id)
     DynamicMenuItems[id] = nil
 end
-exports("RemoveGangMenuItem", RemoveGangMenuItem)
+exports('RemoveGangMenuItem', RemoveGangMenuItem)
 
 RegisterNetEvent('qb-gangmenu:client:OpenMenu', function()
     shownGangMenu = true
 
     local gangMenu = {
         {
-            title = "Manage Gang Members",
-            icon = "fa-solid fa-list",
-            description = "Recruit or Fire Gang Members",
-            event = "qb-gangmenu:client:ManageGang"
+            title = Lang:t('menu.gang_manage_members_title'),
+            icon = 'fa-solid fa-list',
+            description = Lang:t('menu.gang_manage_members_description'),
+            event = 'qb-gangmenu:client:ManageGang'
         },
         {
-            title = "Recruit Members",
-            icon = "fa-solid fa-hand-holding",
-            description = "Hire Gang Members",
-            event = "qb-gangmenu:client:HireMembers"
+            title = Lang:t('menu.gang_hire_member_title'),
+            icon = 'fa-solid fa-hand-holding',
+            description = Lang:t('menu.gang_hire_member_description'),
+            event = 'qb-gangmenu:client:HireMembers'
         },
         {
-            title = "Storage Access",
-            icon = "fa-solid fa-box-open",
-            description = "Open Gang Stash",
-            event = "qb-gangmenu:client:Stash"
+            title = Lang:t('menu.gang_stash_title'),
+            icon = 'fa-solid fa-box-open',
+            description = Lang:t('menu.gang_stash_description'),
+            event = 'qb-gangmenu:client:Stash'
         },
         {
-            title = "Outfits",
-            description = "Change Clothes",
-            icon = "fa-solid fa-shirt",
-            event = "qb-gangmenu:client:Warbobe"
+            title = Lang:t('menu.gang_outfits_title'),
+            description = Lang:t('menu.gang_outfits_description'),
+            icon = 'fa-solid fa-shirt',
+            event = 'qb-gangmenu:client:Warbobe'
         },
         {
-            title = "Money Management",
-            icon = "fa-solid fa-sack-dollar",
-            description = "Check your Gang Balance",
-            event = "qb-gangmenu:client:SocietyMenu"
+            title = Lang:t('menu.gang_money_management_title'),
+            icon = 'fa-solid fa-sack-dollar',
+            description = Lang:t('menu.gang_money_management_description'),
+            event = 'qb-gangmenu:client:SocietyMenu'
         }
     }
 
@@ -114,16 +87,16 @@ RegisterNetEvent('qb-gangmenu:client:OpenMenu', function()
     end
 
     gangMenu[#gangMenu + 1] = {
-        title = "Exit",
-        icon = "fa-solid fa-angle-left",
-        onSelect = function(args)
+        title = Lang:t('menu.gang_exit_title'),
+        icon = 'fa-solid fa-angle-left',
+        onSelect = function()
             lib.hideContext()
         end
     }
 
     lib.registerContext({
         id = 'open_gangMenu',
-        title = "Gang Management  - " .. string.upper(PlayerGang.label),
+        title = "Gang Management - " .. string.upper(PlayerGang.label),
         options = gangMenu
     })
     lib.showContext('open_gangMenu')
@@ -137,8 +110,8 @@ RegisterNetEvent('qb-gangmenu:client:ManageGang', function()
             GangMembersMenu[#GangMembersMenu + 1] = {
                 title = v.name,
                 description = v.grade.name,
-                icon = "fa-solid fa-circle-user",
-                event = "qb-gangmenu:lient:ManageMember",
+                icon = 'fa-solid fa-circle-user',
+                event = 'qb-gangmenu:lient:ManageMember',
                 args = {
                     player = v,
                     work = PlayerGang
@@ -148,8 +121,8 @@ RegisterNetEvent('qb-gangmenu:client:ManageGang', function()
 
         GangMembersMenu[#GangMembersMenu + 1] = {
             title = "Return",
-            icon = "fa-solid fa-angle-left",
-            event = "qb-gangmenu:client:OpenMenu"
+            icon = 'fa-solid fa-angle-left',
+            event = 'qb-gangmenu:client:OpenMenu'
         }
 
         lib.registerContext({
@@ -168,8 +141,8 @@ RegisterNetEvent('qb-gangmenu:lient:ManageMember', function(data)
         MemberMenu[#MemberMenu + 1] = {
             title = v.name,
             description = "Grade: " .. k,
-            serverEvent = "qb-gangmenu:server:GradeUpdate",
-            icon = "fa-solid fa-file-pen",
+            serverEvent = 'qb-gangmenu:server:GradeUpdate',
+            icon = 'fa-solid fa-file-pen',
             args = {
                 cid = data.player.empSource,
                 grade = tonumber(k),
@@ -180,14 +153,14 @@ RegisterNetEvent('qb-gangmenu:lient:ManageMember', function(data)
 
     MemberMenu[#MemberMenu + 1] = {
         title = "Fire",
-        icon = "fa-solid fa-user-large-slash",
-        serverEvent = "qb-gangmenu:server:FireMember",
+        icon = 'fa-solid fa-user-large-slash',
+        serverEvent = 'qb-gangmenu:server:FireMember',
         args = data.player.empSource
     }
     MemberMenu[#MemberMenu + 1] = {
         title = "Return",
-        icon = "fa-solid fa-angle-left",
-        event = "qb-gangmenu:client:ManageGang"
+        icon = 'fa-solid fa-angle-left',
+        event = 'qb-gangmenu:client:ManageGang'
     }
 
     lib.registerContext({
@@ -207,8 +180,8 @@ RegisterNetEvent('qb-gangmenu:client:HireMembers', function()
                 HireMembersMenu[#HireMembersMenu + 1] = {
                     title = v.name,
                     description = "Citizen ID: " .. v.citizenid .. " - ID: " .. v.sourceplayer,
-                    icon = "fa-solid fa-user-check",
-                    serverEvent = "qb-gangmenu:server:HireMember",
+                    icon = 'fa-solid fa-user-check',
+                    serverEvent = 'qb-gangmenu:server:HireMember',
                     args = v.sourceplayer
                 }
             end
@@ -216,8 +189,8 @@ RegisterNetEvent('qb-gangmenu:client:HireMembers', function()
 
         HireMembersMenu[#HireMembersMenu + 1] = {
             title = "Return",
-            icon = "fa-solid fa-angle-left",
-            event = "qb-gangmenu:client:OpenMenu"
+            icon = 'fa-solid fa-angle-left',
+            event = 'qb-gangmenu:client:OpenMenu'
         }
 
         lib.registerContext({
@@ -234,28 +207,28 @@ RegisterNetEvent('qb-gangmenu:client:SocietyMenu', function()
         local SocietyMenu = {
             {
                 title = "Deposit",
-                icon = "fa-solid fa-money-bill-transfer",
+                icon = 'fa-solid fa-money-bill-transfer',
                 description = "Deposit Money",
-                event = "qb-gangmenu:client:SocietyDeposit",
-                args = comma_valueGang(cb)
+                event = 'qb-gangmenu:client:SocietyDeposit',
+                args = comma_value(cb)
             },
             {
                 title = "Withdraw",
-                icon = "fa-solid fa-money-bill-transfer",
+                icon = 'fa-solid fa-money-bill-transfer',
                 description = "Withdraw Money",
-                event = "qb-gangmenu:client:SocietyWithdraw",
-                args = comma_valueGang(cb)
+                event = 'qb-gangmenu:client:SocietyWithdraw',
+                args = comma_value(cb)
             },
             {
                 title = "Return",
-                icon = "fa-solid fa-angle-left",
-                event = "qb-gangmenu:client:OpenMenu"
+                icon = 'fa-solid fa-angle-left',
+                event = 'qb-gangmenu:client:OpenMenu'
             }
         }
 
         lib.registerContext({
             id = 'open_gangSociety',
-            title = "Balance: $" .. comma_valueGang(cb) .. " - " .. string.upper(PlayerGang.label),
+            title = "Balance: $" .. comma_value(cb) .. " - " .. string.upper(PlayerGang.label),
             options = SocietyMenu
         })
         lib.showContext('open_gangSociety')
@@ -265,43 +238,55 @@ end)
 RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(saldoattuale)
     local deposit = lib.inputDialog("Deposit Money", {
         {
-            type = "number",
+            type = 'number',
             label = "Available Balance",
             disabled = true,
             default = saldoattuale
         },
         {
-            type = "number",
+            type = 'number',
             label = "Amount"
         }
     })
 
-    if not deposit then
+    if not deposit and next(deposit) then
         return
     end
 
-    TriggerServerEvent("qb-gangmenu:server:depositMoney", tonumber(deposit[1]))
+    local depositAmount = tonumber(deposit[1])
+
+    if depositAmount <= 0 then
+        return
+    end
+
+    TriggerServerEvent('qb-gangmenu:server:depositMoney', depositAmount)
 end)
 
 RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(saldoattuale)
     local withdraw = lib.inputDialog("Withdraw Money", {
         {
-            type = "input",
+            type = 'input',
             label = "Available Balance",
             disabled = true,
             default = saldoattuale
         },
         {
-            type = "input",
+            type = 'input',
             label = "Amount"
         }
     })
 
-    if not withdraw then
+    if not withdraw and next(withdraw) then
         return
     end
 
-    TriggerServerEvent("qb-gangmenu:server:withdrawMoney", tonumber(withdraw[1]))
+    local withdrawAmount = tonumber(withdraw[1])
+
+    if withdrawAmount <= 0 then
+        return
+    end
+
+    TriggerServerEvent('qb-gangmenu:server:withdrawMoney', withdrawAmount)
 end)
 
 -- MAIN THREAD
@@ -309,17 +294,17 @@ CreateThread(function()
     if Config.UseTarget then
         for gang, zones in pairs(Config.GangMenuZones) do
             for index, data in ipairs(zones) do
-                exports['qb-target']:AddBoxZone(gang.."-GangMenu"..index, data.coords, data.length, data.width, {
-                    name = gang.."-GangMenu"..index,
+                exports['qb-target']:AddBoxZone(gang..'-GangMenu'..index, data.coords, data.length, data.width, {
+                    name = gang .. '-GangMenu' .. index,
                     heading = data.heading,
                     minZ = data.minZ,
                     maxZ = data.maxZ
                 }, {
                     options = {
                         {
-                            type = "client",
-                            event = "qb-gangmenu:client:OpenMenu",
-                            icon = "fas fa-sign-in-alt",
+                            type = 'client',
+                            event = 'qb-gangmenu:client:OpenMenu',
+                            icon = 'fas fa-sign-in-alt',
                             label = "Gang Menu",
                             canInteract = function()
                                 return gang == PlayerGang.name and PlayerGang.isboss
@@ -340,31 +325,29 @@ CreateThread(function()
             if PlayerGang then
                 wait = 0
 
-                for k, menus in pairs(Config.GangMenus) do
-                    for _, coords in ipairs(menus) do
-                        if k == PlayerGang.name and PlayerGang.isboss then
-                            if #(pos - coords) < 5.0 then
-                                inRangeGang = true
+                for k, v in pairs(Config.GangMenus) do
+                    if k == PlayerGang.name and PlayerGang.isboss then
+                        if #(pos - v) < 5.0 then
+                            inRangeGang = true
 
-                                if #(pos - coords) <= 1.5 then
-                                    nearGangmenu = true
+                            if #(pos - v) <= 1.5 then
+                                nearGangmenu = true
 
-                                    if not shownGangMenu then
-                                        exports['qb-core']:DrawText('[E] Open Gang Management', 'left')
-                                    end
-
-                                    if IsControlJustReleased(0, 38) then
-                                        exports['qb-core']:HideText()
-
-                                        TriggerEvent("qb-gangmenu:client:OpenMenu")
-                                    end
+                                if not shownGangMenu then
+                                    lib.showTextUI("[E] - Open Gang Management")
                                 end
 
-                                if not nearGangmenu and shownGangMenu then
-                                    CloseMenuFullGang()
+                                if IsControlJustReleased(0, 38) then
+                                    lib.hideTextUI()
 
-                                    shownGangMenu = false
+                                    TriggerEvent('qb-gangmenu:client:OpenMenu')
                                 end
+                            end
+
+                            if not nearGangmenu and shownGangMenu then
+                                CloseMenuFullGang()
+
+                                shownGangMenu = false
                             end
                         end
                     end

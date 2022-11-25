@@ -4,10 +4,10 @@ New qb-bossmenu / qb-gangmenu converted into one resource using ox_lib, with SQL
 
 ## Dependencies
 
-- [qb-core](https://github.com/qbcore-framework/qb-core)
-- [qb-smallresources](https://github.com/qbcore-framework/qb-smallresources) (For the Logs)
-- [qb-inventory](https://github.com/qbcore-framework/qb-inventory)
-- [qb-clothing](https://github.com/qbcore-framework/qb-clothing)
+- [qb-core](https://github.com/Qbox-project/qb-core)
+- [qb-smallresources](https://github.com/Qbox-project/qb-smallresources) (For the Logs)
+- [qb-inventory](https://github.com/Qbox-project/qb-inventory)
+- [qb-clothing](https://github.com/Qbox-project/qb-clothing)
 
 ## Screenshots
 
