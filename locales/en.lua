@@ -9,8 +9,7 @@ local Translations = {
         gang_outfits_title = "Outfits",
         gang_outfits_description = "Change Clothes",
         gang_money_management_title = "Money Management",
-        gang_money_management_description = "Check your Gang Balance",
-        gang_exit_title = "Exit"
+        gang_money_management_description = "Check your Gang Balance"
     }
 }
 

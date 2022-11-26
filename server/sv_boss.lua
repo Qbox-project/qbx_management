@@ -300,3 +300,13 @@ QBCore.Functions.CreateCallback('qb-bossmenu:getplayers', function(source, cb)
 
 	cb(players)
 end)
+
+AddEventHandler('onServerResourceStart', function(resourceName)
+    if resourceName == 'ox_inventory' or resourceName == GetCurrentResourceName() then
+			local data = Config.UseTarget and Config.BossMenuZones or Config.BossMenus
+			
+			for k in pairs(data) do
+				exports.ox_inventory:RegisterStash('boss_' .. k, "Stash: " .. k, 100, 4000000, false)
+			end
+    end
+end)

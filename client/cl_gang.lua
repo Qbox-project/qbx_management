@@ -21,11 +21,7 @@ RegisterNetEvent('QBCore:Client:OnGangUpdate', function(InfoGang)
 end)
 
 RegisterNetEvent('qb-gangmenu:client:Stash', function()
-    TriggerServerEvent('inventory:server:OpenInventory', 'stash', 'boss_' .. PlayerGang.name, {
-        maxweight = 4000000,
-        slots = 100
-    })
-    TriggerEvent('inventory:client:SetCurrentStash', 'boss_' .. PlayerGang.name)
+    exports.ox_inventory:openInventory('stash', 'gang_' .. PlayerGang.name)
 end)
 
 RegisterNetEvent('qb-gangmenu:client:Warbobe', function()
@@ -207,21 +203,21 @@ RegisterNetEvent('qb-gangmenu:client:HireMembers', function()
 end)
 
 RegisterNetEvent('qb-gangmenu:client:SocietyMenu', function()
-    QBCore.Functions.TriggerCallback('qb-gangmenu:server:GetAccount', function(cb)
+    QBCore.Functions.TriggerCallback('qb-gangmenu:server:GetAccount', function(amount)
         local SocietyMenu = {
             {
                 title = "Deposit",
                 icon = 'fa-solid fa-money-bill-transfer',
                 description = "Deposit Money",
                 event = 'qb-gangmenu:client:SocietyDeposit',
-                args = comma_value(cb)
+                args = comma_value(amount)
             },
             {
                 title = "Withdraw",
                 icon = 'fa-solid fa-money-bill-transfer',
                 description = "Withdraw Money",
                 event = 'qb-gangmenu:client:SocietyWithdraw',
-                args = comma_value(cb)
+                args = comma_value(amount)
             },
             {
                 title = "Return",
@@ -232,20 +228,20 @@ RegisterNetEvent('qb-gangmenu:client:SocietyMenu', function()
 
         lib.registerContext({
             id = 'open_gangSociety',
-            title = "Balance: $" .. comma_value(cb) .. " - " .. string.upper(PlayerGang.label),
+            title = "Balance: $" .. comma_value(amount) .. " - " .. string.upper(PlayerGang.label),
             options = SocietyMenu
         })
         lib.showContext('open_gangSociety')
     end, PlayerGang.name)
 end)
 
-RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(saldoattuale)
+RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(money)
     local deposit = lib.inputDialog("Deposit Money", {
         {
             type = 'number',
             label = "Available Balance",
             disabled = true,
-            default = saldoattuale
+            default = money
         },
         {
             type = 'number',
@@ -253,26 +249,38 @@ RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(saldoattuale)
         }
     })
 
-    if not deposit and next(deposit) then
+    if not deposit[2] then
+        lib.notify({
+            description = 'Amount value is missing!',
+            type = 'error'
+        })
+
+        TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
     end
 
-    local depositAmount = tonumber(deposit[1])
+    local depositAmount = tonumber(deposit[2])
 
     if depositAmount <= 0 then
+        lib.notify({
+            description = 'Amount need to be higher than zero!',
+            type = 'error'
+        })
+
+        TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
     end
 
     TriggerServerEvent('qb-gangmenu:server:depositMoney', depositAmount)
 end)
 
-RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(saldoattuale)
+RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(balance)
     local withdraw = lib.inputDialog("Withdraw Money", {
         {
             type = 'input',
             label = "Available Balance",
             disabled = true,
-            default = saldoattuale
+            default = balance
         },
         {
             type = 'input',
@@ -280,13 +288,25 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(saldoattuale)
         }
     })
 
-    if not withdraw and next(withdraw) then
+    if not withdraw[2] then
+        lib.notify({
+            description = 'Amount value is missing!',
+            type = 'error'
+        })
+
+        TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
     end
 
-    local withdrawAmount = tonumber(withdraw[1])
+    local withdrawAmount = tonumber(withdraw[2])
 
-    if withdrawAmount <= 0 then
+    if withdrawAmount > tonumber(balance) then
+        lib.notify({
+            description = 'You cant withdraw that amount of money!',
+            type = 'error'
+        })
+
+        TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
     end
 

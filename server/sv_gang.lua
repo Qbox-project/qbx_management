@@ -298,3 +298,13 @@ QBCore.Functions.CreateCallback('qb-gangmenu:getplayers', function(source, cb)
 
 	cb(players)
 end)
+
+AddEventHandler('onServerResourceStart', function(resourceName)
+    if resourceName == 'ox_inventory' or resourceName == GetCurrentResourceName() then
+        local data = Config.UseTarget and Config.GangMenuZones or Config.GangMenus
+
+        for k in pairs(data) do
+            exports.ox_inventory:RegisterStash('gang_' .. k, "Stash: " .. k, 100, 4000000, false)
+        end
+    end
+end)

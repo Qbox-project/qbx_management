@@ -12,8 +12,8 @@ New qb-bossmenu / qb-gangmenu converted into one resource using ox_lib, with SQL
 
 ## Screenshots
 
-![image](https://i.imgur.com/9yiQZDX.png)
-![image](https://i.imgur.com/MRMWeqX.png)
+![image](https://i.imgur.com/HoI8vQZ.png)
+![image](https://i.imgur.com/1QM00kh.png)
 
 ## Installation
 
