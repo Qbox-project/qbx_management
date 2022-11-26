@@ -75,14 +75,6 @@ RegisterNetEvent('qb-bossmenu:client:OpenMenu', function()
         bossMenu[#bossMenu + 1] = v
     end
 
-    bossMenu[#bossMenu + 1] = {
-        title = "Exit",
-        icon = 'fa-solid fa-angle-left',
-        onSelect = function(_)
-            lib.hideContext()
-        end
-    }
-
     lib.registerContext({
         id = 'open_bossMenu',
         title = "Boss Menu - " .. string.upper(PlayerJob.label),

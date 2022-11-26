@@ -86,14 +86,6 @@ RegisterNetEvent('qb-gangmenu:client:OpenMenu', function()
         gangMenu[#gangMenu + 1] = v
     end
 
-    gangMenu[#gangMenu + 1] = {
-        title = Lang:t('menu.gang_exit_title'),
-        icon = 'fa-solid fa-angle-left',
-        onSelect = function(_)
-            lib.hideContext()
-        end
-    }
-
     lib.registerContext({
         id = 'open_gangMenu',
         title = "Gang Management - " .. string.upper(PlayerGang.label),

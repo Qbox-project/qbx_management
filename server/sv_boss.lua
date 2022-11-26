@@ -124,7 +124,7 @@ QBCore.Functions.CreateCallback('qb-bossmenu:server:GetEmployees', function(sour
 	local employees = {}
 	local players = MySQL.query.await('SELECT * FROM `players` WHERE `job` LIKE "%' .. jobname .. '%"')
 
-	if players[1] ~= nil then
+	if players then
 		for _, value in pairs(players) do
 			local isOnline = QBCore.Functions.GetPlayerByCitizenId(value.citizenid)
 
@@ -146,7 +146,7 @@ QBCore.Functions.CreateCallback('qb-bossmenu:server:GetEmployees', function(sour
 		end
 
 		table.sort(employees, function(a, b)
-				return a.grade.level > b.grade.level
+			return a.grade.level > b.grade.level
 		end)
 	end
 
@@ -211,12 +211,12 @@ RegisterNetEvent('qb-bossmenu:server:FireEmployee', function(target)
 			TriggerClientEvent('QBCore:Notify', src, "You can't fire yourself", 'error')
 		end
 	else
-		local player = MySQL.query.await('SELECT * FROM players WHERE citizenid = ? LIMIT 1', {
+		local player = MySQL.single.await('SELECT * FROM players WHERE citizenid = ? LIMIT 1', {
 			target
 		})
 
-		if player[1] ~= nil then
-			Employee = player[1]
+		if player then
+			Employee = player
 			Employee.job = json.decode(Employee.job)
 
 			if Employee.job.grade.level > Player.PlayerData.job.grade.level then
@@ -303,10 +303,10 @@ end)
 
 AddEventHandler('onServerResourceStart', function(resourceName)
     if resourceName == 'ox_inventory' or resourceName == GetCurrentResourceName() then
-			local data = Config.UseTarget and Config.BossMenuZones or Config.BossMenus
-			
-			for k in pairs(data) do
-				exports.ox_inventory:RegisterStash('boss_' .. k, "Stash: " .. k, 100, 4000000, false)
-			end
+        local data = Config.UseTarget and Config.BossMenuZones or Config.BossMenus
+
+        for k in pairs(data) do
+            exports.ox_inventory:RegisterStash('boss_' .. k, "Stash: " .. k, 100, 4000000, false)
+        end
     end
 end)

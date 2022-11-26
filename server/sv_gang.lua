@@ -46,7 +46,7 @@ end
 exports('RemoveGangMoney', RemoveGangMoney)
 
 MySQL.ready(function()
-	local gangmenu = MySQL.query.await('SELECT job_name,amount FROM management_funds WHERE type = ?', {
+	local gangmenu = MySQL.query.await('SELECT job_name, amount FROM management_funds WHERE type = ?', {
 		'gang'
 	})
 
@@ -124,7 +124,7 @@ QBCore.Functions.CreateCallback('qb-gangmenu:server:GetEmployees', function(sour
 	local employees = {}
 	local players = MySQL.query.await('SELECT * FROM `players` WHERE `gang` LIKE "%' .. gangname .. '%"')
 
-	if players[1] ~= nil then
+	if players then
 		for _, value in pairs(players) do
 			local isOnline = QBCore.Functions.GetPlayerByCitizenId(value.citizenid)
 
@@ -208,12 +208,12 @@ RegisterNetEvent('qb-gangmenu:server:FireMember', function(target)
 			TriggerClientEvent('QBCore:Notify', src, "You can't kick yourself out of the gang!", 'error')
 		end
 	else
-		local player = MySQL.query.await('SELECT * FROM players WHERE citizenid = ? LIMIT 1', {
+		local player = MySQL.single.await('SELECT * FROM players WHERE citizenid = ? LIMIT 1', {
 			target
 		})
 
-		if player[1] ~= nil then
-			Employee = player[1]
+		if player then
+			Employee = player
 			Employee.gang = json.decode(Employee.gang)
 
 			if Employee.gang.grade.level > Player.PlayerData.job.grade.level then
