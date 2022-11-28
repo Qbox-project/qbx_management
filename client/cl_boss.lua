@@ -306,7 +306,7 @@ end)
 CreateThread(function()
     if Config.UseTarget then
         for job, zones in pairs(Config.BossMenuZones) do
-            for index, data in ipairs(zones) do
+            for _, data in ipairs(zones) do
                 exports.ox_target:addBoxZone({
                     coords = data.coords,
                     size = data.size,
@@ -322,26 +322,6 @@ CreateThread(function()
                             end
                         }
                     }
-                })
-
-                exports['qb-target']:AddBoxZone(job .. '-BossMenu-' .. index, data.coords, data.length, data.width, {
-                    name = job .. '-BossMenu-' .. index,
-                    heading = data.heading,
-                    minZ = data.minZ,
-                    maxZ = data.maxZ
-                }, {
-                    options = {
-                        {
-                            type = 'client',
-                            event = 'qb-bossmenu:client:OpenMenu',
-                            icon = 'fas fa-sign-in-alt',
-                            label = "Boss Menu",
-                            canInteract = function()
-                                return job == PlayerJob.name and PlayerJob.isboss
-                            end
-                        }
-                    },
-                    distance = 2.5
                 })
             end
         end

@@ -26,16 +26,11 @@ end
 
 function comma_value(amount)
     local formatted = amount
+    local numChanged = 1
 
-    while true do
-        local k
-
-        formatted, k = string.gsub(formatted, '^(-?%d+)(%d%d%d)', '%1,%2')
-
-        if k == 0 then
-            break
-        end
-    end
+    repeat
+        formatted, numChanged = string.gsub(formatted, '^(-?%d+)(%d%d%d)', '%1,%2')
+    until numChanged == 0
 
     return formatted
 end
