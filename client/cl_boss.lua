@@ -91,7 +91,6 @@ RegisterNetEvent('qb-bossmenu:client:employeelist', function()
             EmployeesMenu[#EmployeesMenu + 1] = {
                 title = v.name,
                 description = v.grade.name,
-                icon = 'fa-solid fa-circle-user',
                 event = 'qb-bossmenu:client:ManageEmployee',
                 args = {
                     player = v,
@@ -123,7 +122,6 @@ RegisterNetEvent('qb-bossmenu:client:ManageEmployee', function(data)
             title = v.name,
             description = "Grade: " .. k,
             serverEvent = 'qb-bossmenu:server:GradeUpdate',
-            icon = 'fa-solid fa-file-pen',
             args = {
                 cid = data.player.empSource,
                 grade = tonumber(k),
@@ -169,7 +167,6 @@ RegisterNetEvent('qb-bossmenu:client:HireMenu', function()
                 HireMenu[#HireMenu + 1] = {
                     title = v.name,
                     description = "Citizen ID: " .. v.citizenid .. " - ID: " .. v.sourceplayer,
-                    icon = 'fa-solid fa-user-check',
                     serverEvent = 'qb-bossmenu:server:HireEmployee',
                     args = v.sourceplayer
                 }

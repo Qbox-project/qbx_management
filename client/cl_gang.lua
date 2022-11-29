@@ -101,7 +101,6 @@ RegisterNetEvent('qb-gangmenu:client:ManageGang', function()
         for _, v in pairs(cb) do
             GangMembersMenu[#GangMembersMenu + 1] = {
                 title = v.name,
-                icon = 'fa-solid fa-circle-user',
                 description = v.grade.name,
                 event = 'qb-gangmenu:lient:ManageMember',
                 args = {
@@ -132,7 +131,6 @@ RegisterNetEvent('qb-gangmenu:lient:ManageMember', function(data)
     for k, v in pairs(QBCore.Shared.Gangs[data.work.name].grades) do
         MemberMenu[#MemberMenu + 1] = {
             title = v.name,
-            icon = 'fa-solid fa-file-pen',
             description = "Grade: " .. k,
             serverEvent = 'qb-gangmenu:server:GradeUpdate',
             args = {
@@ -172,7 +170,6 @@ RegisterNetEvent('qb-gangmenu:client:HireMembers', function()
                 HireMembersMenu[#HireMembersMenu + 1] = {
                     title = v.name,
                     description = "Citizen ID: " .. v.citizenid .. " - ID: " .. v.sourceplayer,
-                    icon = 'fa-solid fa-user-check',
                     serverEvent = 'qb-gangmenu:server:HireMember',
                     args = v.sourceplayer
                 }
