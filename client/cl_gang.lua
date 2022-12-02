@@ -315,7 +315,7 @@ CreateThread(function()
                         {
                             name = 'gang_menu',
                             event = 'qb-gangmenu:client:OpenMenu',
-                            icon = 'fas fa-sign-in-alt',
+                            icon = "fa-solid fa-right-to-bracket",
                             label = "Gang Menu",
                             canInteract = function(_, _, _, _)
                                 return gang == PlayerGang.name and PlayerGang.isboss

@@ -312,7 +312,7 @@ CreateThread(function()
                         {
                             name = 'boss_menu',
                             event = 'qb-bossmenu:client:OpenMenu',
-                            icon = 'fas fa-sign-in-alt',
+                            icon = "fa-solid fa-right-to-bracket",
                             label = "Boss Menu",
                             canInteract = function(_, _, _, _)
                                 return job == PlayerJob.name and PlayerJob.isboss

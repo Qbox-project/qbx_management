@@ -26,7 +26,7 @@ end
 
 function comma_value(amount)
     local formatted = amount
-    local numChanged = 1
+    local numChanged
 
     repeat
         formatted, numChanged = string.gsub(formatted, '^(-?%d+)(%d%d%d)', '%1,%2')
