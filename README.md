@@ -1,18 +1,16 @@
 # qb-management
 
-New qb-bossmenu / qb-gangmenu converted into one resource using qb-menu and qb-input, with SQL support for society funds!
+Business and gang management menu for shared stashes, wardrobes and money
 
 ## Dependencies
 - [qb-core](https://github.com/qbcore-framework/qb-core)
 - [qb-smallresources](https://github.com/qbcore-framework/qb-smallresources) (For the Logs)
-- [qb-input](https://github.com/qbcore-framework/qb-input)
-- [qb-menu](https://github.com/qbcore-framework/qb-menu)
-- [qb-inventory](https://github.com/qbcore-framework/qb-inventory)
+- [ox_lib](https://github.com/overextended/ox_lib)
+- [ox_inventory](https://github.com/overextended/ox_inventory)
 - [qb-clothing](https://github.com/qbcore-framework/qb-clothing)
 
 ## Screenshots
-![image](https://i.imgur.com/9yiQZDX.png)
-![image](https://i.imgur.com/MRMWeqX.png)
+*We need new ones*
 
 ## Installation
 ### Manual
