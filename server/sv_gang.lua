@@ -1,25 +1,28 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local GangAccounts = {}
 
-function GetGangAccount(account)
+local function GetGangAccount(account)
 	return GangAccounts[account] or 0
 end
 
-function AddGangMoney(account, amount)
+exports('GetGangAccount', GetGangAccount)
+
+local function AddGangMoney(account, amount)
 	if not GangAccounts[account] then
 		GangAccounts[account] = 0
 	end
 
 	GangAccounts[account] = GangAccounts[account] + amount
-	MySQL.insert('INSERT INTO management_funds (job_name, amount, type) VALUES (:job_name, :amount, :type) ON DUPLICATE KEY UPDATE amount = :amount',
-		{
-			['job_name'] = account,
-			['amount'] = GangAccounts[account],
-			['type'] = 'gang'
-		})
+	MySQL.insert('INSERT INTO management_funds (job_name, amount, type) VALUES (:job_name, :amount, :type) ON DUPLICATE KEY UPDATE amount = :amount', {
+		['job_name'] = account,
+		['amount'] = GangAccounts[account],
+		['type'] = 'gang'
+	})
 end
 
-function RemoveGangMoney(account, amount)
+exports('AddGangMoney', AddGangMoney)
+
+local function RemoveGangMoney(account, amount)
 	local isRemoved = false
 	if amount > 0 then
 		if not GangAccounts[account] then
@@ -31,16 +34,19 @@ function RemoveGangMoney(account, amount)
 			isRemoved = true
 		end
 
-		MySQL.update('UPDATE management_funds SET amount = ? WHERE job_name = ? and type = "gang"', { GangAccounts[account], account })
+		MySQL.update('UPDATE management_funds SET amount = ? WHERE job_name = ? and type = ?', { GangAccounts[account], account, 'gang' })
 	end
 	return isRemoved
 end
 
+exports('RemoveGangMoney', RemoveGangMoney)
+
 MySQL.ready(function ()
-	local gangmenu = MySQL.query.await('SELECT job_name,amount FROM management_funds WHERE type = "gang"', {})
+	local gangmenu = MySQL.query.await('SELECT job_name,amount FROM management_funds WHERE type = ?', {'gang'})
 	if not gangmenu then return end
 
-	for _,v in ipairs(gangmenu) do
+	for i = 1, #gangmenu do
+		local v = gangmenu[i]
 		GangAccounts[v.job_name] = v.amount
 	end
 end)
@@ -81,9 +87,8 @@ RegisterNetEvent("qb-gangmenu:server:depositMoney", function(amount)
 	TriggerClientEvent('qb-gangmenu:client:OpenMenu', src)
 end)
 
-QBCore.Functions.CreateCallback('qb-gangmenu:server:GetAccount', function(_, cb, GangName)
-	local gangmoney = GetGangAccount(GangName)
-	cb(gangmoney)
+QBCore.Functions.CreateCallback('qb-gangmenu:server:GetAccount', function(_, cb, gangName)
+	cb(GetGangAccount(gangName))
 end)
 
 -- Get Employees
@@ -95,19 +100,19 @@ QBCore.Functions.CreateCallback('qb-gangmenu:server:GetEmployees', function(sour
 
 	local employees = {}
 	local players = MySQL.query.await("SELECT * FROM `players` WHERE `gang` LIKE '%".. gangname .."%'", {})
-	if players[1] ~= nil then
+	if players then
 		for _, value in pairs(players) do
 			local isOnline = QBCore.Functions.GetPlayerByCitizenId(value.citizenid)
 
 			if isOnline then
-				employees[#employees+1] = {
+				employees[#employees + 1] = {
 				empSource = isOnline.PlayerData.citizenid,
 				grade = isOnline.PlayerData.gang.grade,
 				isboss = isOnline.PlayerData.gang.isboss,
 				name = '🟢' .. isOnline.PlayerData.charinfo.firstname .. ' ' .. isOnline.PlayerData.charinfo.lastname
 				}
 			else
-				employees[#employees+1] = {
+				employees[#employees + 1] = {
 				empSource = value.citizenid,
 				grade =  json.decode(value.gang).grade,
 				isboss = json.decode(value.gang).isboss,
@@ -164,7 +169,7 @@ RegisterNetEvent('qb-gangmenu:server:FireMember', function(target)
 		end
 	else
 		local player = MySQL.query.await('SELECT * FROM players WHERE citizenid = ? LIMIT 1', {target})
-		if player[1] ~= nil then
+		if player[1] then
 			Employee = player[1]
 			Employee.gang = json.decode(Employee.gang)
 			if Employee.gang.grade.level > Player.PlayerData.job.grade.level then TriggerClientEvent('QBCore:Notify', src, "You cannot fire this citizen!", "error") return end
@@ -215,18 +220,29 @@ QBCore.Functions.CreateCallback('qb-gangmenu:getplayers', function(source, cb)
 		local dist = #(pCoords - tCoords)
 		if PlayerPed ~= targetped and dist < 10 then
 			local ped = QBCore.Functions.GetPlayer(v)
-			players[#players+1] = {
-			id = v,
-			coords = GetEntityCoords(targetped),
-			name = ped.PlayerData.charinfo.firstname .. " " .. ped.PlayerData.charinfo.lastname,
-			citizenid = ped.PlayerData.citizenid,
-			sources = GetPlayerPed(ped.PlayerData.source),
-			sourceplayer = ped.PlayerData.source
+			players[#players + 1] = {
+				id = v,
+				coords = GetEntityCoords(targetped),
+				name = ped.PlayerData.charinfo.firstname .. " " .. ped.PlayerData.charinfo.lastname,
+				citizenid = ped.PlayerData.citizenid,
+				sources = GetPlayerPed(ped.PlayerData.source),
+				sourceplayer = ped.PlayerData.source
 			}
 		end
 	end
-		table.sort(players, function(a, b)
-			return a.name < b.name
-		end)
+
+	table.sort(players, function(a, b)
+		return a.name < b.name
+	end)
+
 	cb(players)
+end)
+
+AddEventHandler('onServerResourceStart', function(resourceName)
+    if resourceName ~= 'ox_inventory' and resourceName ~= GetCurrentResourceName() then return end
+
+	local data = Config.UseTarget and Config.GangMenuZones or Config.GangMenus
+	for k in pairs(data) do
+		exports.ox_inventory:RegisterStash('gang_' .. k, "Stash: " .. k, 100, 4000000, false)
+	end
 end)
