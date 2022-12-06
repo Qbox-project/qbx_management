@@ -89,12 +89,12 @@ RegisterNetEvent('qb-gangmenu:client:OpenMenu', function()
     end
 
     lib.registerContext({
-        id = 'open_gangMenu',
+        id = 'qb_management_open_gangMenu',
         title = "Gang Management - " .. string.upper(PlayerGang.label),
         options = gangMenu
     })
 
-    lib.showContext('open_gangMenu')
+    lib.showContext('qb_management_open_gangMenu')
 end)
 
 RegisterNetEvent('qb-gangmenu:client:ManageGang', function()
@@ -120,12 +120,12 @@ RegisterNetEvent('qb-gangmenu:client:ManageGang', function()
         }
 
         lib.registerContext({
-            id = 'open_gangManage',
+            id = 'qb_management_open_gangManage',
             title = "Manage Gang Members - " .. string.upper(PlayerGang.label),
             options = GangMembersMenu
         })
 
-        lib.showContext('open_gangManage')
+        lib.showContext('qb_management_open_gangManage')
     end, PlayerGang.name)
 end)
 
@@ -159,12 +159,12 @@ RegisterNetEvent('qb-gangmenu:lient:ManageMember', function(data)
     }
 
     lib.registerContext({
-        id = 'open_gangMember',
+        id = 'qb_management_open_gangMember',
         title = "Manage " .. data.player.name .. " - " .. string.upper(PlayerGang.label),
         options = MemberMenu
     })
 
-    lib.showContext('open_gangMember')
+    lib.showContext('qb_management_open_gangMember')
 end)
 
 RegisterNetEvent('qb-gangmenu:client:HireMembers', function()
@@ -189,12 +189,12 @@ RegisterNetEvent('qb-gangmenu:client:HireMembers', function()
         }
 
         lib.registerContext({
-            id = 'open_gangHire',
+            id = 'qb_management_open_gangHire',
             title = "Hire Gang Members - " .. string.upper(PlayerGang.label),
             options = HireMembersMenu
         })
 
-        lib.showContext('open_gangHire')
+        lib.showContext('qb_management_open_gangHire')
     end)
 end)
 
@@ -223,12 +223,12 @@ RegisterNetEvent('qb-gangmenu:client:SocietyMenu', function()
         }
 
         lib.registerContext({
-            id = 'open_gangSociety',
+            id = 'qb_management_open_gangSociety',
             title = "Balance: $" .. comma_value(amount) .. " - " .. string.upper(PlayerGang.label),
             options = SocietyMenu
         })
 
-        lib.showContext('open_gangSociety')
+        lib.showContext('qb_management_open_gangSociety')
     end, PlayerGang.name)
 end)
 
