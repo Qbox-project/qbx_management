@@ -154,6 +154,10 @@ All lua code should be done using all the best practices of proper lua using the
 - Make use of config options where it makes sense making features optional or customizable
 - Instead of `table.insert(myTable, "value")` use `myTable[#myTable + 1] = "value"`
 - Instead of `table.insert(ages, "bob", 30)` use `ages.bob = 30` or `ages["bob"] = 30`
+- Don't use `GetHashKey('hash')` everywhere, instead use backticks (\`\`) to hash it \`hash\` (this only works with lua 5.4 enabled).
+- Adding onto the above, if you're using a variable to get a hash instead of a string, use `joaat(variable)` instead of `GetHashKey(variable)`.
+- For styling purposes, remove the `Citizen.` part before `Wait()`, `CreateThread()` and `SetTimeout()` (other citizen namespace functions don't have an alias).
+- Don't use `Wait(5)` or anything in that area when you need to run a loop every frame, every frame means it needs to wait 0 milliseconds and not skip a frame at all, `Wait(0)`.
 
 ### JavaScript Styleguide
 
