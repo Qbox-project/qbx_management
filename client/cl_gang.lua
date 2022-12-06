@@ -53,33 +53,33 @@ RegisterNetEvent('qb-gangmenu:client:OpenMenu', function()
 
     local gangMenu = {
         {
-            title = Lang:t('menu.gang_manage_members_title'),
+            title = 'Manage Gang Members',
             icon = 'fa-solid fa-list',
-            description = Lang:t('menu.gang_manage_members_description'),
+            description = 'Recruit or Fire Gang Members',
             event = 'qb-gangmenu:client:ManageGang'
         },
         {
-            title = Lang:t('menu.gang_hire_member_title'),
+            title = 'Recruit Members',
             icon = 'fa-solid fa-hand-holding',
-            description = Lang:t('menu.gang_hire_member_description'),
+            description = 'Hire Gang Members',
             event = 'qb-gangmenu:client:HireMembers'
         },
         {
-            title = Lang:t('menu.gang_stash_title'),
+            title = 'Storage Access',
             icon = 'fa-solid fa-box-open',
-            description = Lang:t('menu.gang_stash_description'),
+            description = 'Open Gang Stash',
             event = 'qb-gangmenu:client:Stash'
         },
         {
-            title = Lang:t('menu.gang_outfits_title'),
+            title = 'Outfits',
             icon = 'fa-solid fa-shirt',
-            description = Lang:t('menu.gang_outfits_description'),
+            description = 'Change Clothes',
             event = 'qb-gangmenu:client:Warbobe'
         },
         {
-            title = Lang:t('menu.gang_money_management_title'),
+            title = 'Money Management',
             icon = 'fa-solid fa-sack-dollar',
-            description = Lang:t('menu.gang_money_management_description'),
+            description = 'Check your Gang Balance',
             event = 'qb-gangmenu:client:SocietyMenu'
         }
     }
