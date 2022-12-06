@@ -79,11 +79,11 @@ RegisterNetEvent('qb-bossmenu:client:OpenMenu', function()
     end
 
     lib.registerContext({
-        id = 'open_bossMenu',
+        id = 'qb_management_open_bossMenu',
         title = "Boss Menu - " .. string.upper(PlayerJob.label),
         options = bossMenu
     })
-    lib.showContext('open_bossMenu')
+    lib.showContext('qb_management_open_bossMenu')
 end)
 
 RegisterNetEvent('qb-bossmenu:client:employeelist', function()
@@ -109,12 +109,12 @@ RegisterNetEvent('qb-bossmenu:client:employeelist', function()
         }
 
         lib.registerContext({
-            id = 'open_bossManage',
+            id = 'qb_management_open_bossManage',
             title = "Manage Employees - " .. string.upper(PlayerJob.label),
             options = EmployeesMenu
         })
 
-        lib.showContext('open_bossManage')
+        lib.showContext('qb_management_open_bossManage')
     end, PlayerJob.name)
 end)
 
@@ -148,12 +148,12 @@ RegisterNetEvent('qb-bossmenu:client:ManageEmployee', function(data)
     }
 
     lib.registerContext({
-        id = 'open_bossMember',
+        id = 'qb_management_open_bossMember',
         title = "Manage " .. data.player.name .. " - " .. string.upper(PlayerJob.label),
         options = EmployeeMenu
     })
 
-    lib.showContext('open_bossMember')
+    lib.showContext('qb_management_open_bossMember')
 end)
 
 RegisterNetEvent('qb-bossmenu:client:Stash', function()
@@ -186,12 +186,12 @@ RegisterNetEvent('qb-bossmenu:client:HireMenu', function()
         }
 
         lib.registerContext({
-            id = 'open_bossHire',
+            id = 'qb_management_open_bossHire',
             title = "Hire Employees - " .. string.upper(PlayerJob.label),
             options = HireMenu
         })
 
-        lib.showContext('open_bossHire')
+        lib.showContext('qb_management_open_bossHire')
     end)
 end)
 
@@ -220,12 +220,12 @@ RegisterNetEvent('qb-bossmenu:client:SocietyMenu', function()
         }
 
         lib.registerContext({
-            id = 'open_bossSociety',
+            id = 'qb_management_open_bossSociety',
             title = "Balance: $" .. comma_value(amount) .. " - " .. string.upper(PlayerJob.label),
             options = SocietyMenu
         })
 
-        lib.showContext('open_bossSociety')
+        lib.showContext('qb_management_open_bossSociety')
     end, PlayerJob.name)
 end)
 
