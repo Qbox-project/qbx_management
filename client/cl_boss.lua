@@ -203,14 +203,14 @@ RegisterNetEvent('qb-bossmenu:client:SocietyMenu', function()
                 icon = 'fa-solid fa-money-bill-transfer',
                 description = "Deposit Money into account",
                 event = 'qb-bossmenu:client:SocetyDeposit',
-                args = comma_value(amount)
+                args = amount
             },
             {
                 title = "Withdraw",
                 icon = 'fa-solid fa-money-bill-transfer',
                 description = "Withdraw Money from account",
                 event = 'qb-bossmenu:client:SocetyWithDraw',
-                args = comma_value(amount)
+                args = amount
             },
             {
                 title = "Return",
@@ -235,7 +235,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyDeposit', function(money)
             type = 'input',
             label = "Available Balance",
             disabled = true,
-            default = money
+            default = comma_value(money)
         },
         {
             type = 'number',
@@ -279,7 +279,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyWithDraw', function(money)
             type = 'input',
             label = "Available Balance",
             disabled = true,
-            default = money
+            default = comma_value(money)
         },
         {
             type = 'number',
