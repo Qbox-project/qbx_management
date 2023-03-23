@@ -244,7 +244,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyDeposit', function(money)
     })
 
     if not deposit then
-        TriggerEvent('qb-gangmenu:client:SocietyMenu')
+        TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
     end
 
@@ -254,7 +254,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyDeposit', function(money)
             type = 'error'
         })
 
-        TriggerEvent('qb-gangmenu:client:SocietyMenu')
+        TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
     end
 
@@ -266,7 +266,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyDeposit', function(money)
             type = 'error'
         })
 
-        TriggerEvent('qb-gangmenu:client:SocietyMenu')
+        TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
     end
 
@@ -288,7 +288,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyWithDraw', function(money)
     })
 
     if not withdraw then
-        TriggerEvent('qb-gangmenu:client:SocietyMenu')
+        TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
     end
 
@@ -298,7 +298,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyWithDraw', function(money)
             type = 'error'
         })
 
-        TriggerEvent('qb-gangmenu:client:SocietyMenu')
+        TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
     end
 
@@ -310,7 +310,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyWithDraw', function(money)
             type = 'error'
         })
 
-        TriggerEvent('qb-gangmenu:client:SocietyMenu')
+        TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
     end
 
