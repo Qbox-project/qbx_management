@@ -206,14 +206,14 @@ RegisterNetEvent('qb-gangmenu:client:SocietyMenu', function()
                 icon = 'fa-solid fa-money-bill-transfer',
                 description = "Deposit Money",
                 event = 'qb-gangmenu:client:SocietyDeposit',
-                args = comma_value(amount)
+                args = amount
             },
             {
                 title = "Withdraw",
                 icon = 'fa-solid fa-money-bill-transfer',
                 description = "Withdraw Money",
                 event = 'qb-gangmenu:client:SocietyWithdraw',
-                args = comma_value(amount)
+                args = amount
             },
             {
                 title = "Return",
@@ -235,10 +235,10 @@ end)
 RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(money)
     local deposit = lib.inputDialog("Deposit Money", {
         {
-            type = 'number',
+            type = 'input',
             label = "Available Balance",
             disabled = true,
-            default = money
+            default = comma_value(money)
         },
         {
             type = 'number',
@@ -282,7 +282,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(money)
             type = 'input',
             label = "Available Balance",
             disabled = true,
-            default = money
+            default = comma_value(money)
         },
         {
             type = 'input',
