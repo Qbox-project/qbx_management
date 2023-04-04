@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = exports['qbx-core']:GetCoreObject()
 local PlayerGang = QBCore.Functions.GetPlayerData().gang
 local shownGangMenu = false
 local DynamicMenuItems = {}
