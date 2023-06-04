@@ -1,151 +1,52 @@
-local QBCore = exports['qbx-core']:GetCoreObject()
-local Accounts = {}
-
 local function getAccount(account)
-    return Accounts[account] or 0
+    return GetAccount(account)
 end
 
-exports('GetAccount', getAccount)
-
 local function addMoney(account, amount)
-	if not Accounts[account] then
-		Accounts[account] = 0
-	end
-
-	Accounts[account] += amount
-
-	MySQL.insert('INSERT INTO management_funds (job_name, amount, type) VALUES (:job_name, :amount, :type) ON DUPLICATE KEY UPDATE amount = :amount', {
-		['job_name'] = account,
-		['amount'] = Accounts[account],
-		['type'] = 'boss'
-	})
+	AddMoney(account, amount, 'boss')
 end
 
 exports('AddMoney', addMoney)
 
 local function removeMoney(account, amount)
-	local isRemoved = false
-	if amount > 0 then
-		if not Accounts[account] then
-			Accounts[account] = 0
-		end
-
-		if Accounts[account] >= amount then
-			Accounts[account] -= amount
-			isRemoved = true
-		end
-
-		MySQL.update('UPDATE management_funds SET amount = ? WHERE job_name = ? and type = ?', { Accounts[account], account, 'boss' })
-	end
-	return isRemoved
+	return RemoveMoney(account, amount, 'boss')
 end
 
 exports('RemoveMoney', removeMoney)
 
-MySQL.ready(function()
-	local bossmenu = MySQL.query.await('SELECT job_name, amount FROM management_funds WHERE type = ?', {'boss'})
-	if not bossmenu then return end
-
-	for i = 1, #bossmenu do
-		local v = bossmenu[i]
-		Accounts[v.job_name] = v.amount
-	end
-end)
 
 RegisterNetEvent("qb-bossmenu:server:withdrawMoney", function(amount)
 	local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
+	local success, player, account = WithdrawMoney(src, amount, 'job', 'boss', 'Boss menu withdraw')
+	if not success then return end
 
-	if not Player.PlayerData.job.isboss then ExploitBan(src, 'withdrawMoney Exploiting') return end
-
-	local job = Player.PlayerData.job.name
-	if removeMoney(job, amount) then
-		Player.Functions.AddMoney("cash", amount, 'Boss menu withdraw')
-		TriggerEvent('qb-log:server:CreateLog', 'bossmenu', 'Withdraw Money', "blue", Player.PlayerData.name.. "Withdrawal $" .. amount .. ' (' .. job .. ')', false)
-		TriggerClientEvent('QBCore:Notify', src, "You have withdrawn: $" ..amount, "success")
-	else
-		TriggerClientEvent('QBCore:Notify', src, "You dont have enough money in the account!", "error")
-	end
-
+	TriggerEvent('qb-log:server:CreateLog', 'bossmenu', 'Withdraw Money', "blue", player?.PlayerData.name.. "Withdrawal $" .. amount .. ' (' .. account .. ')', false)
 	TriggerClientEvent('qb-bossmenu:client:OpenMenu', src)
 end)
 
 RegisterNetEvent("qb-bossmenu:server:depositMoney", function(amount)
 	local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
+	local success, player, account = DepositMoney(src, amount, 'job', 'boss')
+	if not success then return end
 
-	if not Player.PlayerData.job.isboss then ExploitBan(src, 'depositMoney Exploiting') return end
-
-	if Player.Functions.RemoveMoney("cash", amount) then
-		local job = Player.PlayerData.job.name
-		addMoney(job, amount)
-		TriggerEvent('qb-log:server:CreateLog', 'bossmenu', 'Deposit Money', "blue", Player.PlayerData.name.. "Deposit $" .. amount .. ' (' .. job .. ')', false)
-		TriggerClientEvent('QBCore:Notify', src, "You have deposited: $" ..amount, "success")
-	else
-		TriggerClientEvent('QBCore:Notify', src, "You dont have enough money to add!", "error")
-	end
-
+	TriggerEvent('qb-log:server:CreateLog', 'bossmenu', 'Deposit Money', "blue", player?.PlayerData.name.. "Deposit $" .. amount .. ' (' .. account .. ')', false)
 	TriggerClientEvent('qb-bossmenu:client:OpenMenu', src)
 end)
 
 lib.callback.register('qb-bossmenu:server:GetAccount', function(_, jobName)
-	return getAccount(jobName)
+	return GetAccount(jobName)
 end)
 
 -- Get Employees
 lib.callback.register('qb-bossmenu:server:GetEmployees', function(source, jobname)
 	local src = source
-	local player = QBCore.Functions.GetPlayer(src)
-
-	if not player.PlayerData.job.isboss then ExploitBan(src, 'GetEmployees Exploiting') return end
-
-	local employees = {}
-	local players = MySQL.query.await("SELECT * FROM `players` WHERE `job` LIKE '%".. jobname .."%'", {})
-	if not players then return {} end
-	for _, value in pairs(players) do
-		local isOnline = QBCore.Functions.GetPlayerByCitizenId(value.citizenid)
-
-		if isOnline then
-			employees[#employees + 1] = {
-			empSource = isOnline.PlayerData.citizenid,
-			grade = isOnline.PlayerData.job.grade,
-			isboss = isOnline.PlayerData.job.isboss,
-			name = '🟢 ' .. isOnline.PlayerData.charinfo.firstname .. ' ' .. isOnline.PlayerData.charinfo.lastname
-			}
-		else
-			employees[#employees + 1] = {
-			empSource = value.citizenid,
-			grade =  json.decode(value.job).grade,
-			isboss = json.decode(value.job).isboss,
-			name = '❌ ' ..  json.decode(value.charinfo).firstname .. ' ' .. json.decode(value.charinfo).lastname
-			}
-		end
-	end
-	table.sort(employees, function(a, b)
-		return a.grade.level > b.grade.level
-	end)
-	return employees
+	return GetEmployees(src, jobname, 'job')
 end)
 
 -- Grade Change
 RegisterNetEvent('qb-bossmenu:server:GradeUpdate', function(data)
 	local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
-	local Employee = QBCore.Functions.GetPlayerByCitizenId(data.cid)
-
-	if not Player.PlayerData.job.isboss then ExploitBan(src, 'GradeUpdate Exploiting') return end
-	if data.grade > Player.PlayerData.job.grade.level then TriggerClientEvent('QBCore:Notify', src, "You cannot promote to this rank!", "error") return end
-
-	if Employee then
-		if Employee.Functions.SetJob(Player.PlayerData.job.name, data.grade) then
-			TriggerClientEvent('QBCore:Notify', src, "Sucessfulluy promoted!", "success")
-			TriggerClientEvent('QBCore:Notify', Employee.PlayerData.source, "You have been promoted to" ..data.gradename..".", "success")
-		else
-			TriggerClientEvent('QBCore:Notify', src, "Promotion grade does not exist.", "error")
-		end
-	else
-		TriggerClientEvent('QBCore:Notify', src, "Civilian not in city.", "error")
-	end
+	UpdateGrade(src, data, 'job')
 	TriggerClientEvent('qb-bossmenu:client:OpenMenu', src)
 end)
 
@@ -214,38 +115,5 @@ end)
 -- Get closest player sv
 lib.callback.register('qb-bossmenu:getplayers', function(source)
 	local src = source
-	local players = {}
-	local playerPed = GetPlayerPed(src)
-	local pCoords = GetEntityCoords(playerPed)
-	for _, v in pairs(QBCore.Functions.GetPlayers()) do
-		local targetped = GetPlayerPed(v)
-		local tCoords = GetEntityCoords(targetped)
-		local dist = #(pCoords - tCoords)
-		if playerPed ~= targetped and dist < 10 then
-			local ped = QBCore.Functions.GetPlayer(v)
-			players[#players + 1] = {
-				id = v,
-				coords = GetEntityCoords(targetped),
-				name = ped.PlayerData.charinfo.firstname .. " " .. ped.PlayerData.charinfo.lastname,
-				citizenid = ped.PlayerData.citizenid,
-				sources = GetPlayerPed(ped.PlayerData.source),
-				sourceplayer = ped.PlayerData.source
-			}
-		end
-	end
-
-	table.sort(players, function(a, b)
-		return a.name < b.name
-	end)
-
-	return players
-end)
-
-AddEventHandler('onServerResourceStart', function(resourceName)
-    if resourceName ~= 'ox_inventory' and resourceName ~= GetCurrentResourceName() then return end
-
-	local data = Config.UseTarget and Config.BossMenuZones or Config.BossMenus
-	for k in pairs(data) do
-		exports.ox_inventory:RegisterStash('boss_' .. k, "Stash: " .. k, 100, 4000000, false)
-	end
+	return GetPlayers(src)
 end)
