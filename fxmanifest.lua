@@ -1,10 +1,10 @@
 fx_version 'cerulean'
 game 'gta5'
 
-name 'qb-management'
+name 'qbx-management'
 description 'Business and gang management menu for stashes, wardrobes and shared money'
 version '1.0.0'
-repository 'https://github.com/Qbox-project/qb-management'
+repository 'https://github.com/Qbox-project/qbx-management'
 
 shared_scripts {
     '@ox_lib/init.lua',

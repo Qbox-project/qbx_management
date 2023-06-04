@@ -89,33 +89,32 @@ end)
 RegisterNetEvent('qb-bossmenu:client:employeelist', function()
     local EmployeesMenu = {}
 
-    QBCore.Functions.TriggerCallback('qb-bossmenu:server:GetEmployees', function(cb)
-        for _, v in pairs(cb) do
-            EmployeesMenu[#EmployeesMenu + 1] = {
-                title = v.name,
-                description = v.grade.name,
-                event = 'qb-bossmenu:client:ManageEmployee',
-                args = {
-                    player = v,
-                    work = PlayerJob
-                }
-            }
-        end
-
+    local employees = lib.callback.await('qb-bossmenu:server:GetEmployees', false, PlayerJob.name)
+    for _, v in pairs(employees) do
         EmployeesMenu[#EmployeesMenu + 1] = {
-            title = "Return",
-            icon = 'fa-solid fa-angle-left',
-            event = 'qb-bossmenu:client:OpenMenu'
+            title = v.name,
+            description = v.grade.name,
+            event = 'qb-bossmenu:client:ManageEmployee',
+            args = {
+                player = v,
+                work = PlayerJob
+            }
         }
+    end
 
-        lib.registerContext({
-            id = 'qb_management_open_bossManage',
-            title = "Manage Employees - " .. string.upper(PlayerJob.label),
-            options = EmployeesMenu
-        })
+    EmployeesMenu[#EmployeesMenu + 1] = {
+        title = "Return",
+        icon = 'fa-solid fa-angle-left',
+        event = 'qb-bossmenu:client:OpenMenu'
+    }
 
-        lib.showContext('qb_management_open_bossManage')
-    end, PlayerJob.name)
+    lib.registerContext({
+        id = 'qb_management_open_bossManage',
+        title = "Manage Employees - " .. string.upper(PlayerJob.label),
+        options = EmployeesMenu
+    })
+
+    lib.showContext('qb_management_open_bossManage')
 end)
 
 RegisterNetEvent('qb-bossmenu:client:ManageEmployee', function(data)
@@ -167,66 +166,64 @@ end)
 RegisterNetEvent('qb-bossmenu:client:HireMenu', function()
     local HireMenu = {}
 
-    QBCore.Functions.TriggerCallback('qb-bossmenu:getplayers', function(players)
-        for _, v in pairs(players) do
-            if v and v ~= cache.playerId then
-                HireMenu[#HireMenu + 1] = {
-                    title = v.name,
-                    description = "Citizen ID: " .. v.citizenid .. " - ID: " .. v.sourceplayer,
-                    serverEvent = 'qb-bossmenu:server:HireEmployee',
-                    args = v.sourceplayer
-                }
-            end
+    local players = lib.callback.await('qb-bossmenu:getplayers')
+    for _, v in pairs(players) do
+        if v and v ~= cache.playerId then
+            HireMenu[#HireMenu + 1] = {
+                title = v.name,
+                description = "Citizen ID: " .. v.citizenid .. " - ID: " .. v.sourceplayer,
+                serverEvent = 'qb-bossmenu:server:HireEmployee',
+                args = v.sourceplayer
+            }
         end
+    end
 
-        HireMenu[#HireMenu + 1] = {
+    HireMenu[#HireMenu + 1] = {
+        title = "Return",
+        icon = 'fa-solid fa-angle-left',
+        event = 'qb-bossmenu:client:OpenMenu'
+    }
+
+    lib.registerContext({
+        id = 'qb_management_open_bossHire',
+        title = "Hire Employees - " .. string.upper(PlayerJob.label),
+        options = HireMenu
+    })
+
+    lib.showContext('qb_management_open_bossHire')
+end)
+
+RegisterNetEvent('qb-bossmenu:client:SocietyMenu', function()
+    local amount = lib.callback.await('qb-bossmenu:server:GetAccount', false, PlayerJob.name)
+    local SocietyMenu = {
+        {
+            title = "Deposit",
+            icon = 'fa-solid fa-money-bill-transfer',
+            description = "Deposit Money into account",
+            event = 'qb-bossmenu:client:SocetyDeposit',
+            args = amount
+        },
+        {
+            title = "Withdraw",
+            icon = 'fa-solid fa-money-bill-transfer',
+            description = "Withdraw Money from account",
+            event = 'qb-bossmenu:client:SocetyWithDraw',
+            args = amount
+        },
+        {
             title = "Return",
             icon = 'fa-solid fa-angle-left',
             event = 'qb-bossmenu:client:OpenMenu'
         }
+    }
 
-        lib.registerContext({
-            id = 'qb_management_open_bossHire',
-            title = "Hire Employees - " .. string.upper(PlayerJob.label),
-            options = HireMenu
-        })
+    lib.registerContext({
+        id = 'qb_management_open_bossSociety',
+        title = "Balance: $" .. comma_value(amount) .. " - " .. string.upper(PlayerJob.label),
+        options = SocietyMenu
+    })
 
-        lib.showContext('qb_management_open_bossHire')
-    end)
-end)
-
-RegisterNetEvent('qb-bossmenu:client:SocietyMenu', function()
-    QBCore.Functions.TriggerCallback('qb-bossmenu:server:GetAccount', function(amount)
-        local SocietyMenu = {
-            {
-                title = "Deposit",
-                icon = 'fa-solid fa-money-bill-transfer',
-                description = "Deposit Money into account",
-                event = 'qb-bossmenu:client:SocetyDeposit',
-                args = amount
-            },
-            {
-                title = "Withdraw",
-                icon = 'fa-solid fa-money-bill-transfer',
-                description = "Withdraw Money from account",
-                event = 'qb-bossmenu:client:SocetyWithDraw',
-                args = amount
-            },
-            {
-                title = "Return",
-                icon = 'fa-solid fa-angle-left',
-                event = 'qb-bossmenu:client:OpenMenu'
-            }
-        }
-
-        lib.registerContext({
-            id = 'qb_management_open_bossSociety',
-            title = "Balance: $" .. comma_value(amount) .. " - " .. string.upper(PlayerJob.label),
-            options = SocietyMenu
-        })
-
-        lib.showContext('qb_management_open_bossSociety')
-    end, PlayerJob.name)
+    lib.showContext('qb_management_open_bossSociety')
 end)
 
 RegisterNetEvent('qb-bossmenu:client:SocetyDeposit', function(money)

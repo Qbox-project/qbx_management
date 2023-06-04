@@ -100,33 +100,32 @@ end)
 RegisterNetEvent('qb-gangmenu:client:ManageGang', function()
     local GangMembersMenu = {}
 
-    QBCore.Functions.TriggerCallback('qb-gangmenu:server:GetEmployees', function(cb)
-        for _, v in pairs(cb) do
-            GangMembersMenu[#GangMembersMenu + 1] = {
-                title = v.name,
-                description = v.grade.name,
-                event = 'qb-gangmenu:lient:ManageMember',
-                args = {
-                    player = v,
-                    work = PlayerGang
-                }
-            }
-        end
-
+    local employees = lib.callback.await('qb-gangmenu:server:GetEmployees', false, PlayerGang.name)
+    for _, v in pairs(employees) do
         GangMembersMenu[#GangMembersMenu + 1] = {
-            title = "Return",
-            icon = 'fa-solid fa-angle-left',
-            event = 'qb-gangmenu:client:OpenMenu'
+            title = v.name,
+            description = v.grade.name,
+            event = 'qb-gangmenu:lient:ManageMember',
+            args = {
+                player = v,
+                work = PlayerGang
+            }
         }
+    end
 
-        lib.registerContext({
-            id = 'qb_management_open_gangManage',
-            title = "Manage Gang Members - " .. string.upper(PlayerGang.label),
-            options = GangMembersMenu
-        })
+    GangMembersMenu[#GangMembersMenu + 1] = {
+        title = "Return",
+        icon = 'fa-solid fa-angle-left',
+        event = 'qb-gangmenu:client:OpenMenu'
+    }
 
-        lib.showContext('qb_management_open_gangManage')
-    end, PlayerGang.name)
+    lib.registerContext({
+        id = 'qb_management_open_gangManage',
+        title = "Manage Gang Members - " .. string.upper(PlayerGang.label),
+        options = GangMembersMenu
+    })
+
+    lib.showContext('qb_management_open_gangManage')
 end)
 
 RegisterNetEvent('qb-gangmenu:lient:ManageMember', function(data)
@@ -170,66 +169,64 @@ end)
 RegisterNetEvent('qb-gangmenu:client:HireMembers', function()
     local HireMembersMenu = {}
 
-    QBCore.Functions.TriggerCallback('qb-gangmenu:getplayers', function(players)
-        for _, v in pairs(players) do
-            if v and v ~= cache.playerId then
-                HireMembersMenu[#HireMembersMenu + 1] = {
-                    title = v.name,
-                    description = "Citizen ID: " .. v.citizenid .. " - ID: " .. v.sourceplayer,
-                    serverEvent = 'qb-gangmenu:server:HireMember',
-                    args = v.sourceplayer
-                }
-            end
+    local players = lib.callback.await('qb-gangmenu:getplayers')
+    for _, v in pairs(players) do
+        if v and v ~= cache.playerId then
+            HireMembersMenu[#HireMembersMenu + 1] = {
+                title = v.name,
+                description = "Citizen ID: " .. v.citizenid .. " - ID: " .. v.sourceplayer,
+                serverEvent = 'qb-gangmenu:server:HireMember',
+                args = v.sourceplayer
+            }
         end
+    end
 
-        HireMembersMenu[#HireMembersMenu + 1] = {
+    HireMembersMenu[#HireMembersMenu + 1] = {
+        title = "Return",
+        icon = 'fa-solid fa-angle-left',
+        event = 'qb-gangmenu:client:OpenMenu'
+    }
+
+    lib.registerContext({
+        id = 'qb_management_open_gangHire',
+        title = "Hire Gang Members - " .. string.upper(PlayerGang.label),
+        options = HireMembersMenu
+    })
+
+    lib.showContext('qb_management_open_gangHire')
+end)
+
+RegisterNetEvent('qb-gangmenu:client:SocietyMenu', function()
+    local amount = lib.callback.await('qb-gangmenu:server:GetAccount')
+    local SocietyMenu = {
+        {
+            title = "Deposit",
+            icon = 'fa-solid fa-money-bill-transfer',
+            description = "Deposit Money",
+            event = 'qb-gangmenu:client:SocietyDeposit',
+            args = amount
+        },
+        {
+            title = "Withdraw",
+            icon = 'fa-solid fa-money-bill-transfer',
+            description = "Withdraw Money",
+            event = 'qb-gangmenu:client:SocietyWithdraw',
+            args = amount
+        },
+        {
             title = "Return",
             icon = 'fa-solid fa-angle-left',
             event = 'qb-gangmenu:client:OpenMenu'
         }
+    }
 
-        lib.registerContext({
-            id = 'qb_management_open_gangHire',
-            title = "Hire Gang Members - " .. string.upper(PlayerGang.label),
-            options = HireMembersMenu
-        })
+    lib.registerContext({
+        id = 'qb_management_open_gangSociety',
+        title = "Balance: $" .. comma_value(amount) .. " - " .. string.upper(PlayerGang.label),
+        options = SocietyMenu
+    })
 
-        lib.showContext('qb_management_open_gangHire')
-    end)
-end)
-
-RegisterNetEvent('qb-gangmenu:client:SocietyMenu', function()
-    QBCore.Functions.TriggerCallback('qb-gangmenu:server:GetAccount', function(amount)
-        local SocietyMenu = {
-            {
-                title = "Deposit",
-                icon = 'fa-solid fa-money-bill-transfer',
-                description = "Deposit Money",
-                event = 'qb-gangmenu:client:SocietyDeposit',
-                args = amount
-            },
-            {
-                title = "Withdraw",
-                icon = 'fa-solid fa-money-bill-transfer',
-                description = "Withdraw Money",
-                event = 'qb-gangmenu:client:SocietyWithdraw',
-                args = amount
-            },
-            {
-                title = "Return",
-                icon = 'fa-solid fa-angle-left',
-                event = 'qb-gangmenu:client:OpenMenu'
-            }
-        }
-
-        lib.registerContext({
-            id = 'qb_management_open_gangSociety',
-            title = "Balance: $" .. comma_value(amount) .. " - " .. string.upper(PlayerGang.label),
-            options = SocietyMenu
-        })
-
-        lib.showContext('qb_management_open_gangSociety')
-    end, PlayerGang.name)
+    lib.showContext('qb_management_open_gangSociety')
 end)
 
 RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(money)
