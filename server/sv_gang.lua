@@ -87,41 +87,40 @@ RegisterNetEvent("qb-gangmenu:server:depositMoney", function(amount)
 	TriggerClientEvent('qb-gangmenu:client:OpenMenu', src)
 end)
 
-QBCore.Functions.CreateCallback('qb-gangmenu:server:GetAccount', function(_, cb, gangName)
-	cb(GetGangAccount(gangName))
+lib.callback.register('qb-gangmenu:server:GetAccount', function(_, gangName)
+	return GetGangAccount(gangName)
 end)
 
 -- Get Employees
-QBCore.Functions.CreateCallback('qb-gangmenu:server:GetEmployees', function(source, cb, gangname)
+lib.callback.register('qb-gangmenu:server:GetEmployees', function(source, gangname)
 	local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
+	local player = QBCore.Functions.GetPlayer(src)
 
-	if not Player.PlayerData.gang.isboss then ExploitBan(src, 'GetEmployees Exploiting') return end
+	if not player.PlayerData.gang.isboss then ExploitBan(src, 'GetEmployees Exploiting') return end
 
 	local employees = {}
 	local players = MySQL.query.await("SELECT * FROM `players` WHERE `gang` LIKE '%".. gangname .."%'", {})
-	if players then
-		for _, value in pairs(players) do
-			local isOnline = QBCore.Functions.GetPlayerByCitizenId(value.citizenid)
+	if not players then return {} end
+	for _, value in pairs(players) do
+		local isOnline = QBCore.Functions.GetPlayerByCitizenId(value.citizenid)
 
-			if isOnline then
-				employees[#employees + 1] = {
-				empSource = isOnline.PlayerData.citizenid,
-				grade = isOnline.PlayerData.gang.grade,
-				isboss = isOnline.PlayerData.gang.isboss,
-				name = '🟢' .. isOnline.PlayerData.charinfo.firstname .. ' ' .. isOnline.PlayerData.charinfo.lastname
-				}
-			else
-				employees[#employees + 1] = {
-				empSource = value.citizenid,
-				grade =  json.decode(value.gang).grade,
-				isboss = json.decode(value.gang).isboss,
-				name = '❌' ..  json.decode(value.charinfo).firstname .. ' ' .. json.decode(value.charinfo).lastname
-				}
-			end
+		if isOnline then
+			employees[#employees + 1] = {
+			empSource = isOnline.PlayerData.citizenid,
+			grade = isOnline.PlayerData.gang.grade,
+			isboss = isOnline.PlayerData.gang.isboss,
+			name = '🟢' .. isOnline.PlayerData.charinfo.firstname .. ' ' .. isOnline.PlayerData.charinfo.lastname
+			}
+		else
+			employees[#employees + 1] = {
+			empSource = value.citizenid,
+			grade =  json.decode(value.gang).grade,
+			isboss = json.decode(value.gang).isboss,
+			name = '❌' ..  json.decode(value.charinfo).firstname .. ' ' .. json.decode(value.charinfo).lastname
+			}
 		end
 	end
-	cb(employees)
+	return employees
 end)
 
 -- Grade Change
@@ -209,16 +208,16 @@ RegisterNetEvent('qb-gangmenu:server:HireMember', function(recruit)
 end)
 
 -- Get closest player sv
-QBCore.Functions.CreateCallback('qb-gangmenu:getplayers', function(source, cb)
+lib.callback.register('qb-gangmenu:getplayers', function(source)
 	local src = source
 	local players = {}
-	local PlayerPed = GetPlayerPed(src)
-	local pCoords = GetEntityCoords(PlayerPed)
+	local playerPed = GetPlayerPed(src)
+	local pCoords = GetEntityCoords(playerPed)
 	for _, v in pairs(QBCore.Functions.GetPlayers()) do
 		local targetped = GetPlayerPed(v)
 		local tCoords = GetEntityCoords(targetped)
 		local dist = #(pCoords - tCoords)
-		if PlayerPed ~= targetped and dist < 10 then
+		if playerPed ~= targetped and dist < 10 then
 			local ped = QBCore.Functions.GetPlayer(v)
 			players[#players + 1] = {
 				id = v,
@@ -235,7 +234,7 @@ QBCore.Functions.CreateCallback('qb-gangmenu:getplayers', function(source, cb)
 		return a.name < b.name
 	end)
 
-	cb(players)
+	return players
 end)
 
 AddEventHandler('onServerResourceStart', function(resourceName)
