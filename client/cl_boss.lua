@@ -166,7 +166,7 @@ end)
 RegisterNetEvent('qb-bossmenu:client:HireMenu', function()
     local HireMenu = {}
 
-    local players = lib.callback.await('qb-bossmenu:getplayers')
+    local players = lib.callback.await('qb-bossmenu:getplayers', false)
     for _, v in pairs(players) do
         if v and v ~= cache.playerId then
             HireMenu[#HireMenu + 1] = {

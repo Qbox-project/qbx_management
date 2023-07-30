@@ -1,7 +1,3 @@
-local function getAccount(account)
-    return GetAccount(account)
-end
-
 local function addMoney(account, amount)
 	AddMoney(account, amount, 'boss')
 end
@@ -13,7 +9,6 @@ local function removeMoney(account, amount)
 end
 
 exports('RemoveMoney', removeMoney)
-
 
 RegisterNetEvent("qb-bossmenu:server:withdrawMoney", function(amount)
 	local src = source
