@@ -246,10 +246,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyDeposit', function(money)
     end
 
     if not deposit[2] then
-        lib.notify({
-            description = 'Amount value is missing!',
-            type = 'error'
-        })
+        QBCore.Functions.Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
@@ -258,10 +255,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyDeposit', function(money)
     local depositAmount = tonumber(deposit[2])
 
     if depositAmount <= 0 then
-        lib.notify({
-            description = 'Amount needs to be higher than zero!',
-            type = 'error'
-        })
+        QBCore.Functions.Notify('Amount needs to be higher than zero!', 'error')
 
         TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
@@ -290,10 +284,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyWithDraw', function(money)
     end
 
     if not withdraw[2] then
-        lib.notify({
-            description = 'Amount value is missing!',
-            type = 'error'
-        })
+        QBCore.Functions.Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
@@ -302,10 +293,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyWithDraw', function(money)
     local withdrawAmount = tonumber(withdraw[2])
 
     if withdrawAmount > tonumber(money) then
-        lib.notify({
-            description = 'You can\'t withdraw that amount of money!',
-            type = 'error'
-        })
+        QBCore.Functions.Notify('You can\'t withdraw that amount of money!', 'error')
 
         TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return

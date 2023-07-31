@@ -249,10 +249,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(money)
     end
 
     if not deposit[2] then
-        lib.notify({
-            description = 'Amount value is missing!',
-            type = 'error'
-        })
+        QBCore.Functions.Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -261,10 +258,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(money)
     local depositAmount = tonumber(deposit[2])
 
     if depositAmount <= 0 then
-        lib.notify({
-            description = 'Amount need to be higher than zero!',
-            type = 'error'
-        })
+        QBCore.Functions.Notify('Amount need to be higher than zero!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -293,10 +287,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(money)
     end
 
     if not withdraw[2] then
-        lib.notify({
-            description = 'Amount value is missing!',
-            type = 'error'
-        })
+        QBCore.Functions.Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -305,10 +296,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(money)
     local withdrawAmount = tonumber(withdraw[2])
 
     if withdrawAmount > tonumber(money) then
-        lib.notify({
-            description = 'You cant withdraw that amount of money!',
-            type = 'error'
-        })
+        QBCore.Functions.Notify('You cant withdraw that amount of money!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -392,8 +380,7 @@ end)
 
 CreateThread(function()
     if Config.UseTarget then
-        -- Gang Stash
-        for gang, zones in pairs(Config.GangStashes) do
+        for gang, zones in pairs(Config.GangStashZones) do
             for i = 1, #zones do
                 local data = zones[i]
                 exports.ox_target:addBoxZone({
@@ -406,8 +393,8 @@ CreateThread(function()
                             name = 'gang_stash',
                             event = 'qb-gang:client:openStash',
                             icon = "fa-solid fa-right-to-bracket",
-                            label = "Abrir almacenamiento",
-                            gang = gang,
+                            label = "Open Stash",
+                            groups = gang,
                             args = {
                                 gang = gang
                             },
