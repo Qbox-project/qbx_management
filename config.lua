@@ -51,12 +51,18 @@ Config.GangMenus = {
     lostmc = {
         vector3(983.69, -90.92, 74.85)
     },
+    vagos = {
+        vector3(352.0, -2054.0, 22.0)
+    }
 }
 
 Config.GangMenuZones = {
     lostmc = {
         { coords = vector3(983.69, -90.92, 74.85), size = vec3(1.5, 1.5, 2.5), rotation = 39.68 },
     },
+    vagos = {
+        { coords = vector3(351.18, -2054.92, 22.09), size = vec3(1.5, 1.5, 2.5), rotation = 39.68 },
+    }
 }
 
 Config.GangStashes = {

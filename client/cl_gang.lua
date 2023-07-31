@@ -24,6 +24,10 @@ end
 
 exports("RemoveGangMenuItem", RemoveGangMenuItem)
 
+local function openGangStash(gang)
+    exports.ox_inventory:openInventory('stash', { id = gang })
+end
+
 AddEventHandler('onResourceStart', function(resource)
     if resource ~= GetCurrentResourceName() then return end
 
@@ -305,10 +309,6 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(money)
     TriggerServerEvent('qb-gangmenu:server:withdrawMoney', withdrawAmount)
 end)
 
-RegisterNetEvent("qb-gang:client:openStash", function(gang)
-    exports.ox_inventory:openInventory('stash', { id = gang.args.gang })
-end)
-
 -- MAIN THREAD
 CreateThread(function()
     if Config.UseTarget then
@@ -391,16 +391,15 @@ CreateThread(function()
                     options = {
                         {
                             name = 'gang_stash',
-                            event = 'qb-gang:client:openStash',
                             icon = "fa-solid fa-right-to-bracket",
                             label = "Open Stash",
                             groups = gang,
-                            args = {
-                                gang = gang
-                            },
                             canInteract = function()
                                 return gang == PlayerGang.name
                             end,
+                            onSelect = function()
+                                openGangStash(gang)
+                            end
                         }
                     }
                 })
