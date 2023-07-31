@@ -166,7 +166,7 @@ end)
 RegisterNetEvent('qb-bossmenu:client:HireMenu', function()
     local HireMenu = {}
 
-    local players = lib.callback.await('qb-bossmenu:getplayers', false)
+    local players = lib.callback.await('qb-bossmenu:getplayers')
     for _, v in pairs(players) do
         if v and v ~= cache.playerId then
             HireMenu[#HireMenu + 1] = {
@@ -324,6 +324,7 @@ CreateThread(function()
                     coords = data.coords,
                     size = data.size,
                     rotation = data.rotation,
+                    debug = Config.PolyDebug,
                     options = {
                         {
                             name = 'boss_menu',

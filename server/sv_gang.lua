@@ -1,11 +1,22 @@
+-- Register Stashes
+local stashLostMC = {
+    id = 'lostmc',
+    label = 'Lost MC Stash',
+    slots = 50,
+    weight = 100000,
+    groups = {['lostmc'] = 0},
+    coords = Config.GangStashes.lostmc.coords
+}
+exports.ox_inventory:RegisterStash(stashLostMC.id, stashLostMC.label, stashLostMC.slots, stashLostMC.weight, false, stashLostMC.groups, stashLostMC.coords)
+
 local function AddGangMoney(account, amount)
-	AddMoney(account, amount, 'gang')
+	AddMoney(account, amount)
 end
 
 exports('AddGangMoney', AddGangMoney)
 
 local function RemoveGangMoney(account, amount)
-	return RemoveMoney(account, amount, 'gang')
+	return RemoveMoney(account, amount)
 end
 
 exports('RemoveGangMoney', RemoveGangMoney)
@@ -112,4 +123,3 @@ lib.callback.register('qb-gangmenu:getplayers', function(source)
 	local src = source
 	return GetPlayers(src)
 end)
-

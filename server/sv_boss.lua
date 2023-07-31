@@ -1,11 +1,11 @@
 local function addMoney(account, amount)
-	AddMoney(account, amount, 'boss')
+	AddMoney(account, amount)
 end
 
 exports('AddMoney', addMoney)
 
 local function removeMoney(account, amount)
-	return RemoveMoney(account, amount, 'boss')
+	return RemoveMoney(account, amount)
 end
 
 exports('RemoveMoney', removeMoney)

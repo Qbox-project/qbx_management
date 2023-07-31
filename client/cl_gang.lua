@@ -317,6 +317,11 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(money)
     TriggerServerEvent('qb-gangmenu:server:withdrawMoney', withdrawAmount)
 end)
 
+RegisterNetEvent("qb-gang:client:openStash", function(gang)
+    print(dump(gang))
+    exports.ox_inventory:openInventory('stash', { id = gang.args.gang })
+end)
+
 -- MAIN THREAD
 CreateThread(function()
     if Config.UseTarget then
@@ -382,6 +387,38 @@ CreateThread(function()
             end
 
             Wait(wait)
+        end
+    end
+end)
+
+CreateThread(function()
+    if Config.UseTarget then
+        -- Gang Stash
+        for gang, zones in pairs(Config.GangStashes) do
+            for i = 1, #zones do
+                local data = zones[i]
+                exports.ox_target:addBoxZone({
+                    coords = data.coords,
+                    size = data.size,
+                    rotation = data.rotation,
+                    debug = Config.PolyDebug,
+                    options = {
+                        {
+                            name = 'gang_stash',
+                            event = 'qb-gang:client:openStash',
+                            icon = "fa-solid fa-right-to-bracket",
+                            label = "Abrir almacenamiento",
+                            gang = gang,
+                            args = {
+                                gang = gang
+                            },
+                            canInteract = function()
+                                return gang == PlayerGang.name
+                            end,
+                        }
+                    }
+                })
+            end
         end
     end
 end)
