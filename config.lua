@@ -64,31 +64,3 @@ Config.GangMenuZones = {
         { coords = vector3(351.18, -2054.92, 22.09), size = vec3(1.5, 1.5, 2.5), rotation = 39.68 },
     }
 }
-
-Config.GangStashes = {
-    lostmc = {
-        id = 'lostmc',
-        label = 'Lost MC Stash',
-        slots = 50,
-        weight = 100000,
-        groups = {['lostmc'] = 0},
-        coords = vector3(972.39, -97.98, 74.87)
-    },
-    vagos = {
-        id = 'vagos',
-        label = 'Vagos Stash',
-        slots = 50,
-        weight = 100000,
-        groups = {['vagos'] = 0},
-        coords = vector3(350.0, -2058.0, 22.0)
-    },
-}
-
-Config.GangStashZones = {
-    lostmc = {
-        { coords = vector3(972.39, -97.98, 74.87), size = vec3(3.5, 0.8, 2.0), rotation = 44.55 }
-    },
-    vagos = {
-        { coords = vector3(350.72, -2058.65, 21.35), size = vec3(3.5, 0.8, 3.2), rotation = 227.0 }
-    },
-}

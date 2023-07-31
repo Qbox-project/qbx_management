@@ -215,7 +215,9 @@ function GetPlayers(src)
 	return players
 end
 
-local function RegisterStashes()
+AddEventHandler('onServerResourceStart', function(resourceName)
+	if resourceName ~= 'ox_inventory' and resourceName ~= GetCurrentResourceName() then return end
+
 	local data = Config.UseTarget and Config.BossMenuZones or Config.BossMenus
 	for k in pairs(data) do
 		exports.ox_inventory:RegisterStash('boss_' .. k, "Stash: " .. k, 100, 4000000, false)
@@ -225,23 +227,4 @@ local function RegisterStashes()
 	for k in pairs(data) do
 		exports.ox_inventory:RegisterStash('gang_' .. k, "Stash: " .. k, 100, 4000000, false)
 	end
-
-	local stashes = Config.GangStashes
-	for _, v in pairs(stashes) do
-		local stash = {
-			id = v.id,
-			label = v.label,
-			slots = v.slots,
-			weight = v.weight,
-			groups = v.groups,
-			coords = v.coords
-		}
-		exports.ox_inventory:RegisterStash(stash.id, stash.label, stash.slots, stash.weight, false, stash.groups, stash.coords)
-	end
-end
-
-AddEventHandler('onServerResourceStart', function(resourceName)
-	if resourceName ~= 'ox_inventory' and resourceName ~= GetCurrentResourceName() then return end
-
-	RegisterStashes()
 end)

@@ -24,10 +24,6 @@ end
 
 exports("RemoveGangMenuItem", RemoveGangMenuItem)
 
-local function openGangStash(gang)
-    exports.ox_inventory:openInventory('stash', { id = gang })
-end
-
 AddEventHandler('onResourceStart', function(resource)
     if resource ~= GetCurrentResourceName() then return end
 
@@ -325,9 +321,7 @@ CreateThread(function()
                             event = 'qb-gangmenu:client:OpenMenu',
                             icon = "fa-solid fa-right-to-bracket",
                             label = "Gang Menu",
-                            canInteract = function()
-                                return gang == PlayerGang.name and PlayerGang.isboss
-                            end
+                            groups = gang
                         }
                     }
                 })
@@ -374,33 +368,6 @@ CreateThread(function()
             end
 
             Wait(wait)
-        end
-    end
-end)
-
-CreateThread(function()
-    if Config.UseTarget then
-        for gang, zones in pairs(Config.GangStashZones) do
-            for i = 1, #zones do
-                local data = zones[i]
-                exports.ox_target:addBoxZone({
-                    coords = data.coords,
-                    size = data.size,
-                    rotation = data.rotation,
-                    debug = Config.PolyDebug,
-                    options = {
-                        {
-                            name = 'gang_stash',
-                            icon = "fa-solid fa-right-to-bracket",
-                            label = "Open Stash",
-                            groups = gang,
-                            onSelect = function()
-                                openGangStash(gang)
-                            end
-                        }
-                    }
-                })
-            end
         end
     end
 end)
