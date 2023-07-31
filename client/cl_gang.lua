@@ -318,7 +318,6 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(money)
 end)
 
 RegisterNetEvent("qb-gang:client:openStash", function(gang)
-    print(dump(gang))
     exports.ox_inventory:openInventory('stash', { id = gang.args.gang })
 end)
 
