@@ -63,7 +63,4 @@ Config.GangStashes = {
     lostmc = {
         { coords = vector3(972.39, -97.98, 74.87), size = vec3(3.5, 0.8, 2.0), rotation = 44.55 }
     },
-    islandsaints = {
-        { coords = vector3(5011.310546875, -5757.6865234375, 14.483001708984), length = 1.0, width = 0.8, heading = 233.24, minZ = 14.46, maxZ = 16.36 }
-    },
 }
