@@ -394,9 +394,6 @@ CreateThread(function()
                             icon = "fa-solid fa-right-to-bracket",
                             label = "Open Stash",
                             groups = gang,
-                            canInteract = function()
-                                return gang == PlayerGang.name
-                            end,
                             onSelect = function()
                                 openGangStash(gang)
                             end
