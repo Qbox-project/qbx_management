@@ -3,56 +3,64 @@ Config = Config or {}
 -- Use qb-target interactions (don't change this, go to your server.cfg and add `setr UseTarget true` to use this and just that from true to false or the other way around)
 Config.UseTarget = GetConvar('UseTarget', 'false') == 'true'
 
+Config.PolyDebug = false
+
 Config.BossMenus = {
     police = {
-        vec3(461.45, -986.2, 30.73),
+        vec3(448.22, -973.22, 30.69),
     },
     ambulance = {
-        vec3(335.46, -594.52, 43.28),
+        vec3(337.21, -592.92, 43.29),
     },
     realestate = {
         vec3(-716.11, 261.21, 84.14),
     },
     taxi = {
-        vec3(907.24, -150.19, 74.17),
+        vec3(894.94, -179.27, 74.7),
     },
     cardealer = {
         vec3(-27.47, -1107.13, 27.27),
     },
     mechanic = {
-        vec3(-339.53, -156.44, 44.59),
+        vec3(-347.49, -133.32, 39.01),
     },
 }
 
 Config.BossMenuZones = {
     police = {
-        { coords = vec3(461.45, -986.2, 30.73), length = 0.35, width = 0.45, heading = 351.0, minZ = 30.58, maxZ = 30.68 },
+        { coords = vec3(447.04, -974.01, 30.44), size = vec3(0.5, 0.25, 0.4), rotation = 183.03 },
     },
     ambulance = {
-        { coords = vec3(335.46, -594.52, 43.28), length = 1.2, width = 0.6, heading = 341.0, minZ = 43.13, maxZ = 43.73 },
+        { coords = vec3(337.06, -592.88, 43.29), size = vec3(1.5, 1.5, 2.5), rotation = 155.05 },
     },
     realestate = {
-        { coords = vec3(-716.11, 261.21, 84.14), length = 0.6, width = 1.0, heading = 25.0, minZ = 83.943, maxZ = 84.74 },
+        { coords = vec3(-716.11, 261.21, 84.14), size = vec3(0.0, 0.0, 0.0), rotation = 0.00 },
     },
     taxi = {
-        { coords = vec3(907.24, -150.19, 74.17), length = 1.0, width = 3.4, heading = 327.0, minZ = 73.17, maxZ = 74.57 },
+        { coords = vec3(894.94, -179.27, 74.70), size = vec3(1.5, 1.5, 2.5), rotation = 56.89 },
     },
     cardealer = {
-        { coords = vec3(-27.47, -1107.13, 27.27), length = 2.4, width = 1.05, heading = 340.0, minZ = 27.07, maxZ = 27.67 },
+        { coords = vec3(-30.12, -1106.30, 26.23), size = vec3(0.5, 0.25, 0.4), rotation = 321.99 },
     },
     mechanic = {
-        { coords = vec3(-339.53, -156.44, 44.59), length = 1.15, width = 2.6, heading = 353.0, minZ = 43.59, maxZ = 44.99 },
+        { coords = vec3(-347.49, -133.32, 39.01), size = vec3(1.5, 1.5, 2.5), rotation = 73.32 },
     },
 }
 
 Config.GangMenus = {
     lostmc = {
-        vec3(-341.58, -124.23, 39.01)
+        vector3(983.69, -90.92, 74.85)
     },
+    vagos = {
+        vector3(352.0, -2054.0, 22.0)
+    }
 }
 
 Config.GangMenuZones = {
     lostmc = {
-        { coords = vec3(0.0, 0.0, 0.0), length = 0.0, width = 0.0, heading = 0.0, minZ = 0.0, maxZ = 0.0 },
+        { coords = vector3(983.69, -90.92, 74.85), size = vec3(1.5, 1.5, 2.5), rotation = 39.68 },
     },
+    vagos = {
+        { coords = vector3(351.18, -2054.92, 22.09), size = vec3(1.5, 1.5, 2.5), rotation = 39.68 },
+    }
 }

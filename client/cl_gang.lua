@@ -249,10 +249,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(money)
     end
 
     if not deposit[2] then
-        lib.notify({
-            description = 'Amount value is missing!',
-            type = 'error'
-        })
+        QBCore.Functions.Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -261,10 +258,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(money)
     local depositAmount = tonumber(deposit[2])
 
     if depositAmount <= 0 then
-        lib.notify({
-            description = 'Amount need to be higher than zero!',
-            type = 'error'
-        })
+        QBCore.Functions.Notify('Amount need to be higher than zero!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -293,10 +287,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(money)
     end
 
     if not withdraw[2] then
-        lib.notify({
-            description = 'Amount value is missing!',
-            type = 'error'
-        })
+        QBCore.Functions.Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -305,10 +296,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(money)
     local withdrawAmount = tonumber(withdraw[2])
 
     if withdrawAmount > tonumber(money) then
-        lib.notify({
-            description = 'You cant withdraw that amount of money!',
-            type = 'error'
-        })
+        QBCore.Functions.Notify('You cant withdraw that amount of money!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -333,9 +321,7 @@ CreateThread(function()
                             event = 'qb-gangmenu:client:OpenMenu',
                             icon = "fa-solid fa-right-to-bracket",
                             label = "Gang Menu",
-                            canInteract = function()
-                                return gang == PlayerGang.name and PlayerGang.isboss
-                            end
+                            groups = gang
                         }
                     }
                 })

@@ -22,7 +22,7 @@ end
 ---@param account string
 ---@return number
 function GetAccount(account)
-	return Accounts[account] or 0
+	return exports['Renewed-Banking']:getAccountMoney(account) or 0
 end
 
 exports('GetAccount', GetAccount)
@@ -30,25 +30,19 @@ exports('GetGangAccount', GetAccount)
 
 ---@param account string
 ---@param amount number
----@param type 'boss'|'gang'
-function AddMoney(account, amount, type)
+function AddMoney(account, amount)
 	if not Accounts[account] then
 		Accounts[account] = 0
 	end
 
 	Accounts[account] += amount
-	MySQL.insert('INSERT INTO management_funds (job_name, amount, type) VALUES (:job_name, :amount, :type) ON DUPLICATE KEY UPDATE amount = :amount', {
-		['job_name'] = account,
-		['amount'] = Accounts[account],
-		['type'] = type
-	})
+	exports['Renewed-Banking']:addAccountMoney(account, amount)
 end
 
 ---@param account string
 ---@param amount number
----@param type 'boss'|'gang'
 ---@return boolean
-function RemoveMoney(account, amount, type)
+function RemoveMoney(account, amount)
 
 	if amount <= 0 then return false end
     if not Accounts[account] then
@@ -62,7 +56,7 @@ function RemoveMoney(account, amount, type)
         isRemoved = true
     end
 
-    MySQL.update('UPDATE management_funds SET amount = ? WHERE job_name = ? and type = ?', { Accounts[account], account, type })
+	exports['Renewed-Banking']:removeAccountMoney(account, amount)
 	return isRemoved
 end
 
@@ -134,7 +128,7 @@ function GetEmployees(src, accountName, type)
 	if not player.PlayerData[type].isboss then ExploitBan(src, 'GetEmployees Exploiting') return end
 
 	local employees = {}
-	local players = MySQL.query.await("SELECT * FROM `players` WHERE ? LIKE '%".. accountName .."%'", {type})
+	local players = MySQL.query.await("SELECT * FROM `players` WHERE ?? LIKE '%".. accountName .."%'", {type})
 	if not players then return {} end
 	for _, value in pairs(players) do
 		local isOnline = QBCore.Functions.GetPlayerByCitizenId(value.citizenid)
@@ -144,14 +138,14 @@ function GetEmployees(src, accountName, type)
 			empSource = isOnline.PlayerData.citizenid,
 			grade = isOnline.PlayerData[type].grade,
 			isboss = isOnline.PlayerData[type].isboss,
-			name = '🟢' .. isOnline.PlayerData.charinfo.firstname .. ' ' .. isOnline.PlayerData.charinfo.lastname
+			name = '🟢 ' .. isOnline.PlayerData.charinfo.firstname .. ' ' .. isOnline.PlayerData.charinfo.lastname
 			}
 		else
 			employees[#employees + 1] = {
 			empSource = value.citizenid,
 			grade =  json.decode(value[type]).grade,
 			isboss = json.decode(value[type]).isboss,
-			name = '❌' ..  json.decode(value.charinfo).firstname .. ' ' .. json.decode(value.charinfo).lastname
+			name = '❌ ' ..  json.decode(value.charinfo).firstname .. ' ' .. json.decode(value.charinfo).lastname
 			}
 		end
 	end
@@ -202,7 +196,7 @@ function GetPlayers(src)
 		local tCoords = GetEntityCoords(targetped)
 		local dist = #(pCoords - tCoords)
 		if playerPed ~= targetped and dist < 10 then
-			local ped = QBCore.Functions.GetPlayer(v)
+			local ped = QBCore.Functions.GetPlayer(tonumber(v))
 			players[#players + 1] = {
 				id = v,
 				coords = GetEntityCoords(targetped),
@@ -222,7 +216,7 @@ function GetPlayers(src)
 end
 
 AddEventHandler('onServerResourceStart', function(resourceName)
-    if resourceName ~= 'ox_inventory' and resourceName ~= GetCurrentResourceName() then return end
+	if resourceName ~= 'ox_inventory' and resourceName ~= GetCurrentResourceName() then return end
 
 	local data = Config.UseTarget and Config.BossMenuZones or Config.BossMenus
 	for k in pairs(data) do

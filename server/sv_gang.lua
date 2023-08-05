@@ -1,11 +1,11 @@
 local function AddGangMoney(account, amount)
-	AddMoney(account, amount, 'gang')
+	AddMoney(account, amount)
 end
 
 exports('AddGangMoney', AddGangMoney)
 
 local function RemoveGangMoney(account, amount)
-	return RemoveMoney(account, amount, 'gang')
+	return RemoveMoney(account, amount)
 end
 
 exports('RemoveGangMoney', RemoveGangMoney)
@@ -112,4 +112,3 @@ lib.callback.register('qb-gangmenu:getplayers', function(source)
 	local src = source
 	return GetPlayers(src)
 end)
-
