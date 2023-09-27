@@ -48,8 +48,8 @@ end)
 -- Fire Member
 RegisterNetEvent('qb-gangmenu:server:FireMember', function(target)
 	local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
-	local Employee = QBCore.Functions.GetPlayerByCitizenId(target)
+	local Player = QBX.Functions.GetPlayer(src)
+	local Employee = QBX.Functions.GetPlayerByCitizenId(target)
 
 	if not Player.PlayerData.gang.isboss then ExploitBan(src, 'FireEmployee Exploiting') return end
 
@@ -94,8 +94,8 @@ end)
 -- Recruit Player
 RegisterNetEvent('qb-gangmenu:server:HireMember', function(recruit)
 	local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
-	local Target = QBCore.Functions.GetPlayer(recruit)
+	local Player = QBX.Functions.GetPlayer(src)
+	local Target = QBX.Functions.GetPlayer(recruit)
 
 	if not Player.PlayerData.gang.isboss then ExploitBan(src, 'HireEmployee Exploiting') return end
 
