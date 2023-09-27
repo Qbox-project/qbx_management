@@ -1,4 +1,3 @@
-QBCore = exports['qbx-core']:GetCoreObject()
 Accounts = {}
 
 ---@param id number
@@ -6,9 +5,9 @@ Accounts = {}
 function ExploitBan(id, reason)
     MySQL.insert('INSERT INTO bans (name, license, discord, ip, reason, expire, bannedby) VALUES (?, ?, ?, ?, ?, ?, ?)', {
         GetPlayerName(id),
-        QBCore.Functions.GetIdentifier(id, 'license'),
-        QBCore.Functions.GetIdentifier(id, 'discord'),
-        QBCore.Functions.GetIdentifier(id, 'ip'),
+        QBX.Functions.GetIdentifier(id, 'license'),
+        QBX.Functions.GetIdentifier(id, 'discord'),
+        QBX.Functions.GetIdentifier(id, 'ip'),
         reason,
         2147483647,
         'qb-management'
@@ -79,7 +78,7 @@ end)
 ---@return Player? player populated if successful
 ---@return string? accountName populated if successful
 function WithdrawMoney(src, amount, pDataType, type, reason)
-	local player = QBCore.Functions.GetPlayer(src)
+	local player = QBX.Functions.GetPlayer(src)
 
 	if not player.PlayerData[pDataType].isboss then ExploitBan(src, 'withdrawMoney Exploiting') return false end
 
@@ -102,7 +101,7 @@ end
 ---@return Player? player populated if successful
 ---@return string? accountName populated if successful
 function DepositMoney(src, amount, pDataType, type)
-	local player = QBCore.Functions.GetPlayer(src)
+	local player = QBX.Functions.GetPlayer(src)
 
 	if not player.PlayerData[pDataType].isboss then ExploitBan(src, 'depositMoney Exploiting') return false end
 
@@ -123,7 +122,7 @@ end
 ---@param type 'job'|'gang'
 ---@return table?
 function GetEmployees(src, accountName, type)
-	local player = QBCore.Functions.GetPlayer(src)
+	local player = QBX.Functions.GetPlayer(src)
 
 	if not player.PlayerData[type].isboss then ExploitBan(src, 'GetEmployees Exploiting') return end
 
@@ -131,7 +130,7 @@ function GetEmployees(src, accountName, type)
 	local players = MySQL.query.await("SELECT * FROM `players` WHERE ?? LIKE '%".. accountName .."%'", {type})
 	if not players then return {} end
 	for _, value in pairs(players) do
-		local isOnline = QBCore.Functions.GetPlayerByCitizenId(value.citizenid)
+		local isOnline = QBX.Functions.GetPlayerByCitizenId(value.citizenid)
 
 		if isOnline then
 			employees[#employees + 1] = {
@@ -159,8 +158,8 @@ end
 ---@param data {cid: string, grade: integer, gradename: string}
 ---@param type 'job'|'gang'
 function UpdateGrade(src, data, type)
-	local player = QBCore.Functions.GetPlayer(src)
-	local employee = QBCore.Functions.GetPlayerByCitizenId(data.cid)
+	local player = QBX.Functions.GetPlayer(src)
+	local employee = QBX.Functions.GetPlayerByCitizenId(data.cid)
 
 	if not player.PlayerData[type].isboss then ExploitBan(src, 'GradeUpdate Exploiting') return end
 	if data.grade > player.PlayerData[type].grade.level then TriggerClientEvent('QBCore:Notify', src, "You cannot promote to this rank!", "error") return end
@@ -191,12 +190,12 @@ function GetPlayers(src)
 	local players = {}
 	local playerPed = GetPlayerPed(src)
 	local pCoords = GetEntityCoords(playerPed)
-	for _, v in pairs(QBCore.Functions.GetPlayers()) do
+	for _, v in pairs(QBX.Functions.GetPlayers()) do
 		local targetped = GetPlayerPed(v)
 		local tCoords = GetEntityCoords(targetped)
 		local dist = #(pCoords - tCoords)
 		if playerPed ~= targetped and dist < 10 then
-			local ped = QBCore.Functions.GetPlayer(tonumber(v))
+			local ped = QBX.Functions.GetPlayer(tonumber(v))
 			players[#players + 1] = {
 				id = v,
 				coords = GetEntityCoords(targetped),
