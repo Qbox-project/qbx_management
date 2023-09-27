@@ -1,5 +1,4 @@
-local QBCore = exports['qbx-core']:GetCoreObject()
-local PlayerGang = QBCore.Functions.GetPlayerData().gang
+local PlayerGang = QBX.Functions.GetPlayerData().gang
 local shownGangMenu = false
 local DynamicMenuItems = {}
 
@@ -27,11 +26,11 @@ exports("RemoveGangMenuItem", RemoveGangMenuItem)
 AddEventHandler('onResourceStart', function(resource)
     if resource ~= GetCurrentResourceName() then return end
 
-    PlayerGang = QBCore.Functions.GetPlayerData().gang
+    PlayerGang = QBX.Functions.GetPlayerData().gang
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    PlayerGang = QBCore.Functions.GetPlayerData().gang
+    PlayerGang = QBX.Functions.GetPlayerData().gang
 end)
 
 RegisterNetEvent('QBCore:Client:OnGangUpdate', function(GangInfo)
@@ -131,7 +130,7 @@ end)
 RegisterNetEvent('qb-gangmenu:lient:ManageMember', function(data)
     local MemberMenu = {}
 
-    for k, v in pairs(QBCore.Shared.Gangs[data.work.name].grades) do
+    for k, v in pairs(QBX.Shared.Gangs[data.work.name].grades) do
         MemberMenu[#MemberMenu + 1] = {
             title = v.name,
             description = "Grade: " .. k,
@@ -249,7 +248,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(money)
     end
 
     if not deposit[2] then
-        QBCore.Functions.Notify('Amount value is missing!', 'error')
+        QBX.Functions.Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -258,7 +257,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(money)
     local depositAmount = tonumber(deposit[2])
 
     if depositAmount <= 0 then
-        QBCore.Functions.Notify('Amount need to be higher than zero!', 'error')
+        QBX.Functions.Notify('Amount need to be higher than zero!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -287,7 +286,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(money)
     end
 
     if not withdraw[2] then
-        QBCore.Functions.Notify('Amount value is missing!', 'error')
+        QBX.Functions.Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -296,7 +295,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(money)
     local withdrawAmount = tonumber(withdraw[2])
 
     if withdrawAmount > tonumber(money) then
-        QBCore.Functions.Notify('You cant withdraw that amount of money!', 'error')
+        QBX.Functions.Notify('You cant withdraw that amount of money!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
