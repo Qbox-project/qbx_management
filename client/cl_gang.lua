@@ -1,7 +1,6 @@
-local QBCore = exports['qbx-core']:GetCoreObject()
-local PlayerGang = QBCore.Functions.GetPlayerData().gang
 local shownGangMenu = false
 local DynamicMenuItems = {}
+local gangs = exports.qbx_core:GetGangs()
 
 -- UTIL
 local function CloseMenuFull()
@@ -24,22 +23,8 @@ end
 
 exports("RemoveGangMenuItem", RemoveGangMenuItem)
 
-AddEventHandler('onResourceStart', function(resource)
-    if resource ~= GetCurrentResourceName() then return end
-
-    PlayerGang = QBCore.Functions.GetPlayerData().gang
-end)
-
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    PlayerGang = QBCore.Functions.GetPlayerData().gang
-end)
-
-RegisterNetEvent('QBCore:Client:OnGangUpdate', function(GangInfo)
-    PlayerGang = GangInfo
-end)
-
 RegisterNetEvent('qb-gangmenu:client:Stash', function()
-    exports.ox_inventory:openInventory('stash', 'gang_' .. PlayerGang.name)
+    exports.ox_inventory:openInventory('stash', 'gang_' .. QBX.PlayerData.gang.name)
 end)
 
 RegisterNetEvent('qb-gangmenu:client:Warbobe', function()
@@ -47,7 +32,7 @@ RegisterNetEvent('qb-gangmenu:client:Warbobe', function()
 end)
 
 RegisterNetEvent('qb-gangmenu:client:OpenMenu', function()
-    if not PlayerGang.name or not PlayerGang.isboss then return end
+    if not QBX.PlayerData.gang.name or not QBX.PlayerData.gang.isboss then return end
 
     shownGangMenu = true
 
@@ -90,7 +75,7 @@ RegisterNetEvent('qb-gangmenu:client:OpenMenu', function()
 
     lib.registerContext({
         id = 'qb_management_open_gangMenu',
-        title = "Gang Management - " .. string.upper(PlayerGang.label),
+        title = "Gang Management - " .. string.upper(QBX.PlayerData.gang.label),
         options = gangMenu
     })
 
@@ -100,7 +85,7 @@ end)
 RegisterNetEvent('qb-gangmenu:client:ManageGang', function()
     local GangMembersMenu = {}
 
-    local employees = lib.callback.await('qb-gangmenu:server:GetEmployees', false, PlayerGang.name)
+    local employees = lib.callback.await('qb-gangmenu:server:GetEmployees', false, QBX.PlayerData.gang.name)
     for _, v in pairs(employees) do
         GangMembersMenu[#GangMembersMenu + 1] = {
             title = v.name,
@@ -108,7 +93,7 @@ RegisterNetEvent('qb-gangmenu:client:ManageGang', function()
             event = 'qb-gangmenu:lient:ManageMember',
             args = {
                 player = v,
-                work = PlayerGang
+                work = QBX.PlayerData.gang
             }
         }
     end
@@ -121,7 +106,7 @@ RegisterNetEvent('qb-gangmenu:client:ManageGang', function()
 
     lib.registerContext({
         id = 'qb_management_open_gangManage',
-        title = "Manage Gang Members - " .. string.upper(PlayerGang.label),
+        title = "Manage Gang Members - " .. string.upper(QBX.PlayerData.gang.label),
         options = GangMembersMenu
     })
 
@@ -131,7 +116,7 @@ end)
 RegisterNetEvent('qb-gangmenu:lient:ManageMember', function(data)
     local MemberMenu = {}
 
-    for k, v in pairs(QBCore.Shared.Gangs[data.work.name].grades) do
+    for k, v in pairs(gangs[data.work.name].grades) do
         MemberMenu[#MemberMenu + 1] = {
             title = v.name,
             description = "Grade: " .. k,
@@ -159,7 +144,7 @@ RegisterNetEvent('qb-gangmenu:lient:ManageMember', function(data)
 
     lib.registerContext({
         id = 'qb_management_open_gangMember',
-        title = "Manage " .. data.player.name .. " - " .. string.upper(PlayerGang.label),
+        title = "Manage " .. data.player.name .. " - " .. string.upper(QBX.PlayerData.gang.label),
         options = MemberMenu
     })
 
@@ -189,7 +174,7 @@ RegisterNetEvent('qb-gangmenu:client:HireMembers', function()
 
     lib.registerContext({
         id = 'qb_management_open_gangHire',
-        title = "Hire Gang Members - " .. string.upper(PlayerGang.label),
+        title = "Hire Gang Members - " .. string.upper(QBX.PlayerData.gang.label),
         options = HireMembersMenu
     })
 
@@ -222,7 +207,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyMenu', function()
 
     lib.registerContext({
         id = 'qb_management_open_gangSociety',
-        title = "Balance: $" .. comma_value(amount) .. " - " .. string.upper(PlayerGang.label),
+        title = "Balance: $" .. comma_value(amount) .. " - " .. string.upper(QBX.PlayerData.gang.label),
         options = SocietyMenu
     })
 
@@ -249,7 +234,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(money)
     end
 
     if not deposit[2] then
-        QBCore.Functions.Notify('Amount value is missing!', 'error')
+        exports.qbx_core:Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -258,7 +243,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyDeposit', function(money)
     local depositAmount = tonumber(deposit[2])
 
     if depositAmount <= 0 then
-        QBCore.Functions.Notify('Amount need to be higher than zero!', 'error')
+        exports.qbx_core:Notify('Amount need to be higher than zero!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -287,7 +272,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(money)
     end
 
     if not withdraw[2] then
-        QBCore.Functions.Notify('Amount value is missing!', 'error')
+        exports.qbx_core:Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -296,7 +281,7 @@ RegisterNetEvent('qb-gangmenu:client:SocietyWithdraw', function(money)
     local withdrawAmount = tonumber(withdraw[2])
 
     if withdrawAmount > tonumber(money) then
-        QBCore.Functions.Notify('You cant withdraw that amount of money!', 'error')
+        exports.qbx_core:Notify('You cant withdraw that amount of money!', 'error')
 
         TriggerEvent('qb-gangmenu:client:SocietyMenu')
         return
@@ -334,11 +319,11 @@ CreateThread(function()
             local nearGangmenu = false
             wait = 1000
 
-            if PlayerGang then
+            if QBX.PlayerData.gang then
                 wait = 100
                 for k, v in pairs(Config.GangMenus) do
                     for _, coords in pairs(v) do
-                        if k == PlayerGang.name and PlayerGang.isboss then
+                        if k == QBX.PlayerData.gang.name and QBX.PlayerData.gang.isboss then
                             if #(pos - coords) <= 1.5 then
                                 nearGangmenu = true
 

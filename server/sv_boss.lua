@@ -1,3 +1,5 @@
+local jobs = exports.qbx_core:GetJobs()
+
 local function addMoney(account, amount)
 	AddMoney(account, amount)
 end
@@ -48,8 +50,8 @@ end)
 -- Fire Employee
 RegisterNetEvent('qb-bossmenu:server:FireEmployee', function(target)
 	local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
-	local Employee = QBCore.Functions.GetPlayerByCitizenId(target)
+	local Player = exports.qbx_core:GetPlayer(src)
+	local Employee = exports.qbx_core:GetPlayerByCitizenId(target)
 
 	if not Player.PlayerData.job.isboss then ExploitBan(src, 'FireEmployee Exploiting') return end
 
@@ -75,7 +77,7 @@ RegisterNetEvent('qb-bossmenu:server:FireEmployee', function(target)
 			local job = {}
 			job.name = "unemployed"
 			job.label = "Unemployed"
-			job.payment = QBCore.Shared.Jobs[job.name].grades['0'].payment or 500
+			job.payment = jobs[job.name].grades['0'].payment or 500
 			job.onduty = true
 			job.isboss = false
 			job.grade = {}
@@ -94,8 +96,8 @@ end)
 -- Recruit Player
 RegisterNetEvent('qb-bossmenu:server:HireEmployee', function(recruit)
 	local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
-	local Target = QBCore.Functions.GetPlayer(recruit)
+	local Player = exports.qbx_core:GetPlayer(src)
+	local Target = exports.qbx_core:GetPlayer(recruit)
 
 	if not Player.PlayerData.job.isboss then ExploitBan(src, 'HireEmployee Exploiting') return end
 

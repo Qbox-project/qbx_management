@@ -1,7 +1,6 @@
-local QBCore = exports['qbx-core']:GetCoreObject()
-local PlayerJob = QBCore.Functions.GetPlayerData().job
 local shownBossMenu = false
 local DynamicMenuItems = {}
+local jobs = exports.qbx_core:GetJobs()
 
 -- UTIL
 local function CloseMenuFull()
@@ -26,20 +25,10 @@ exports("RemoveBossMenuItem", RemoveBossMenuItem)
 
 AddEventHandler('onResourceStart', function(resource)
     if resource ~= GetCurrentResourceName() then return end
-
-    PlayerJob = QBCore.Functions.GetPlayerData().job
-end)
-
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    PlayerJob = QBCore.Functions.GetPlayerData().job
-end)
-
-RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
-    PlayerJob = JobInfo
 end)
 
 RegisterNetEvent('qb-bossmenu:client:OpenMenu', function()
-    if not PlayerJob.name or not PlayerJob.isboss then return end
+    if not QBX.PlayerData.job.name or not QBX.PlayerData.job.isboss then return end
 
     local bossMenu = {
         {
@@ -80,7 +69,7 @@ RegisterNetEvent('qb-bossmenu:client:OpenMenu', function()
 
     lib.registerContext({
         id = 'qb_management_open_bossMenu',
-        title = "Boss Menu - " .. string.upper(PlayerJob.label),
+        title = "Boss Menu - " .. string.upper(QBX.PlayerData.job.label),
         options = bossMenu
     })
     lib.showContext('qb_management_open_bossMenu')
@@ -89,7 +78,7 @@ end)
 RegisterNetEvent('qb-bossmenu:client:employeelist', function()
     local EmployeesMenu = {}
 
-    local employees = lib.callback.await('qb-bossmenu:server:GetEmployees', false, PlayerJob.name)
+    local employees = lib.callback.await('qb-bossmenu:server:GetEmployees', false, QBX.PlayerData.job.name)
     for _, v in pairs(employees) do
         EmployeesMenu[#EmployeesMenu + 1] = {
             title = v.name,
@@ -97,7 +86,7 @@ RegisterNetEvent('qb-bossmenu:client:employeelist', function()
             event = 'qb-bossmenu:client:ManageEmployee',
             args = {
                 player = v,
-                work = PlayerJob
+                work = QBX.PlayerData.job
             }
         }
     end
@@ -110,7 +99,7 @@ RegisterNetEvent('qb-bossmenu:client:employeelist', function()
 
     lib.registerContext({
         id = 'qb_management_open_bossManage',
-        title = "Manage Employees - " .. string.upper(PlayerJob.label),
+        title = "Manage Employees - " .. string.upper(QBX.PlayerData.job.label),
         options = EmployeesMenu
     })
 
@@ -120,7 +109,7 @@ end)
 RegisterNetEvent('qb-bossmenu:client:ManageEmployee', function(data)
     local EmployeeMenu = {}
 
-    for k, v in pairs(QBCore.Shared.Jobs[data.work.name].grades) do
+    for k, v in pairs(jobs[data.work.name].grades) do
         EmployeeMenu[#EmployeeMenu + 1] = {
             title = v.name,
             description = "Grade: " .. k,
@@ -148,7 +137,7 @@ RegisterNetEvent('qb-bossmenu:client:ManageEmployee', function(data)
 
     lib.registerContext({
         id = 'qb_management_open_bossMember',
-        title = "Manage " .. data.player.name .. " - " .. string.upper(PlayerJob.label),
+        title = "Manage " .. data.player.name .. " - " .. string.upper(QBX.PlayerData.job.label),
         options = EmployeeMenu
     })
 
@@ -156,7 +145,7 @@ RegisterNetEvent('qb-bossmenu:client:ManageEmployee', function(data)
 end)
 
 RegisterNetEvent('qb-bossmenu:client:Stash', function()
-    exports.ox_inventory:openInventory('stash', 'boss_' .. PlayerJob.name)
+    exports.ox_inventory:openInventory('stash', 'boss_' .. QBX.PlayerData.job.name)
 end)
 
 RegisterNetEvent('qb-bossmenu:client:Wardrobe', function()
@@ -186,7 +175,7 @@ RegisterNetEvent('qb-bossmenu:client:HireMenu', function()
 
     lib.registerContext({
         id = 'qb_management_open_bossHire',
-        title = "Hire Employees - " .. string.upper(PlayerJob.label),
+        title = "Hire Employees - " .. string.upper(QBX.PlayerData.job.label),
         options = HireMenu
     })
 
@@ -194,7 +183,7 @@ RegisterNetEvent('qb-bossmenu:client:HireMenu', function()
 end)
 
 RegisterNetEvent('qb-bossmenu:client:SocietyMenu', function()
-    local amount = lib.callback.await('qb-bossmenu:server:GetAccount', false, PlayerJob.name)
+    local amount = lib.callback.await('qb-bossmenu:server:GetAccount', false, QBX.PlayerData.job.name)
     local SocietyMenu = {
         {
             title = "Deposit",
@@ -219,7 +208,7 @@ RegisterNetEvent('qb-bossmenu:client:SocietyMenu', function()
 
     lib.registerContext({
         id = 'qb_management_open_bossSociety',
-        title = "Balance: $" .. comma_value(amount) .. " - " .. string.upper(PlayerJob.label),
+        title = "Balance: $" .. comma_value(amount) .. " - " .. string.upper(QBX.PlayerData.job.label),
         options = SocietyMenu
     })
 
@@ -246,7 +235,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyDeposit', function(money)
     end
 
     if not deposit[2] then
-        QBCore.Functions.Notify('Amount value is missing!', 'error')
+        exports.qbx_core:Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
@@ -255,7 +244,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyDeposit', function(money)
     local depositAmount = tonumber(deposit[2])
 
     if depositAmount <= 0 then
-        QBCore.Functions.Notify('Amount needs to be higher than zero!', 'error')
+        exports.qbx_core:Notify('Amount needs to be higher than zero!', 'error')
 
         TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
@@ -284,7 +273,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyWithDraw', function(money)
     end
 
     if not withdraw[2] then
-        QBCore.Functions.Notify('Amount value is missing!', 'error')
+        exports.qbx_core:Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
@@ -293,7 +282,7 @@ RegisterNetEvent('qb-bossmenu:client:SocetyWithDraw', function(money)
     local withdrawAmount = tonumber(withdraw[2])
 
     if withdrawAmount > tonumber(money) then
-        QBCore.Functions.Notify('You can\'t withdraw that amount of money!', 'error')
+        exports.qbx_core:Notify('You can\'t withdraw that amount of money!', 'error')
 
         TriggerEvent('qb-bossmenu:client:SocietyMenu')
         return
@@ -320,7 +309,7 @@ CreateThread(function()
                             icon = "fa-solid fa-right-to-bracket",
                             label = "Boss Menu",
                             canInteract = function()
-                                return job == PlayerJob.name and PlayerJob.isboss
+                                return job == QBX.PlayerData.job.name and QBX.PlayerData.job.isboss
                             end
                         }
                     }
@@ -334,11 +323,11 @@ CreateThread(function()
             local nearBossmenu = false
             wait = 1000
 
-            if PlayerJob then
+            if QBX.PlayerData.job then
                 wait = 100
                 for k, v in pairs(Config.BossMenus) do
                     for _, coords in pairs(v) do
-                        if k == PlayerJob.name and PlayerJob.isboss then
+                        if k == QBX.PlayerData.job.name and QBX.PlayerData.job.isboss then
                             if #(pos - coords) <= 1.5 then
                                 nearBossmenu = true
 
