@@ -85,10 +85,10 @@ function WithdrawMoney(src, amount, pDataType, type, reason)
 	local account = player.PlayerData[pDataType].name
 	if RemoveMoney(account, amount, type) then
         player.Functions.AddMoney("cash", amount, reason)
-		TriggerClientEvent('QBCore:Notify', src, "You have withdrawn: $" ..amount, "success")
+		exports.qbx_core:Notify(src, "You have withdrawn: $" ..amount, "success")
         return true, player, account
 	else
-		TriggerClientEvent('QBCore:Notify', src, "You dont have enough money in the account!", "error")
+		exports.qbx_core:Notify(src, "You dont have enough money in the account!", "error")
         return false, player, account
     end
 end
@@ -109,10 +109,10 @@ function DepositMoney(src, amount, pDataType, type)
 		local account = player.PlayerData[pDataType].name
 		AddMoney(account, amount, type)
 		TriggerEvent('qb-log:server:CreateLog', 'gangmenu', 'Deposit Money', 'yellow', player.PlayerData.charinfo.firstname .. ' ' .. player.PlayerData.charinfo.lastname .. ' successfully deposited $' .. amount .. ' (' .. account .. ')', false)
-		TriggerClientEvent('QBCore:Notify', src, "You have deposited: $" ..amount, "success")
+		exports.qbx_core:Notify(src, "You have deposited: $" ..amount, "success")
         return true, player, account
 	else
-		TriggerClientEvent('QBCore:Notify', src, "You dont have enough money to add!", "error")
+		exports.qbx_core:Notify(src, "You dont have enough money to add!", "error")
         return false, player, account
     end
 end
@@ -162,10 +162,10 @@ function UpdateGrade(src, data, type)
 	local employee = exports.qbx_core:GetPlayerByCitizenId(data.cid)
 
 	if not player.PlayerData[type].isboss then ExploitBan(src, 'GradeUpdate Exploiting') return end
-	if data.grade > player.PlayerData[type].grade.level then TriggerClientEvent('QBCore:Notify', src, "You cannot promote to this rank!", "error") return end
+	if data.grade > player.PlayerData[type].grade.level then exports.qbx_core:Notify(src, "You cannot promote to this rank!", "error") return end
 
 	if not employee then
-        TriggerClientEvent('QBCore:Notify', src, "Civilian is not in city.", "error")
+        exports.qbx_core:Notify(src, "Civilian is not in city.", "error")
         return
     end
 
@@ -177,10 +177,10 @@ function UpdateGrade(src, data, type)
     end
 
     if success then
-        TriggerClientEvent('QBCore:Notify', src, "Successfully promoted!", "success")
-        TriggerClientEvent('QBCore:Notify', employee.PlayerData.source, "You have been promoted to " ..data.gradename..".", "success")
+        exports.qbx_core:Notify(src, "Successfully promoted!", "success")
+        exports.qbx_core:Notify(employee.PlayerData.source, "You have been promoted to " ..data.gradename..".", "success")
     else
-        TriggerClientEvent('QBCore:Notify', src, "Grade does not exist.", "error")
+        exports.qbx_core:Notify(src, "Grade does not exist.", "error")
     end
 end
 

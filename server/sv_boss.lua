@@ -57,23 +57,23 @@ RegisterNetEvent('qb-bossmenu:server:FireEmployee', function(target)
 
 	if Employee then
 		if target ~= Player.PlayerData.citizenid then
-			if Employee.PlayerData.job.grade.level > Player.PlayerData.job.grade.level then TriggerClientEvent('QBCore:Notify', src, "You cannot fire this citizen!", "error") return end
+			if Employee.PlayerData.job.grade.level > Player.PlayerData.job.grade.level then exports.qbx_core:Notify(src, "You cannot fire this citizen!", "error") return end
 			if Employee.Functions.SetJob("unemployed", 0) then
 				TriggerEvent("qb-log:server:CreateLog", "bossmenu", "Job Fire", "red", Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname .. ' successfully fired ' .. Employee.PlayerData.charinfo.firstname .. " " .. Employee.PlayerData.charinfo.lastname .. " (" .. Player.PlayerData.job.name .. ")", false)
-				TriggerClientEvent('QBCore:Notify', src, "Employee fired!", "success")
-				TriggerClientEvent('QBCore:Notify', Employee.PlayerData.source , "You have been fired! Good luck.", "error")
+				exports.qbx_core:Notify(src, "Employee fired!", "success")
+				exports.qbx_core:Notify(Employee.PlayerData.source , "You have been fired! Good luck.", "error")
 			else
-				TriggerClientEvent('QBCore:Notify', src, "Error..", "error")
+				exports.qbx_core:Notify(src, "Error..", "error")
 			end
 		else
-			TriggerClientEvent('QBCore:Notify', src, "You can\'t fire yourself", "error")
+			exports.qbx_core:Notify(src, "You can\'t fire yourself", "error")
 		end
 	else
 		local player = MySQL.query.await('SELECT * FROM players WHERE citizenid = ? LIMIT 1', { target })
 		if player[1] then
 			Employee = player[1]
 			Employee.job = json.decode(Employee.job)
-			if Employee.job.grade.level > Player.PlayerData.job.grade.level then TriggerClientEvent('QBCore:Notify', src, "You cannot fire this citizen!", "error") return end
+			if Employee.job.grade.level > Player.PlayerData.job.grade.level then exports.qbx_core:Notify(src, "You cannot fire this citizen!", "error") return end
 			local job = {}
 			job.name = "unemployed"
 			job.label = "Unemployed"
@@ -84,10 +84,10 @@ RegisterNetEvent('qb-bossmenu:server:FireEmployee', function(target)
 			job.grade.name = nil
 			job.grade.level = 0
 			MySQL.update('UPDATE players SET job = ? WHERE citizenid = ?', { json.encode(job), target })
-			TriggerClientEvent('QBCore:Notify', src, "Employee fired!", "success")
+			exports.qbx_core:Notify(src, "Employee fired!", "success")
 			TriggerEvent("qb-log:server:CreateLog", "bossmenu", "Job Fire", "red", Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname .. ' successfully fired ' .. Employee.PlayerData.charinfo.firstname .. " " .. Employee.PlayerData.charinfo.lastname .. " (" .. Player.PlayerData.job.name .. ")", false)
 		else
-			TriggerClientEvent('QBCore:Notify', src, "Civilian not in city.", "error")
+			exports.qbx_core:Notify(src, "Civilian not in city.", "error")
 		end
 	end
 	TriggerClientEvent('qb-bossmenu:client:OpenMenu', src)
@@ -102,8 +102,8 @@ RegisterNetEvent('qb-bossmenu:server:HireEmployee', function(recruit)
 	if not Player.PlayerData.job.isboss then ExploitBan(src, 'HireEmployee Exploiting') return end
 
 	if Target and Target.Functions.SetJob(Player.PlayerData.job.name, 0) then
-		TriggerClientEvent('QBCore:Notify', src, "You hired " .. (Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname) .. " come " .. Player.PlayerData.job.label .. "", "success")
-		TriggerClientEvent('QBCore:Notify', Target.PlayerData.source , "You were hired as " .. Player.PlayerData.job.label .. "", "success")
+		exports.qbx_core:Notify(src, "You hired " .. (Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname) .. " come " .. Player.PlayerData.job.label .. "", "success")
+		exports.qbx_core:Notify(Target.PlayerData.source , "You were hired as " .. Player.PlayerData.job.label .. "", "success")
 		TriggerEvent('qb-log:server:CreateLog', 'bossmenu', 'Recruit', "lightgreen", (Player.PlayerData.charinfo.firstname .. ' ' .. Player.PlayerData.charinfo.lastname).. " successfully recruited " .. (Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname) .. ' (' .. Player.PlayerData.job.name .. ')', false)
 	end
 	TriggerClientEvent('qb-bossmenu:client:OpenMenu', src)
