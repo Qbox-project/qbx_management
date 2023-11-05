@@ -11,7 +11,7 @@ end
 
 local function AddGangMenuItem(data, id)
     local menuID = id or #DynamicMenuItems + 1
-    DynamicMenuItems[menuID] = deepcopy(data)
+    DynamicMenuItems[menuID] = lib.table.deepclone(data)
     return menuID
 end
 

@@ -104,9 +104,8 @@ function DepositMoney(src, amount, pDataType, type)
 	local player = exports.qbx_core:GetPlayer(src)
 
 	if not player.PlayerData[pDataType].isboss then ExploitBan(src, 'depositMoney Exploiting') return false end
-
+	local account = player.PlayerData[pDataType].name
 	if player.Functions.RemoveMoney("cash", amount) then
-		local account = player.PlayerData[pDataType].name
 		AddMoney(account, amount, type)
 		TriggerEvent('qb-log:server:CreateLog', 'gangmenu', 'Deposit Money', 'yellow', player.PlayerData.charinfo.firstname .. ' ' .. player.PlayerData.charinfo.lastname .. ' successfully deposited $' .. amount .. ' (' .. account .. ')', false)
 		exports.qbx_core:Notify(src, "You have deposited: $" ..amount, "success")
