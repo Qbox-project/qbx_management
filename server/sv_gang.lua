@@ -110,5 +110,5 @@ end)
 -- Get closest player sv
 lib.callback.register('qb-gangmenu:getplayers', function(source)
 	local src = source
-	return GetPlayers(src)
+	return FindPlayers(src)
 end)

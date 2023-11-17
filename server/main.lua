@@ -185,11 +185,11 @@ end
 
 ---@param src number
 ---@return table
-function GetPlayers(src)
+function FindPlayers(src)
 	local players = {}
 	local playerPed = GetPlayerPed(src)
 	local pCoords = GetEntityCoords(playerPed)
-	for _, v in pairs(exports.qbx_core:GetPlayers()) do
+	for _, v in pairs(GetPlayers()) do
 		local targetped = GetPlayerPed(v)
 		local tCoords = GetEntityCoords(targetped)
 		local dist = #(pCoords - tCoords)
