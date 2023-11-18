@@ -184,7 +184,7 @@ function UpdateGrade(src, data, type)
 end
 
 -- Get closest player sv
-lib.callback.register('qb-bossmenu:getplayers', function(source, closePlayers)
+lib.callback.register('qb-bossmenu:getplayers', function(_, closePlayers)
 	local players = {}
 	for _, v in pairs(closePlayers) do
 		local ped = exports.qbx_core:GetPlayer(v)
