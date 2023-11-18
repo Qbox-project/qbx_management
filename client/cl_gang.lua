@@ -90,7 +90,7 @@ RegisterNetEvent('qb-gangmenu:client:ManageGang', function()
         GangMembersMenu[#GangMembersMenu + 1] = {
             title = v.name,
             description = v.grade.name,
-            event = 'qb-gangmenu:lient:ManageMember',
+            event = 'qb-gangmenu:client:ManageMember',
             args = {
                 player = v,
                 work = QBX.PlayerData.gang
@@ -113,7 +113,7 @@ RegisterNetEvent('qb-gangmenu:client:ManageGang', function()
     lib.showContext('qb_management_open_gangManage')
 end)
 
-RegisterNetEvent('qb-gangmenu:lient:ManageMember', function(data)
+RegisterNetEvent('qb-gangmenu:client:ManageMember', function(data)
     local MemberMenu = {}
 
     for k, v in pairs(gangs[data.work.name].grades) do
@@ -154,9 +154,9 @@ end)
 RegisterNetEvent('qb-gangmenu:client:HireMembers', function()
     local HireMembersMenu = {}
 
-    local players = lib.callback.await('qb-gangmenu:getplayers')
+    local players = FindPlayers()
     for _, v in pairs(players) do
-        if v and v ~= cache.playerId then
+        if v and v.citizenid ~= QBX.PlayerData.citizenid then
             HireMembersMenu[#HireMembersMenu + 1] = {
                 title = v.name,
                 description = "Citizen ID: " .. v.citizenid .. " - ID: " .. v.sourceplayer,

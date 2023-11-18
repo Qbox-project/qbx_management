@@ -48,18 +48,18 @@ end)
 -- Fire Member
 RegisterNetEvent('qb-gangmenu:server:FireMember', function(target)
 	local src = source
-	local Player = exports.qbx_core:GetPlayer(src)
-	local Employee = exports.qbx_core:GetPlayerByCitizenId(target)
+	local player = exports.qbx_core:GetPlayer(src)
+	local employee = exports.qbx_core:GetPlayerByCitizenId(target)
 
-	if not Player.PlayerData.gang.isboss then ExploitBan(src, 'FireEmployee Exploiting') return end
+	if not player.PlayerData.gang.isboss then ExploitBan(src, 'FireEmployee Exploiting') return end
 
-	if Employee then
-		if target ~= Player.PlayerData.citizenid then
-			if Employee.PlayerData.gang.grade.level > Player.PlayerData.gang.grade.level then exports.qbx_core:Notify(src, "You cannot fire this citizen!", "error") return end
-			if Employee.Functions.SetGang("none", '0') then
-				TriggerEvent("qb-log:server:CreateLog", "gangmenu", "Gang Fire", "orange", Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname .. ' successfully fired ' .. Employee.PlayerData.charinfo.firstname .. " " .. Employee.PlayerData.charinfo.lastname .. " (" .. Player.PlayerData.gang.name .. ")", false)
+	if employee then
+		if target ~= player.PlayerData.citizenid then
+			if employee.PlayerData.gang.grade.level > player.PlayerData.gang.grade.level then exports.qbx_core:Notify(src, "You cannot fire this citizen!", "error") return end
+			if employee.Functions.SetGang("none", '0') then
+				TriggerEvent("qb-log:server:CreateLog", "gangmenu", "Gang Fire", "orange", player.PlayerData.charinfo.firstname .. " " .. player.PlayerData.charinfo.lastname .. ' successfully fired ' .. employee.PlayerData.charinfo.firstname .. " " .. employee.PlayerData.charinfo.lastname .. " (" .. player.PlayerData.gang.name .. ")", false)
 				exports.qbx_core:Notify(src, "Gang Member fired!", "success")
-				exports.qbx_core:Notify(Employee.PlayerData.source , "You have been expelled from the gang!", "error")
+				exports.qbx_core:Notify(employee.PlayerData.source , "You have been expelled from the gang!", "error")
 			else
 				exports.qbx_core:Notify(src, "Error.", "error")
 			end
@@ -67,11 +67,12 @@ RegisterNetEvent('qb-gangmenu:server:FireMember', function(target)
 			exports.qbx_core:Notify(src, "You can\'t kick yourself out of the gang!", "error")
 		end
 	else
-		local player = MySQL.query.await('SELECT * FROM players WHERE citizenid = ? LIMIT 1', {target})
-		if player[1] then
-			Employee = player[1]
-			Employee.gang = json.decode(Employee.gang)
-			if Employee.gang.grade.level > Player.PlayerData.gang.grade.level then exports.qbx_core:Notify(src, "You cannot fire this citizen!", "error") return end
+		local offlineEmployee = MySQL.query.await('SELECT * FROM players WHERE citizenid = ? LIMIT 1', {target})
+		if offlineEmployee[1] then
+			employee = offlineEmployee[1]
+			employee.gang = json.decode(employee.gang)
+			employee.charinfo = json.decode(employee.charinfo)
+			if employee.gang.grade.level > player.PlayerData.gang.grade.level then exports.qbx_core:Notify(src, "You cannot fire this citizen!", "error") return end
 			local gang = {}
 			gang.name = "none"
 			gang.label = "No Affiliation"
@@ -83,7 +84,7 @@ RegisterNetEvent('qb-gangmenu:server:FireMember', function(target)
 			gang.grade.level = 0
 			MySQL.update('UPDATE players SET gang = ? WHERE citizenid = ?', {json.encode(gang), target})
 			exports.qbx_core:Notify(src, "Gang member fired!", "success")
-			TriggerEvent("qb-log:server:CreateLog", "gangmenu", "Gang Fire", "orange", Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname .. ' successfully fired ' .. Employee.PlayerData.charinfo.firstname .. " " .. Employee.PlayerData.charinfo.lastname .. " (" .. Player.PlayerData.gang.name .. ")", false)
+			TriggerEvent("qb-log:server:CreateLog", "gangmenu", "Gang Fire", "orange", player.PlayerData.charinfo.firstname .. " " .. player.PlayerData.charinfo.lastname .. ' successfully fired ' .. employee.PlayerData.charinfo.firstname .. " " .. employee.PlayerData.charinfo.lastname .. " (" .. player.PlayerData.gang.name .. ")", false)
 		else
 			exports.qbx_core:Notify(src, "Civilian is not in city.", "error")
 		end
@@ -94,21 +95,15 @@ end)
 -- Recruit Player
 RegisterNetEvent('qb-gangmenu:server:HireMember', function(recruit)
 	local src = source
-	local Player = exports.qbx_core:GetPlayer(src)
-	local Target = exports.qbx_core:GetPlayer(recruit)
+	local player = exports.qbx_core:GetPlayer(src)
+	local target = exports.qbx_core:GetPlayer(recruit)
 
-	if not Player.PlayerData.gang.isboss then ExploitBan(src, 'HireEmployee Exploiting') return end
+	if not player.PlayerData.gang.isboss then ExploitBan(src, 'HireEmployee Exploiting') return end
 
-	if Target and Target.Functions.SetGang(Player.PlayerData.gang.name, 0) then
-		exports.qbx_core:Notify(src, "You hired " .. (Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname) .. " come " .. Player.PlayerData.gang.label .. "", "success")
-		exports.qbx_core:Notify(Target.PlayerData.source , "You have been hired as " .. Player.PlayerData.gang.label .. "", "success")
-		TriggerEvent('qb-log:server:CreateLog', 'gangmenu', 'Recruit', 'yellow', (Player.PlayerData.charinfo.firstname .. ' ' .. Player.PlayerData.charinfo.lastname).. ' successfully recruited ' .. Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname .. ' (' .. Player.PlayerData.gang.name .. ')', false)
+	if target and target.Functions.SetGang(player.PlayerData.gang.name, 0) then
+		exports.qbx_core:Notify(src, "You hired " .. (target.PlayerData.charinfo.firstname .. ' ' .. target.PlayerData.charinfo.lastname) .. " come " .. player.PlayerData.gang.label .. "", "success")
+		exports.qbx_core:Notify(target.PlayerData.source , "You have been hired as " .. player.PlayerData.gang.label .. "", "success")
+		TriggerEvent('qb-log:server:CreateLog', 'gangmenu', 'Recruit', 'yellow', (player.PlayerData.charinfo.firstname .. ' ' .. player.PlayerData.charinfo.lastname).. ' successfully recruited ' .. target.PlayerData.charinfo.firstname .. ' ' .. target.PlayerData.charinfo.lastname .. ' (' .. player.PlayerData.gang.name .. ')', false)
 	end
 	TriggerClientEvent('qb-gangmenu:client:OpenMenu', src)
-end)
-
--- Get closest player sv
-lib.callback.register('qb-gangmenu:getplayers', function(source)
-	local src = source
-	return FindPlayers(src)
 end)

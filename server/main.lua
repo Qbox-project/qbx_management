@@ -183,27 +183,17 @@ function UpdateGrade(src, data, type)
     end
 end
 
----@param src number
----@return table
-function FindPlayers(src)
+-- Get closest player sv
+lib.callback.register('qb-bossmenu:getplayers', function(source, closePlayers)
 	local players = {}
-	local playerPed = GetPlayerPed(src)
-	local pCoords = GetEntityCoords(playerPed)
-	for _, v in pairs(GetPlayers()) do
-		local targetped = GetPlayerPed(v)
-		local tCoords = GetEntityCoords(targetped)
-		local dist = #(pCoords - tCoords)
-		if playerPed ~= targetped and dist < 10 then
-			local ped = exports.qbx_core:GetPlayer(tonumber(v))
-			players[#players + 1] = {
-				id = v,
-				coords = GetEntityCoords(targetped),
-				name = ped.PlayerData.charinfo.firstname .. " " .. ped.PlayerData.charinfo.lastname,
-				citizenid = ped.PlayerData.citizenid,
-				sources = GetPlayerPed(ped.PlayerData.source),
-				sourceplayer = ped.PlayerData.source
-			}
-		end
+	for _, v in pairs(closePlayers) do
+		local ped = exports.qbx_core:GetPlayer(v)
+		players[#players + 1] = {
+			id = v,
+			name = ped.PlayerData.charinfo.firstname .. " " .. ped.PlayerData.charinfo.lastname,
+			citizenid = ped.PlayerData.citizenid,
+			sourceplayer = ped.PlayerData.source
+		}
 	end
 
 	table.sort(players, function(a, b)
@@ -211,7 +201,7 @@ function FindPlayers(src)
 	end)
 
 	return players
-end
+end)
 
 AddEventHandler('onServerResourceStart', function(resourceName)
 	if resourceName ~= 'ox_inventory' and resourceName ~= GetCurrentResourceName() then return end
