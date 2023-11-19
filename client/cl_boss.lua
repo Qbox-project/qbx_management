@@ -1,7 +1,7 @@
 local shownBossMenu = false
 
 -- UTIL
-local function CloseMenuFull()
+local function closeMenuFull()
     lib.hideContext()
     lib.hideTextUI()
     shownBossMenu = false
@@ -12,7 +12,7 @@ AddEventHandler('onResourceStart', function(resource)
 end)
 
 RegisterNetEvent('qbx_management:client:bossOpenMenu', function()
-    TriggerEvent('qbx_management:client:OpenMenu', 'job')
+    TriggerEvent('qbx_management:client:openMenu', 'job')
 end)
 
 -- MAIN THREAD
@@ -74,7 +74,7 @@ CreateThread(function()
                 if not nearBossmenu then
                     wait = 1000
                     if shownBossMenu then
-                        CloseMenuFull()
+                        closeMenuFull()
                         shownBossMenu = false
                     end
                 end

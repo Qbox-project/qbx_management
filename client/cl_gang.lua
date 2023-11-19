@@ -1,7 +1,7 @@
 local shownGangMenu = false
 
 -- UTIL
-local function CloseMenuFull()
+local function closeMenuFull()
     lib.hideContext()
     lib.hideTextUI()
     shownGangMenu = false
@@ -12,7 +12,7 @@ AddEventHandler('onResourceStart', function(resource)
 end)
 
 RegisterNetEvent('qbx_management:client:gangOpenMenu', function()
-    TriggerEvent('qbx_management:client:OpenMenu', 'gang')
+    TriggerEvent('qbx_management:client:openMenu', 'gang')
 end)
 
 -- MAIN THREAD
@@ -71,7 +71,7 @@ CreateThread(function()
                 if not nearGangmenu then
                     wait = 1000
                     if shownGangMenu then
-                        CloseMenuFull()
+                        closeMenuFull()
                         shownGangMenu = false
                     end
                 end

@@ -1,8 +1,7 @@
 local jobs = exports.qbx_core:GetJobs()
 local gangs = exports.qbx_core:GetGangs()
-local DynamicMenuItems = {}
 
-function CommaValue(amount)
+local function commaValue(amount)
     local numChanged
 
     repeat
@@ -13,26 +12,25 @@ function CommaValue(amount)
 end
 
 ---@return table
-function FindPlayers()
-	local playerCoords = GetEntityCoords(cache.ped)
-    local closePlayers = lib.getNearbyPlayers(playerCoords, 10, false)
+local function findPlayers()
+    local closePlayers = lib.getNearbyPlayers(GetEntityCoords(cache.ped), 10, false)
     for _, v in pairs(closePlayers) do
         v.id = GetPlayerServerId(v.id)
     end
 	return lib.callback.await('qbx_management:server:getplayers', false, closePlayers)
 end
 
----@param type 'job'|'gang'
-RegisterNetEvent('qbx_management:client:SocietyMenu', function(type)
-    local amount = lib.callback.await('qbx_management:server:getAccount', false, QBX.PlayerData[type].name)
-    local SocietyMenu = {
+---@param group 'job'|'gang'
+RegisterNetEvent('qbx_management:client:societyMenu', function(group)
+    local amount = lib.callback.await('qbx_management:server:getAccount', false, QBX.PlayerData[group].name)
+    local societyMenu = {
         {
             title = 'Deposit',
             icon = 'fa-solid fa-money-bill-transfer',
             description = 'Deposit Money',
             event = 'qbx_management:client:SocietyDeposit',
             args = {
-                type = type,
+                group = group,
                 amount = amount
             }
         },
@@ -40,37 +38,37 @@ RegisterNetEvent('qbx_management:client:SocietyMenu', function(type)
             title = 'Withdraw',
             icon = 'fa-solid fa-money-bill-transfer',
             description = 'Withdraw Money',
-            event = 'qbx_management:client:SocietyWithdraw',
+            event = 'qbx_management:client:societyWithdraw',
             args = {
-                type = type,
+                group = group,
                 amount = amount
             }
         },
         {
             title = 'Return',
             icon = 'fa-solid fa-angle-left',
-            event = 'qbx_management:client:OpenMenu',
-            args = type
+            event = 'qbx_management:client:openMenu',
+            args = group
         }
     }
 
     lib.registerContext({
         id = 'qbx_management_open_Society',
-        title = 'Balance: $' .. CommaValue(amount) .. ' - ' .. string.upper(QBX.PlayerData[type].label),
-        options = SocietyMenu
+        title = 'Balance: $' .. commaValue(amount) .. ' - ' .. string.upper(QBX.PlayerData[group].label),
+        options = societyMenu
     })
 
     lib.showContext('qbx_management_open_Society')
 end)
 
----@param data {amount: number, type: 'job'|'gang'}
+---@param data {amount: number, group: 'job'|'gang'}
 RegisterNetEvent('qbx_management:client:SocietyDeposit', function(data)
     local deposit = lib.inputDialog('Deposit Money', {
         {
             type = 'input',
             label = 'Available Balance',
             disabled = true,
-            default = CommaValue(data.amount)
+            default = commaValue(data.amount)
         },
         {
             type = 'number',
@@ -79,14 +77,14 @@ RegisterNetEvent('qbx_management:client:SocietyDeposit', function(data)
     })
 
     if not deposit then
-        TriggerEvent('qbx_management:client:SocietyMenu', data.type)
+        TriggerEvent('qbx_management:client:societyMenu', data.group)
         return
     end
 
     if not deposit[2] then
         exports.qbx_core:Notify('Amount value is missing!', 'error')
 
-        TriggerEvent('qbx_management:client:SocietyMenu', data.type)
+        TriggerEvent('qbx_management:client:societyMenu', data.group)
         return
     end
 
@@ -95,21 +93,21 @@ RegisterNetEvent('qbx_management:client:SocietyDeposit', function(data)
     if depositAmount <= 0 then
         exports.qbx_core:Notify('Amount need to be higher than zero!', 'error')
 
-        TriggerEvent('qbx_management:client:SocietyMenu', data.type)
+        TriggerEvent('qbx_management:client:societyMenu', data.group)
         return
     end
 
-    TriggerServerEvent('qbx_management:server:depositMoney', data.type, depositAmount)
+    TriggerServerEvent('qbx_management:server:depositMoney', data.group, depositAmount)
 end)
 
----@param data {amount: number, type: 'job'|'gang'}
-RegisterNetEvent('qbx_management:client:SocietyWithdraw', function(data)
+---@param data {amount: number, group: 'job'|'gang'}
+RegisterNetEvent('qbx_management:client:societyWithdraw', function(data)
     local withdraw = lib.inputDialog('Withdraw Money', {
         {
             type = 'input',
             label = 'Available Balance',
             disabled = true,
-            default = CommaValue(data.amount)
+            default = commaValue(data.amount)
         },
         {
             type = 'input',
@@ -118,7 +116,7 @@ RegisterNetEvent('qbx_management:client:SocietyWithdraw', function(data)
     })
 
     if not withdraw then
-        TriggerEvent('qbx_management:client:SocietyMenu', data.type)
+        TriggerEvent('qbx_management:client:societyMenu', data.group)
         return
     end
 
@@ -127,7 +125,7 @@ RegisterNetEvent('qbx_management:client:SocietyWithdraw', function(data)
     if not withdrawAmount then
         exports.qbx_core:Notify('Amount value is missing!', 'error')
 
-        TriggerEvent('qbx_management:client:SocietyMenu', data.type)
+        TriggerEvent('qbx_management:client:societyMenu', data.group)
         return
     end
 
@@ -135,183 +133,179 @@ RegisterNetEvent('qbx_management:client:SocietyWithdraw', function(data)
     if withdrawAmount > tonumber(data.amount) then
         exports.qbx_core:Notify('You cant withdraw that amount of money!', 'error')
 
-        TriggerEvent('qbx_management:client:SocietyMenu', data.type)
+        TriggerEvent('qbx_management:client:societyMenu', data.group)
         return
     end
 
 
-    TriggerServerEvent('qbx_management:server:withdrawMoney', data.type, withdrawAmount)
+    TriggerServerEvent('qbx_management:server:withdrawMoney', data.group, withdrawAmount)
 end)
 
----@param type 'job'|'gang'
-RegisterNetEvent('qbx_management:client:Stash', function(type)
-    local stash = type == 'gang' and 'gang_'..QBX.PlayerData.gang.name or 'boss_'..QBX.PlayerData.job.name
+---@param group 'job'|'gang'
+RegisterNetEvent('qbx_management:client:stash', function(group)
+    local stash = group == 'gang' and 'gang_'..QBX.PlayerData.gang.name or 'boss_'..QBX.PlayerData.job.name
     exports.ox_inventory:openInventory('stash', stash)
 end)
 
----@param type 'job'|'gang'
-RegisterNetEvent('qbx_management:client:OpenMenu', function(type)
-    if not QBX.PlayerData[type].name or not QBX.PlayerData[type].isboss then return end
+---@param group 'job'|'gang'
+RegisterNetEvent('qbx_management:client:openMenu', function(group)
+    if not QBX.PlayerData[group].name or not QBX.PlayerData[group].isboss then return end
 
     local bossMenu = {
         {
-            title = type == 'gang' and 'Manage Gang Members' or 'Manage Employees',
-            description = type == 'gang' and 'Recruit or Fire Gang Members' or 'Check your Employees List',
+            title = group == 'gang' and 'Manage Gang Members' or 'Manage Employees',
+            description = group == 'gang' and 'Recruit or Fire Gang Members' or 'Check your Employees List',
             icon = 'fa-solid fa-list',
-            event = 'qbx_management:client:EmployeeList',
-            args = type
+            event = 'qbx_management:client:employeeList',
+            args = group
         },
         {
             title = 'Hire Employees',
-            description = type == 'gang' and 'Hire Gang Members' or 'Hire Nearby Civilians',
+            description = group == 'gang' and 'Hire Gang Members' or 'Hire Nearby Civilians',
             icon = 'fa-solid fa-hand-holding',
-            event = 'qbx_management:client:HireMenu',
-            args = type
+            event = 'qbx_management:client:hireMenu',
+            args = group
         },
         {
             title = 'Storage Access',
-            description = type == 'gang' and 'Open Gang Stash' or 'Open Business Storage',
+            description = group == 'gang' and 'Open Gang Stash' or 'Open Business Storage',
             icon = 'fa-solid fa-box-open',
-            event = 'qbx_management:client:Stash',
-            args = type
+            event = 'qbx_management:client:stash',
+            args = group
         },
         {
             title = 'Outfits',
-            description = type == 'gang' and 'Change Clothes' or 'See Saved Outfits',
+            description = group == 'gang' and 'Change Clothes' or 'See Saved Outfits',
             icon = 'fa-solid fa-shirt',
             event = 'qbx_management:client:Wardrobe'
         },
         {
             title = 'Money Management',
-            description = type == 'gang' and 'Check your Gang Balance' or 'Check your Company Balance',
+            description = group == 'gang' and 'Check your Gang Balance' or 'Check your Company Balance',
             icon = 'fa-solid fa-sack-dollar',
-            event = 'qbx_management:client:SocietyMenu',
-            args = type
+            event = 'qbx_management:client:societyMenu',
+            args = group
         }
     }
 
-    for _, v in pairs(DynamicMenuItems) do
-        bossMenu[#bossMenu + 1] = v
-    end
-
     lib.registerContext({
         id = 'qbx_management_open_Menu',
-        title = type == 'gang' and 'Gang Management - ' .. string.upper(QBX.PlayerData.gang.label) or 'Boss Menu - ' .. string.upper(QBX.PlayerData.job.label),
+        title = group == 'gang' and 'Gang Management - ' .. string.upper(QBX.PlayerData.gang.label) or 'Boss Menu - ' .. string.upper(QBX.PlayerData.job.label),
         options = bossMenu
     })
     lib.showContext('qbx_management_open_Menu')
 end)
 
----@param type 'job'|'gang'
-RegisterNetEvent('qbx_management:client:EmployeeList', function(type)
-    local EmployeesMenu = {}
-    local accountName = QBX.PlayerData[type].name
-    local employees = lib.callback.await('qbx_management:server:getemployees', false, accountName, type)
+---@param group 'job'|'gang'
+RegisterNetEvent('qbx_management:client:employeeList', function(group)
+    local employeesMenu = {}
+    local accountName = QBX.PlayerData[group].name
+    local employees = lib.callback.await('qbx_management:server:getemployees', false, accountName, group)
     for _, v in pairs(employees) do
-        EmployeesMenu[#EmployeesMenu + 1] = {
+        employeesMenu[#employeesMenu + 1] = {
             title = v.name,
             description = v.grade.name,
             event = 'qbx_management:client:ManageEmployee',
             args = {
-                type = type,
+                group = group,
                 player = v,
-                work = QBX.PlayerData[type]
+                work = QBX.PlayerData[group]
             }
         }
     end
 
-    EmployeesMenu[#EmployeesMenu + 1] = {
+    employeesMenu[#employeesMenu + 1] = {
         title = 'Return',
         icon = 'fa-solid fa-angle-left',
-        event = 'qbx_management:client:OpenMenu',
-        args = type
+        event = 'qbx_management:client:openMenu',
+        args = group
     }
 
     lib.registerContext({
         id = 'qbx_management_open_Manage',
-        title = type == 'gang' and 'Manage Gang Members - ' .. string.upper(QBX.PlayerData.gang.label) or 'Manage Employees - ' .. string.upper(QBX.PlayerData.job.label),
-        options = EmployeesMenu
+        title = group == 'gang' and 'Manage Gang Members - ' .. string.upper(QBX.PlayerData.gang.label) or 'Manage Employees - ' .. string.upper(QBX.PlayerData.job.label),
+        options = employeesMenu
     })
 
     lib.showContext('qbx_management_open_Manage')
 end)
 
----@param data {source: number, player: table, work: table, type: 'job'|'gang'}
+---@param data {source: number, player: table, work: table, group: 'job'|'gang'}
 RegisterNetEvent('qbx_management:client:ManageEmployee', function(data)
-    local EmployeeMenu = {}
-    local employeeLoop = data.type == 'gang' and gangs[data.work.name].grades or jobs[data.work.name].grades
+    local employeeMenu = {}
+    local employeeLoop = data.group == 'gang' and gangs[data.work.name].grades or jobs[data.work.name].grades
     for k, v in pairs(employeeLoop) do
-        EmployeeMenu[#EmployeeMenu + 1] = {
+        employeeMenu[#employeeMenu + 1] = {
             title = v.name,
             description = 'Grade: ' .. k,
-            serverEvent = 'qbx_management:server:GradeUpdate',
+            serverEvent = 'qbx_management:server:updateGrade',
             args = {
                 cid = data.player.empSource,
                 grade = tonumber(k),
                 gradename = v.name,
-                type = data.type
+                group = data.group
             }
         }
     end
 
-    EmployeeMenu[#EmployeeMenu + 1] = {
-        title = data.type == 'gang' and 'Expel Gang Member' or 'Fire Employee',
+    employeeMenu[#employeeMenu + 1] = {
+        title = data.group == 'gang' and 'Expel Gang Member' or 'Fire Employee',
         icon = 'fa-solid fa-user-large-slash',
-        serverEvent = 'qbx_management:server:FireEmployee',
+        serverEvent = 'qbx_management:server:fireEmployee',
         args = {
             source = data.player.empSource,
-            type = data.type
+            group = data.group
         }
     }
 
-    EmployeeMenu[#EmployeeMenu + 1] = {
+    employeeMenu[#employeeMenu + 1] = {
         title = 'Return',
         icon = 'fa-solid fa-angle-left',
-        event = 'qbx_management:client:OpenMenu',
-        args = data.type
+        event = 'qbx_management:client:openMenu',
+        args = data.group
     }
 
     lib.registerContext({
         id = 'qbx_management_open_Member',
-        title = data.type == 'gang' and 'Manage ' .. data.player.name .. ' - ' .. string.upper(QBX.PlayerData.gang.label) or 'Manage ' .. data.player.name .. ' - ' .. string.upper(QBX.PlayerData.job.label),
-        options = EmployeeMenu
+        title = data.group == 'gang' and 'Manage ' .. data.player.name .. ' - ' .. string.upper(QBX.PlayerData.gang.label) or 'Manage ' .. data.player.name .. ' - ' .. string.upper(QBX.PlayerData.job.label),
+        options = employeeMenu
     })
 
     lib.showContext('qbx_management_open_Member')
 end)
 
----@param type 'job'|'gang'
-RegisterNetEvent('qbx_management:client:HireMenu', function(type)
-    local HireMenu = {}
-    local players = FindPlayers()
-    local hireName = QBX.PlayerData[type].name
+---@param group 'job'|'gang'
+RegisterNetEvent('qbx_management:client:hireMenu', function(group)
+    local hireMenu = {}
+    local players = findPlayers()
+    local hireName = QBX.PlayerData[group].name
     for _, v in pairs(players) do
 
-        if v and v.citizenid ~= QBX.PlayerData.citizenid and v[type].name ~= hireName then
-            HireMenu[#HireMenu + 1] = {
+        if v and v.citizenid ~= QBX.PlayerData.citizenid and v[group].name ~= hireName then
+            hireMenu[#hireMenu + 1] = {
                 title = v.name,
                 description = 'Citizen ID: ' .. v.citizenid .. ' - ID: ' .. v.source,
                 serverEvent = 'qbx_management:server:HireEmployee',
                 args = {
                     source = v.source,
-                    type = type,
+                    group = group,
                     grade = 0
                 }
             }
         end
     end
 
-    HireMenu[#HireMenu + 1] = {
+    hireMenu[#hireMenu + 1] = {
         title = 'Return',
         icon = 'fa-solid fa-angle-left',
-        event = 'qbx_management:client:OpenMenu',
-        args = type
+        event = 'qbx_management:client:openMenu',
+        args = group
     }
 
     lib.registerContext({
         id = 'qbx_management_open_Hire',
-        title = type == 'gang' and 'Hire Gang Members - ' .. string.upper(QBX.PlayerData.gang.label) or 'Hire Employees - ' .. string.upper(QBX.PlayerData.job.label),
-        options = HireMenu
+        title = group == 'gang' and 'Hire Gang Members - ' .. string.upper(QBX.PlayerData.gang.label) or 'Hire Employees - ' .. string.upper(QBX.PlayerData.job.label),
+        options = hireMenu
     })
 
     lib.showContext('qbx_management_open_Hire')

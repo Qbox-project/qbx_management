@@ -3,7 +3,7 @@ local gangs = exports.qbx_core:GetGangs()
 
 ---@param id number
 ---@param reason string
-function ExploitBan(id, reason)
+local function exploitBan(id, reason)
     MySQL.insert('INSERT INTO bans (name, license, discord, ip, reason, expire, bannedby) VALUES (?, ?, ?, ?, ?, ?, ?)', {
         GetPlayerName(id),
         exports.qbx_core:GetIdentifier(id, 'license'),
@@ -22,40 +22,42 @@ end
 
 ---@param account string
 ---@return number
-lib.callback.register('qbx_management:server:getAccount', function(_, account)
+lib.callback.register('qbx_management:server:getAccount', function(source, account)
 	return exports['Renewed-Banking']:getAccountMoney(account) or 0
 end)
 
 ---@param account string
 ---@param amount number
-function AddMoney(account, amount)
-	exports['Renewed-Banking']:addAccountMoney(account, amount, 'qbx_management')
+local function addMoney(account, amount)
+	exports['Renewed-Banking']:addAccountMoney(account, amount)
 end
 
 ---@param account string
 ---@param amount number
 ---@return boolean
-function RemoveMoney(account, amount)
+local function removeMoney(account, amount)
 	if amount <= 0 then return false end
-	return exports['Renewed-Banking']:removeAccountMoney(account, amount, 'qbx_management')
+	return exports['Renewed-Banking']:removeAccountMoney(account, amount)
 end
 
 ---@param src number
 ---@param amount number
----@param type 'job'|'gang'
+---@param group 'job'|'gang'
 ---@param reason string
 ---@return boolean success
 ---@return Player? player populated if successful
 ---@return string? accountName populated if successful
-function WithdrawMoney(src, amount, type, reason)
+local function withdrawMoney(src, amount, group, reason)
 	local player = exports.qbx_core:GetPlayer(src)
 
-	if not player.PlayerData[type].isboss then ExploitBan(src, 'withdrawMoney Exploiting') return false end
+	if not player.PlayerData[group].isboss then exploitBan(src, 'withdrawMoney Exploiting') return false end
 
-	local account = player.PlayerData[type].name
-	if RemoveMoney(account, amount) then
+	if amount <= 0 then return false end
+
+	local account = player.PlayerData[group].name
+	if removeMoney(account, amount) then
         player.Functions.AddMoney('cash', amount, reason)
-		local logArea = type == 'gang' and 'gang' or 'boss'
+		local logArea = group == 'gang' and 'gang' or 'boss'
 		exports.qbx_core:Notify(src, 'You have withdrawn: $' ..amount, 'success')
 		TriggerEvent('qb-log:server:CreateLog', logArea..'menu', 'Withdraw Money', 'orange', player.PlayerData.charinfo.firstname .. ' ' .. player.PlayerData.charinfo.lastname .. ' successfully withdrew $' .. amount .. ' (' .. account .. ')', false)
         return true, player, account
@@ -67,18 +69,18 @@ end
 
 ---@param src number
 ---@param amount number
----@param type 'job'|'gang'
+---@param group 'job'|'gang'
 ---@return boolean success
 ---@return Player? player populated if successful
 ---@return string? accountName populated if successful
-function DepositMoney(src, amount, type)
+local function depositMoney(src, amount, group)
 	local player = exports.qbx_core:GetPlayer(src)
 
-	if not player.PlayerData[type].isboss then ExploitBan(src, 'depositMoney Exploiting') return false end
-	local account = player.PlayerData[type].name
+	if not player.PlayerData[group].isboss then exploitBan(src, 'depositMoney Exploiting') return false end
+	local account = player.PlayerData[group].name
 	if player.Functions.RemoveMoney('cash', amount) then
-		AddMoney(account, amount)
-		local logArea = type == 'gang' and 'gang' or 'boss'
+		addMoney(account, amount)
+		local logArea = group == 'gang' and 'gang' or 'boss'
 		TriggerEvent('qb-log:server:CreateLog', logArea..'menu', 'Deposit Money', 'yellow', player.PlayerData.charinfo.firstname .. ' ' .. player.PlayerData.charinfo.lastname .. ' successfully deposited $' .. amount .. ' (' .. account .. ')', false)
 		exports.qbx_core:Notify(src, 'You have deposited: $' ..amount, 'success')
         return true, player, account
@@ -90,24 +92,24 @@ end
 
 ---@param src number
 ---@param accountName string
----@param type 'gang'|'job'
+---@param group 'gang'|'job'
 ---@return table?
-function GetEmployees(src, accountName, type)
+local function getEmployees(src, accountName, group)
 	local player = exports.qbx_core:GetPlayer(src)
 
-	if not player.PlayerData[type].isboss then ExploitBan(src, 'GetEmployees Exploiting') return end
+	if not player.PlayerData[group].isboss then exploitBan(src, 'GetEmployees Exploiting') return end
 
 	local employees = {}
-	local players = MySQL.query.await('SELECT * FROM `players` WHERE ?? LIKE \'%'.. accountName ..'%\'', {type})
+	local players = MySQL.query.await('SELECT * FROM `players` WHERE ?? LIKE \'%'.. accountName ..'%\'', {group})
 	if not players then return {} end
 	for _, value in pairs(players) do
 		local isOnline = exports.qbx_core:GetPlayerByCitizenId(value.citizenid)
-		local isOffline = json.decode(value[type])
+		local isOffline = json.decode(value[group])
 		if isOnline then
 			employees[#employees + 1] = {
 			empSource = isOnline.PlayerData.citizenid,
-			grade = isOnline.PlayerData[type].grade,
-			isboss = isOnline.PlayerData[type].isboss,
+			grade = isOnline.PlayerData[group].grade,
+			isboss = isOnline.PlayerData[group].isboss,
 			name = '🟢 ' .. isOnline.PlayerData.charinfo.firstname .. ' ' .. isOnline.PlayerData.charinfo.lastname
 			}
 		elseif isOffline.name == accountName then
@@ -126,13 +128,13 @@ function GetEmployees(src, accountName, type)
 end
 
 ---@param src number
----@param data {cid: string, grade: integer, gradename: string, type: 'job'|'gang'}
-function UpdateGrade(src, data)
+---@param data {cid: string, grade: integer, gradename: string, group: 'job'|'gang'}
+local function updateGrade(src, data)
 	local player = exports.qbx_core:GetPlayer(src)
 	local employee = exports.qbx_core:GetPlayerByCitizenId(data.cid)
 
-	if not player.PlayerData[data.type].isboss then ExploitBan(src, 'GradeUpdate Exploiting') return end
-	if data.grade > player.PlayerData[data.type].grade.level then exports.qbx_core:Notify(src, 'You cannot promote to this rank!', 'error') return end
+	if not player.PlayerData[data.group].isboss then exploitBan(src, 'UpdateGrade Exploiting') return end
+	if data.grade > player.PlayerData[data.group].grade.level then exports.qbx_core:Notify(src, 'You cannot promote to this rank!', 'error') return end
 
 	if not employee then
         exports.qbx_core:Notify(src, 'Civilian is not in city.', 'error')
@@ -140,10 +142,10 @@ function UpdateGrade(src, data)
     end
 
     local success
-    if data.type == 'gang' then
-        success = employee.Functions.SetGang(player.PlayerData[data.type].name, data.grade)
+    if data.group == 'gang' then
+        success = employee.Functions.SetGang(player.PlayerData[data.group].name, data.grade)
     else
-        success = employee.Functions.SetJob(player.PlayerData[data.type].name, data.grade)
+        success = employee.Functions.SetJob(player.PlayerData[data.group].name, data.grade)
     end
 
     if success then
@@ -178,90 +180,87 @@ lib.callback.register('qbx_management:server:getplayers', function(_, closePlaye
 end)
 
 ---@param accountName string
----@param type 'job'|'gang'
+---@param group 'job'|'gang'
 ---@return table?
-lib.callback.register('qbx_management:server:getemployees', function(_, accountName, type)
-	local src = source
-	return GetEmployees(src, accountName, type)
+lib.callback.register('qbx_management:server:getemployees', function(source, accountName, group)
+	return getEmployees(source, accountName, group)
 end)
 
 ---@param data table
 ---@return table?
-RegisterNetEvent('qbx_management:server:GradeUpdate', function(data)
-	local src = source
-	UpdateGrade(src, data)
-	TriggerClientEvent('qbx_management:client:OpenMenu', src, data.type)
+RegisterNetEvent('qbx_management:server:updateGrade', function(data)
+	updateGrade(source, data)
+	TriggerClientEvent('qbx_management:client:openMenu', source, data.group)
 end)
 
----@param data {source: number, grade: number, type: 'job'|'gang'}
+---@param data {source: number, grade: number, group: 'job'|'gang'}
 RegisterNetEvent('qbx_management:server:HireEmployee', function(data)
-	local src = source
-	local player = exports.qbx_core:GetPlayer(src)
+	local player = exports.qbx_core:GetPlayer(source)
 	local target = exports.qbx_core:GetPlayer(data.source)
 	
-    if not player.PlayerData[data.type].isboss then
-        ExploitBan(src, 'HireEmployee Exploiting')
+    if not player.PlayerData[data.group].isboss then
+        exploitBan(source, 'HireEmployee Exploiting')
         return
     end
 	
     if not target then
-        exports.qbx_core:Notify(src, 'Civilian is not in city.', 'error')
+        exports.qbx_core:Notify(source, 'Civilian is not in city.', 'error')
         return
     end
 
-	local jobName = player.PlayerData[data.type].name
-	local logArea = data.type == 'gang' and 'gang' or 'boss'
+	local jobName = player.PlayerData[data.group].name
+	local logArea = data.group == 'gang' and 'gang' or 'boss'
 
-    local success = data.type == 'gang' and target.Functions.SetGang(jobName, data.grade) or target.Functions.SetJob(jobName, data.grade)
-    local grade = data.type == 'gang' and gangs[jobName].grades[data.grade].name or jobs[jobName].grades[data.grade].name
+    local success = data.group == 'gang' and target.Functions.SetGang(jobName, data.grade) or target.Functions.SetJob(jobName, data.grade)
+    local grade = data.group == 'gang' and gangs[jobName].grades[data.grade].name or jobs[jobName].grades[data.grade].name
 
     if success then
         local playerFullName = player.PlayerData.charinfo.firstname .. ' ' .. player.PlayerData.charinfo.lastname
         local targetFullName = target.PlayerData.charinfo.firstname .. ' ' .. target.PlayerData.charinfo.lastname
-        local organizationLabel = player.PlayerData[data.type].label
+        local organizationLabel = player.PlayerData[data.group].label
 
-        exports.qbx_core:Notify(src, 'You hired ' .. targetFullName .. ' into ' .. organizationLabel, 'success')
-        exports.qbx_core:Notify(target.PlayerData.source, 'You have been hired as ' .. organizationLabel, 'success')
+        exports.qbx_core:Notify(source, 'You hired ' .. targetFullName .. ' into ' .. organizationLabel, 'success')
+        exports.qbx_core:Notify(target.PlayerData.source, 'You have been hired into ' .. organizationLabel, 'success')
         TriggerEvent('qb-log:server:CreateLog', logArea..'menu', grade, 'yellow', playerFullName.. ' successfully recruited ' .. targetFullName .. ' (' .. organizationLabel .. ')', false)
     else
-        exports.qbx_core:Notify(src, 'Couldn\'t hire civilian', 'error')
+        exports.qbx_core:Notify(source, 'Couldn\'t hire civilian', 'error')
     end
-	TriggerClientEvent('qbx_management:client:OpenMenu', src, data.type)
+	TriggerClientEvent('qbx_management:client:openMenu', source, data.group)
 end)
 
----@param data {source: number, type: 'job'|'gang'}
-RegisterNetEvent('qbx_management:server:FireEmployee', function(data)
+---@param data {source: number, group: 'job'|'gang'}
+RegisterNetEvent('qbx_management:server:fireEmployee', function(data)
 	local src = source
 	local player = exports.qbx_core:GetPlayer(src)
 	local employee = exports.qbx_core:GetPlayerByCitizenId(data.source) or nil
 	local playerFullName = player.PlayerData.charinfo.firstname .. ' ' .. player.PlayerData.charinfo.lastname
-	local organizationLabel = player.PlayerData[data.type].label
-	local logArea = data.type == 'gang' and 'gang' or 'boss'
+	local organizationLabel = player.PlayerData[data.group].label
+	local logArea = data.group == 'gang' and 'gang' or 'boss'
 	
-	if not player.PlayerData[data.type].isboss then ExploitBan(src, 'FireEmployee Exploiting') return end
+	if not player.PlayerData[data.group].isboss then exploitBan(src, 'FireEmployee Exploiting') return end
 	
-	local logType = data.type == 'gang' and 'Gang Member fired!' or 'Employee fired!'
+	local logType = data.group == 'gang' and 'Gang Member fired!' or 'Employee fired!'
 	if employee then
 		local employeeFullName = employee.PlayerData.charinfo.firstname .. ' ' .. employee.PlayerData.charinfo.lastname
 		if employee.PlayerData.citizenid == player.PlayerData.citizenid then
-			local message = data.type == 'gang' and 'You can\'t kick yourself out of the gang!' or 'You can\'t fire yourself'
+			local message = data.group == 'gang' and 'You can\'t kick yourself out of the gang!' or 'You can\'t fire yourself'
 			exports.qbx_core:Notify(src, message, 'error')
 			return
 		end
 	
-		if employee.PlayerData[data.type].grade.level > player.PlayerData[data.type].grade.level then
+		if employee.PlayerData[data.group].grade.level > player.PlayerData[data.group].grade.level then
 			exports.qbx_core:Notify(src, 'You cannot fire your boss!', 'error')
 			return
 		end
 	
-		local success = data.type == 'gang' and employee.Functions.SetGang('none', 0) or employee.Functions.SetJob('unemployed', 0)
+		local success = data.group == 'gang' and employee.Functions.SetGang('none', 0) or employee.Functions.SetJob('unemployed', 0)
 		if not success then
 			exports.qbx_core:Notify(src, 'Unable to fire citizen.', 'error')
 			return
 		end
 	
-		local notifyMessage = data.type == 'gang' and 'You have been expelled from the gang!' or 'You have been fired! Good luck.'
-		TriggerEvent('qb-log:server:CreateLog', logArea..'menu', data.type..' Fire', 'orange', playerFullName .. ' successfully fired ' .. employeeFullName .. ' (' .. organizationLabel .. ')', false)
+		local notifyMessage = data.group == 'gang' and 'You have been expelled from the gang!' or 'You have been fired! Good luck.'
+		TriggerEvent('qb-log:server:CreateLog', logArea..'menu', data.group..' Fire', 'orange', playerFullName .. ' successfully fired ' .. employeeFullName .. ' (' .. organizationLabel .. ')', false)
 		exports.qbx_core:Notify(src, logType, 'success')
 		exports.qbx_core:Notify(employee.PlayerData.source, notifyMessage, 'error')
 	else
@@ -272,57 +271,55 @@ RegisterNetEvent('qbx_management:server:FireEmployee', function(data)
 		end
 	
 		employee = offlineEmployee[1]
-		employee[data.type] = json.decode(employee[data.type])
+		employee[data.group] = json.decode(employee[data.group])
 		employee.charinfo = json.decode(employee.charinfo)
 		local employeeFullName = employee.charinfo.firstname .. ' ' .. employee.charinfo.lastname
 	
-		if employee[data.type].grade.level > player.PlayerData.gang.grade.level then
+		if employee[data.group].grade.level > player.PlayerData.gang.grade.level then
 			exports.qbx_core:Notify(src, 'You cannot fire this citizen!', 'error')
 			return
 		end
 	
 		local role = {
-			name = data.type == 'gang' and 'none' or 'unemployed',
-			label = data.type == 'gang' and gangs['none'].label or jobs['unemployed'].label,
-			payment = data.type == 'gang' and 0 or jobs['unemployed'].grades[0].payment,
-			onduty = data.type ~= 'gang',
+			name = data.group == 'gang' and 'none' or 'unemployed',
+			label = data.group == 'gang' and gangs['none'].label or jobs['unemployed'].label,
+			payment = data.group == 'gang' and 0 or jobs['unemployed'].grades[0].payment,
+			onduty = data.group ~= 'gang',
 			isboss = false,
 			grade = {
-				name = data.type == 'gang' and gangs['none'].grades[0].name or jobs['unemployed'].grades[0].name,
+				name = data.group == 'gang' and gangs['none'].grades[0].name or jobs['unemployed'].grades[0].name,
 				level = 0
 			}
 		}
 	
-		local updateColumn = data.type == 'gang' and 'gang' or 'job'
+		local updateColumn = data.group == 'gang' and 'gang' or 'job'
 		MySQL.update(string.format('UPDATE players SET %s = ? WHERE citizenid = ?', updateColumn), {json.encode(role), data.source})
 		exports.qbx_core:Notify(src, logType, 'success')
-		TriggerEvent('qb-log:server:CreateLog', logArea..'menu', data.type..' Fire', 'orange', playerFullName .. ' successfully fired ' .. employeeFullName .. ' (' .. organizationLabel .. ')', false)
+		TriggerEvent('qb-log:server:CreateLog', logArea..'menu', data.group..' Fire', 'orange', playerFullName .. ' successfully fired ' .. employeeFullName .. ' (' .. organizationLabel .. ')', false)
 	end
-	TriggerClientEvent('qbx_management:client:OpenMenu', src, data.type)
+	TriggerClientEvent('qbx_management:client:openMenu', src, data.group)
 end)
 
----@param type 'job'|'gang'
+---@param group 'job'|'gang'
 ---@param amount number
-RegisterNetEvent('qbx_management:server:withdrawMoney', function(type, amount)
-	local src = source
-	local success, player, account = WithdrawMoney(src, amount, type, type == 'gang' and 'Gang menu withdraw' or 'Boss menu withdraw')
+RegisterNetEvent('qbx_management:server:withdrawMoney', function(group, amount)
+	local success, player, account = withdrawMoney(source, amount, group, group == 'gang' and 'Gang menu withdraw' or 'Boss menu withdraw')
 	if not success or not player then return end
-	local logArea = type == 'gang' and 'gang' or 'boss'
+	local logArea = group == 'gang' and 'gang' or 'boss'
 	
 	TriggerEvent('qb-log:server:CreateLog', logArea..'menu', 'Withdraw Money', 'yellow', player.PlayerData.charinfo.firstname .. ' ' .. player.PlayerData.charinfo.lastname .. ' successfully withdrew $' .. amount .. ' (' .. account .. ')', false)
-	TriggerClientEvent('qbx_management:client:OpenMenu', src, type)
+	TriggerClientEvent('qbx_management:client:openMenu', source, group)
 end)
 
----@param type 'job'|'gang'
+---@param group 'job'|'gang'
 ---@param amount number
-RegisterNetEvent('qbx_management:server:depositMoney', function(type, amount)
-	local src = source
-	local success, player, account = DepositMoney(src, amount, type)
+RegisterNetEvent('qbx_management:server:depositMoney', function(group, amount)
+	local success, player, account = depositMoney(source, amount, group)
 	if not success or not player then return end
 
-	local logArea = type == 'gang' and 'gang' or 'boss'
+	local logArea = group == 'gang' and 'gang' or 'boss'
 	TriggerEvent('qb-log:server:CreateLog', logArea..'menu', 'Deposit Money', 'yellow', player.PlayerData.charinfo.firstname .. ' ' .. player.PlayerData.charinfo.lastname .. ' successfully deposited $' .. amount .. ' (' .. account .. ')', false)
-	TriggerClientEvent('qbx_management:client:OpenMenu', src, type)
+	TriggerClientEvent('qbx_management:client:openMenu', source, group)
 end)
 
 
