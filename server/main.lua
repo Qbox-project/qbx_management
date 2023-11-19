@@ -1,4 +1,3 @@
-Accounts = {}
 local jobs = exports.qbx_core:GetJobs()
 local gangs = exports.qbx_core:GetGangs()
 
@@ -26,12 +25,6 @@ end
 lib.callback.register('qbx_management:server:getAccount', function(_, account)
 	return exports['Renewed-Banking']:getAccountMoney(account) or 0
 end)
-
----@param account string
----@return number
-function GetAccount(account)
-	return exports['Renewed-Banking']:getAccountMoney(account) or 0
-end
 
 ---@param account string
 ---@param amount number
@@ -256,7 +249,7 @@ RegisterNetEvent('qbx_management:server:FireEmployee', function(data)
 			return
 		end
 	
-		if employee.PlayerData[data.type].grade.level > player.PlayerData[data.type].grade.level then 
+		if employee.PlayerData[data.type].grade.level > player.PlayerData[data.type].grade.level then
 			exports.qbx_core:Notify(src, 'You cannot fire your boss!', 'error')
 			return
 		end

@@ -41,7 +41,7 @@ RegisterNetEvent('qbx_management:client:SocietyMenu', function(type)
             icon = 'fa-solid fa-money-bill-transfer',
             description = 'Withdraw Money',
             event = 'qbx_management:client:SocietyWithdraw',
-            args = { 
+            args = {
                 type = type,
                 amount = amount
             }
@@ -150,11 +150,7 @@ end)
 
 ---@param type 'job'|'gang'
 RegisterNetEvent('qbx_management:client:OpenMenu', function(type)
-    if type == 'job' and (not QBX.PlayerData.job.name or not QBX.PlayerData.job.isboss) then
-        return
-    elseif type == 'gang' and (not QBX.PlayerData.gang.name or not QBX.PlayerData.gang.isboss) then
-        return
-    end
+    if not QBX.PlayerData[type].name or not QBX.PlayerData[type].isboss then return end
 
     local bossMenu = {
         {
@@ -208,7 +204,7 @@ end)
 ---@param type 'job'|'gang'
 RegisterNetEvent('qbx_management:client:EmployeeList', function(type)
     local EmployeesMenu = {}
-    local accountName = type == 'gang' and QBX.PlayerData.gang.name or QBX.PlayerData.job.name
+    local accountName = QBX.PlayerData[type].name
     local employees = lib.callback.await('qbx_management:server:getemployees', false, accountName, type)
     for _, v in pairs(employees) do
         EmployeesMenu[#EmployeesMenu + 1] = {
@@ -218,7 +214,7 @@ RegisterNetEvent('qbx_management:client:EmployeeList', function(type)
             args = {
                 type = type,
                 player = v,
-                work = type == 'gang' and QBX.PlayerData.gang or QBX.PlayerData.job
+                work = QBX.PlayerData[type]
             }
         }
     end
@@ -287,7 +283,7 @@ end)
 RegisterNetEvent('qbx_management:client:HireMenu', function(type)
     local HireMenu = {}
     local players = FindPlayers()
-    local hireName = type == 'gang' and QBX.PlayerData.gang.name or QBX.PlayerData.job.name
+    local hireName = QBX.PlayerData[type].name
     for _, v in pairs(players) do
 
         if v and v.citizenid ~= QBX.PlayerData.citizenid and v[type].name ~= hireName then
@@ -295,7 +291,7 @@ RegisterNetEvent('qbx_management:client:HireMenu', function(type)
                 title = v.name,
                 description = 'Citizen ID: ' .. v.citizenid .. ' - ID: ' .. v.source,
                 serverEvent = 'qbx_management:server:HireEmployee',
-                args = { 
+                args = {
                     source = v.source,
                     type = type,
                     grade = 0
