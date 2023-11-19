@@ -22,7 +22,7 @@ end
 
 ---@param account string
 ---@return number
-lib.callback.register('qbx_management:server:getAccount', function(source, account)
+lib.callback.register('qbx_management:server:getAccount', function(_, account)
 	return exports['Renewed-Banking']:getAccountMoney(account) or 0
 end)
 
