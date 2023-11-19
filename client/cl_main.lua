@@ -122,14 +122,15 @@ RegisterNetEvent('qbx_management:client:SocietyWithdraw', function(data)
         return
     end
 
-    if not withdraw[2] then
+    local withdrawAmount = tonumber(withdraw[2])
+
+    if not withdrawAmount then
         exports.qbx_core:Notify('Amount value is missing!', 'error')
 
         TriggerEvent('qbx_management:client:SocietyMenu', data.type)
         return
     end
 
-    local withdrawAmount = tonumber(withdraw[2])
 
     if withdrawAmount > tonumber(data.amount) then
         exports.qbx_core:Notify('You cant withdraw that amount of money!', 'error')
