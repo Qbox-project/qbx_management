@@ -2,7 +2,7 @@ local jobs = exports.qbx_core:GetJobs()
 local gangs = exports.qbx_core:GetGangs()
 local DynamicMenuItems = {}
 
-function comma_value(amount)
+function CommaValue(amount)
     local numChanged
 
     repeat
@@ -22,6 +22,7 @@ function FindPlayers()
 	return lib.callback.await('qbx_management:server:getplayers', false, closePlayers)
 end
 
+---@param type 'job'|'gang'
 RegisterNetEvent('qbx_management:client:SocietyMenu', function(type)
     local amount = lib.callback.await('qbx_management:server:getAccount', false, QBX.PlayerData[type].name)
     local SocietyMenu = {
@@ -55,20 +56,21 @@ RegisterNetEvent('qbx_management:client:SocietyMenu', function(type)
 
     lib.registerContext({
         id = 'qbx_management_open_Society',
-        title = 'Balance: $' .. comma_value(amount) .. ' - ' .. string.upper(QBX.PlayerData[type].label),
+        title = 'Balance: $' .. CommaValue(amount) .. ' - ' .. string.upper(QBX.PlayerData[type].label),
         options = SocietyMenu
     })
 
     lib.showContext('qbx_management_open_Society')
 end)
 
+---@param data {amount: number, type: 'job'|'gang'}
 RegisterNetEvent('qbx_management:client:SocietyDeposit', function(data)
     local deposit = lib.inputDialog('Deposit Money', {
         {
             type = 'input',
             label = 'Available Balance',
             disabled = true,
-            default = comma_value(data.amount)
+            default = CommaValue(data.amount)
         },
         {
             type = 'number',
@@ -100,13 +102,14 @@ RegisterNetEvent('qbx_management:client:SocietyDeposit', function(data)
     TriggerServerEvent('qbx_management:server:depositMoney', data.type, depositAmount)
 end)
 
+---@param data {amount: number, type: 'job'|'gang'}
 RegisterNetEvent('qbx_management:client:SocietyWithdraw', function(data)
     local withdraw = lib.inputDialog('Withdraw Money', {
         {
             type = 'input',
             label = 'Available Balance',
             disabled = true,
-            default = comma_value(data.amount)
+            default = CommaValue(data.amount)
         },
         {
             type = 'input',
@@ -139,15 +142,13 @@ RegisterNetEvent('qbx_management:client:SocietyWithdraw', function(data)
     TriggerServerEvent('qbx_management:server:withdrawMoney', data.type, withdrawAmount)
 end)
 
+---@param type 'job'|'gang'
 RegisterNetEvent('qbx_management:client:Stash', function(type)
     local stash = type == 'gang' and 'gang_'..QBX.PlayerData.gang.name or 'boss_'..QBX.PlayerData.job.name
     exports.ox_inventory:openInventory('stash', stash)
 end)
 
-RegisterNetEvent('qbx_management:client:Warbobe', function()
-    TriggerEvent('qb-clothing:client:openOutfitMenu')
-end)
-
+---@param type 'job'|'gang'
 RegisterNetEvent('qbx_management:client:OpenMenu', function(type)
     if type == 'job' and (not QBX.PlayerData.job.name or not QBX.PlayerData.job.isboss) then
         return
@@ -204,6 +205,7 @@ RegisterNetEvent('qbx_management:client:OpenMenu', function(type)
     lib.showContext('qbx_management_open_Menu')
 end)
 
+---@param type 'job'|'gang'
 RegisterNetEvent('qbx_management:client:EmployeeList', function(type)
     local EmployeesMenu = {}
     local accountName = type == 'gang' and QBX.PlayerData.gang.name or QBX.PlayerData.job.name
@@ -237,6 +239,7 @@ RegisterNetEvent('qbx_management:client:EmployeeList', function(type)
     lib.showContext('qbx_management_open_Manage')
 end)
 
+---@param data {source: number, player: table, work: table, type: 'job'|'gang'}
 RegisterNetEvent('qbx_management:client:ManageEmployee', function(data)
     local EmployeeMenu = {}
     local employeeLoop = data.type == 'gang' and gangs[data.work.name].grades or jobs[data.work.name].grades
@@ -280,6 +283,7 @@ RegisterNetEvent('qbx_management:client:ManageEmployee', function(data)
     lib.showContext('qbx_management_open_Member')
 end)
 
+---@param type 'job'|'gang'
 RegisterNetEvent('qbx_management:client:HireMenu', function(type)
     local HireMenu = {}
     local players = FindPlayers()
