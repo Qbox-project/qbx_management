@@ -94,9 +94,9 @@ lib.callback.register('qbx_management:server:getEmployees', function(source, gro
 	local employees = {}
 	local players = MySQL.query.await('SELECT * FROM `players` WHERE ?? LIKE \'%'.. groupName ..'%\'', {group})
 	if not players then return {} end
-	for _, player in pairs(players) do
-		local isOnline = exports.qbx_core:GetPlayerByCitizenId(player.citizenid)
-		local isOffline = json.decode(player[group])
+	for _, employee in pairs(players) do
+		local isOnline = exports.qbx_core:GetPlayerByCitizenId(employee.citizenid)
+		local isOffline = json.decode(employee[group])
 		if isOnline then
 			employees[#employees + 1] = {
 			cid = isOnline.PlayerData.citizenid,
@@ -106,10 +106,10 @@ lib.callback.register('qbx_management:server:getEmployees', function(source, gro
 			}
 		elseif isOffline.name == groupName then
 			employees[#employees + 1] = {
-			cid = player.citizenid,
+			cid = employee.citizenid,
 			grade =  isOffline.grade,
 			isboss = isOffline.isboss,
-			name = '❌ ' ..  json.decode(player.charinfo).firstname .. ' ' .. json.decode(player.charinfo).lastname
+			name = '❌ ' ..  json.decode(employee.charinfo).firstname .. ' ' .. json.decode(employee.charinfo).lastname
 			}
 		end
 	end
