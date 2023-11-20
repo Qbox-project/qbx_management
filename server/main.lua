@@ -92,7 +92,7 @@ lib.callback.register('qbx_management:server:getEmployees', function(source, gro
 	if not player.PlayerData[group].isboss then exploitBan(source, 'GetEmployees Exploiting') return end
 
 	local employees = {}
-	local players = MySQL.query.await('SELECT * FROM `players` WHERE ?? LIKE \'%'.. groupName ..'%\'', {group})
+	local players = MySQL.query.await("SELECT * FROM `players` WHERE ?? LIKE '%".. groupName .."%'", {group})
 	if not players then return {} end
 	for _, employee in pairs(players) do
 		local isOnline = exports.qbx_core:GetPlayerByCitizenId(employee.citizenid)

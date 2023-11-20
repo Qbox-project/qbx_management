@@ -3,7 +3,6 @@ local jobs = exports.qbx_core:GetJobs()
 local gangs = exports.qbx_core:GetGangs()
 local isLoggedIn = LocalPlayer.state.isLoggedIn
 
-
 -- Finds nearby players and returns a table of server ids
 ---@return table
 local function findPlayers()
