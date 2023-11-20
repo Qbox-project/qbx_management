@@ -8,7 +8,7 @@ repository 'https://github.com/Qbox-project/qbx_management'
 
 shared_scripts {
     '@ox_lib/init.lua',
-    'config.lua'
+    '@qbx_core/modules/utils.lua',
 }
 
 client_scripts {
@@ -19,6 +19,10 @@ client_scripts {
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'server/*.lua'
+}
+
+files {
+    'config/shared.lua',
 }
 
 lua54 'yes'
