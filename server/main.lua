@@ -8,9 +8,9 @@ local gangs = exports.qbx_core:GetGangs()
 local function exploitBan(id, reason)
     MySQL.insert('INSERT INTO bans (name, license, discord, ip, reason, expire, bannedby) VALUES (?, ?, ?, ?, ?, ?, ?)', {
         GetPlayerName(id),
-        exports.qbx_core:GetIdentifier(id, 'license'),
-        exports.qbx_core:GetIdentifier(id, 'discord'),
-        exports.qbx_core:GetIdentifier(id, 'ip'),
+        GetPlayerIdentifierByType(id, 'license'),
+        GetPlayerIdentifierByType(id, 'discord'),
+        GetPlayerIdentifierByType(id, 'ip'),
         reason,
         2147483647,
         'qb-management'
