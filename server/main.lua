@@ -2,26 +2,6 @@ local sharedConfig = require 'config.shared'
 local jobs = exports.qbx_core:GetJobs()
 local gangs = exports.qbx_core:GetGangs()
 
--- Bans players for various exploits against the script.
----@param id string
----@param reason string
-local function exploitBan(id, reason)
-    MySQL.insert('INSERT INTO bans (name, license, discord, ip, reason, expire, bannedby) VALUES (?, ?, ?, ?, ?, ?, ?)', {
-        GetPlayerName(id),
-        exports.qbx_core:GetIdentifier(id, 'license'),
-        exports.qbx_core:GetIdentifier(id, 'discord'),
-        exports.qbx_core:GetIdentifier(id, 'ip'),
-        reason,
-        2147483647,
-        'qb-management'
-    })
-
-    TriggerEvent('qb-log:server:CreateLog', 'bans', 'Player Banned', 'red', string.format('%s was banned by %s for %s', GetPlayerName(id), 'qbx_management', reason), true)
-
-    DropPlayer(id, 'You were permanently banned by the server for: Exploiting')
-end
-
-
 -- Returns account balance for the given society account
 ---@param account string Name of job/gang account to get balance for
 ---@return number
@@ -40,7 +20,7 @@ end)
 local function withdrawMoney(src, amount, group, reason)
 	local player = exports.qbx_core:GetPlayer(src)
 
-	if not player.PlayerData[group].isboss then exploitBan(src, 'withdrawMoney Exploiting') return false end
+	if not player.PlayerData[group].isboss then return false end
 
 	if amount <= 0 then return false end
 
@@ -67,7 +47,7 @@ end
 local function depositMoney(src, amount, group)
 	local player = exports.qbx_core:GetPlayer(src)
 
-	if not player.PlayerData[group].isboss then exploitBan(src, 'depositMoney Exploiting') return false end
+	if not player.PlayerData[group].isboss then return false end
 	local account = player.PlayerData[group].name
 	if player.Functions.RemoveMoney('cash', amount) then
 		exports['Renewed-Banking']:addAccountMoney(account, amount)
@@ -89,7 +69,7 @@ end
 lib.callback.register('qbx_management:server:getEmployees', function(source, groupName, group)
 	local player = exports.qbx_core:GetPlayer(source)
 
-	if not player.PlayerData[group].isboss then exploitBan(source, 'GetEmployees Exploiting') return end
+	if not player.PlayerData[group].isboss then return end
 
 	local employees = {}
 	local players = MySQL.query.await("SELECT * FROM `players` WHERE ?? LIKE '%".. groupName .."%'", {group})
@@ -128,7 +108,7 @@ lib.callback.register('qbx_management:server:updateGrade', function(source, cid,
 	local employee = exports.qbx_core:GetPlayerByCitizenId(cid)
 	local jobName = player.PlayerData[group].name
 
-	if not player.PlayerData[group].isboss then exploitBan(source, 'UpdateGrade Exploiting') return end
+	if not player.PlayerData[group].isboss then return end
 	if grade > player.PlayerData[group].grade.level then exports.qbx_core:Notify(source, 'You cannot promote to this rank!', 'error') return end
 
 	if not employee then
@@ -161,10 +141,7 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
 	local player = exports.qbx_core:GetPlayer(source)
 	local target = exports.qbx_core:GetPlayer(employee)
 	
-    if not player.PlayerData[group].isboss then
-        exploitBan(source, 'HireEmployee Exploiting')
-        return
-    end
+    if not player.PlayerData[group].isboss then return end
 	
     if not target then
         exports.qbx_core:Notify(source, 'Civilian is not in city.', 'error')
@@ -296,7 +273,7 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 	local playerFullName = player.PlayerData.charinfo.firstname .. ' ' .. player.PlayerData.charinfo.lastname
 	local organizationLabel = player.PlayerData[group].label
 	
-	if not player.PlayerData[group].isboss then exploitBan(source, 'FireEmployee Exploiting') return end
+	if not player.PlayerData[group].isboss then return end
 	
 	local success, employeeFullName
 	if firedEmployee then
