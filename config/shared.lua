@@ -1,5 +1,5 @@
 return {
-    useTarget = GetConvar('UseTarget', 'false') == 'true', -- Enables ox_target interactions
+    useTarget = false, -- Enables ox_target interactions
     debugPoly = false,
     menus = {
         police = {
@@ -39,13 +39,13 @@ return {
             group = 'job'
         },
         lostmc = {
-            coords = vector3(983.69, -90.92, 74.85),
+            coords = vec3(983.69, -90.92, 74.85),
             size = vec3(1.5, 1.5, 1.5),
             rotation = 39.68,
             group = 'gang'
         },
         vagos = {
-            coords = vector3(351.18, -2054.92, 22.09),
+            coords = vec3(351.18, -2054.92, 22.09),
             size = vec3(1.5, 1.5, 1.5),
             rotation = 39.68,
             group = 'gang'

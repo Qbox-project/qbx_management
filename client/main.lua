@@ -1,6 +1,6 @@
 local sharedConfig = require 'config.shared'
-local jobs = exports.qbx_core:GetJobs()
-local gangs = exports.qbx_core:GetGangs()
+local JOBS = exports.qbx_core:GetJobs()
+local GANGS = exports.qbx_core:GetGangs()
 local isLoggedIn = LocalPlayer.state.isLoggedIn
 
 -- Finds nearby players and returns a table of server ids
@@ -19,11 +19,11 @@ end
 ---@param group 'job'|'gang'
 local function manageEmployee(player, groupName, group)
     local employeeMenu = {}
-    local employeeLoop = group == 'gang' and gangs[groupName].grades or jobs[groupName].grades
+    local employeeLoop = group == 'gang' and GANGS[groupName].grades or JOBS[groupName].grades
     for groupGrade, gradeTitle in pairs(employeeLoop) do
         employeeMenu[#employeeMenu + 1] = {
             title = gradeTitle.name,
-            description = 'Grade: ' .. groupGrade,
+            description = Lang:t('menu.grade')..groupGrade,
             onSelect = function()
                 lib.callback.await('qbx_management:server:updateGrade', false, player.cid, tonumber(groupGrade), group)
                 OpenBossMenu(group)
@@ -32,7 +32,7 @@ local function manageEmployee(player, groupName, group)
     end
 
     employeeMenu[#employeeMenu + 1] = {
-        title = group == 'gang' and 'Expel Gang Member' or 'Fire Employee',
+        title = group == 'gang' and Lang:t('menu.expel_gang') or Lang:t('menu.fire_employee'),
         icon = 'fa-solid fa-user-large-slash',
         onSelect = function()
             lib.callback.await('qbx_management:server:fireEmployee', false, player.cid, group)
@@ -40,21 +40,14 @@ local function manageEmployee(player, groupName, group)
         end,
     }
 
-    employeeMenu[#employeeMenu + 1] = {
-        title = 'Return',
-        icon = 'fa-solid fa-angle-left',
-        onSelect = function()
-            OpenBossMenu(group)
-        end
-    }
-
     lib.registerContext({
-        id = 'qbx_management_open_Member',
-        title = 'Manage ' .. player.name .. ' - ' .. string.upper(QBX.PlayerData[group].label),
+        id = 'memberMenu',
+        title = player.name,
+        menu = 'memberListMenu',
         options = employeeMenu,
     })
 
-    lib.showContext('qbx_management_open_Member')
+    lib.showContext('memberMenu')
 end
 
 -- Presents a menu of employees the work for a job or gang.
@@ -74,21 +67,14 @@ local function employeeList(group)
         }
     end
     
-    employeesMenu[#employeesMenu + 1] = {
-        title = 'Return',
-        icon = 'fa-solid fa-angle-left',
-        onSelect = function()
-            OpenBossMenu(group)
-        end
-    }
-    
     lib.registerContext({
-        id = 'qbx_management_open_Manage',
-        title = group == 'gang' and 'Manage Gang Members - ' .. string.upper(QBX.PlayerData.gang.label) or 'Manage Employees - ' .. string.upper(QBX.PlayerData.job.label),
+        id = 'memberListMenu',
+        title = group == 'gang' and Lang:t('menu.manage_gang') or Lang:t('menu.manage_employees'),
+        menu = 'openBossMenu',
         options = employeesMenu,
     })
 
-    lib.showContext('qbx_management_open_Manage')
+    lib.showContext('memberListMenu')
 end
 
 -- Presents a list of possible employees to hire for a job or gang.
@@ -101,7 +87,7 @@ local function showHireMenu(group)
         if player[group].name ~= hireName then
             hireMenu[#hireMenu + 1] = {
                 title = player.name,
-                description = 'Citizen ID: ' .. player.citizenid .. ' - ID: ' .. player.source,
+                description = Lang:t('menu.citizen_id')..player.citizenid..' - '..Lang:t('menu.id')..player.source,
                 onSelect = function()
                     lib.callback.await('qbx_management:server:hireEmployee', false, player.source, group)
                     OpenBossMenu(group)
@@ -110,21 +96,14 @@ local function showHireMenu(group)
         end
     end
 
-    hireMenu[#hireMenu + 1] = {
-        title = 'Return',
-        icon = 'fa-solid fa-angle-left',
-        onSelect = function()
-            OpenBossMenu(group)
-        end
-    }
-
     lib.registerContext({
-        id = 'qbx_management_open_Hire',
-        title = group == 'gang' and 'Hire Gang Members - ' .. string.upper(QBX.PlayerData.gang.label) or 'Hire Employees - ' .. string.upper(QBX.PlayerData.job.label),
+        id = 'hireMenu',
+        title = group == 'gang' and Lang:t('menu.hire_gang') or Lang:t('menu.hire_employees'),
+        menu = 'openBossMenu',
         options = hireMenu,
     })
 
-    lib.showContext('qbx_management_open_Hire')
+    lib.showContext('hireMenu')
 end
 
 -- Opens main boss menu changing function based on the group provided.
@@ -134,8 +113,8 @@ function OpenBossMenu(group)
 
     local bossMenu = {
         {
-            title = group == 'gang' and 'Manage Gang Members' or 'Manage Employees',
-            description = group == 'gang' and 'Recruit or Fire Gang Members' or 'Check your Employees List',
+            title = group == 'gang' and Lang:t('menu.manage_gang') or Lang:t('menu.manage_employees'),
+            description = group == 'gang' and Lang:t('menu.check_gang') or Lang:t('menu.check_employee'),
             icon = 'fa-solid fa-list',
             onSelect = function()
                 employeeList(group)
@@ -143,7 +122,7 @@ function OpenBossMenu(group)
         },
         {
             title = 'Hire Employees',
-            description = group == 'gang' and 'Hire Gang Members' or 'Hire Nearby Civilians',
+            description = group == 'gang' and Lang:t('menu.hire_gang') or Lang:t('menu.hire_civilians'),
             icon = 'fa-solid fa-hand-holding',
             onSelect = function()
                 showHireMenu(group)
@@ -151,7 +130,7 @@ function OpenBossMenu(group)
         },
         {
             title = 'Storage Access',
-            description = group == 'gang' and 'Open Gang Stash' or 'Open Business Storage',
+            description = group == 'gang' and Lang:t('menu.gang_storage') or Lang:t('menu.business_storage'),
             icon = 'fa-solid fa-box-open',
             onSelect = function()
                 local stash = (group == 'gang' and 'gang_' or 'boss_')..QBX.PlayerData[group].name
@@ -161,11 +140,11 @@ function OpenBossMenu(group)
     }
 
     lib.registerContext({
-        id = 'qbx_management_open_BossMenu',
-        title = group == 'gang' and 'Gang Management - ' .. string.upper(QBX.PlayerData.gang.label) or 'Boss Menu - ' .. string.upper(QBX.PlayerData.job.label),
+        id = 'openBossMenu',
+        title = group == 'gang' and string.upper(QBX.PlayerData.gang.label) or string.upper(QBX.PlayerData.job.label),
         options = bossMenu,
     })
-    lib.showContext('qbx_management_open_BossMenu')
+    lib.showContext('openBossMenu')
 end
 
 local function createBossZones()
@@ -180,7 +159,7 @@ local function createBossZones()
                     {
                         name = groups..'_menu',
                         icon = 'fa-solid fa-right-to-bracket',
-                        label = group.group == 'gang' and 'Gang Menu' or 'Boss Menu',
+                        label = group.group == 'gang' and Lang:t('menu.gang_menu') or Lang:t('menu.boss_menu'),
                         groups = groups,
                         onSelect = function()
                             OpenBossMenu(group.group)
@@ -198,7 +177,7 @@ local function createBossZones()
                 debug = sharedConfig.debugPoly,
                 onEnter = function()
                     if groups == QBX.PlayerData[group.group].name and QBX.PlayerData[group.group].isboss then
-                        lib.showTextUI(group.group == 'gang' and '[E] - Open Gang Management' or '[E] - Open Boss Management')
+                        lib.showTextUI(group.group == 'gang' and Lang:t('menu.gang_management') or Lang:t('menu.boss_management'))
                     end
                 end,
                 onExit = function()
