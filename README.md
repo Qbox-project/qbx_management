@@ -1,30 +1,19 @@
+![qbx_management](https://github.com/MafewTM/qbx_management/assets/22198949/34742f9d-b595-4482-b2ab-cea07ef5da67)
+
 # qbx_management
 
-Business and gang management menu with shared stashes, wardrobes and money
+Business and gang management menu with shared stashes
 
 ## Features
-- Customizable boss/gang menu locations
-- Automatic stash creation for boss/gangs
-- View current employees/gang members
+- Customizable bbusiness and gang menu locations
+- Automatic stash creation for businesses and gangs
+- View current employees and gang members
 - Fire, hire, and promote online players
 - Fire offline players
-- Deposit and withdraw money from group account (bankAuth required)
 - Logging hire, fire, promotion, and bank account transactions
 
 ## Dependencies
 - [qbx_core](https://github.com/Qbox-project/qbx_core)
-- [qbx_smallresources](https://github.com/Qbox-project/qbx_smallresources) (For logs)
 - [ox_lib](https://github.com/overextended/ox_lib)
 - [ox_inventory](https://github.com/overextended/ox_inventory)
-- [illenium-appearance](https://github.com/iLLeniumStudios/illenium-appearance) (For clothing menu)
-- [Renewed-Banking](https://github.com/Renewed-Scripts/Renewed-Banking) (For group accounts)
-
-## Screenshots
-*We need new ones*
-
-## Installation
-### Manual
-- Download the script and put it in the `[qbx]` directory.
-- Edit config/shared.lua with coordinates for boss menu locations
-- Group must exist in qbx_core/shared/jobs.lua or qbx_core/shared/gangs.lua
-- Restart Script / Server
+- [qbx_smallresources](https://github.com/Qbox-project/qbx_smallresources) (For logs)
