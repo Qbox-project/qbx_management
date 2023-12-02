@@ -5,7 +5,7 @@
 Business and gang management menu with shared stashes
 
 ## Features
-- Customizable bbusiness and gang menu locations
+- Customizable business and gang menu locations
 - Automatic stash creation for businesses and gangs
 - View current employees and gang members
 - Fire, hire, and promote online players
