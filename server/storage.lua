@@ -14,7 +14,7 @@ end
 ---@param column string
 ---@param role string
 ---@param citizenId string
----@return boolean
+---@return Player[]
 function UpdatePlayerJob(column, role, citizenId)
     return MySQL.update.await('UPDATE players SET '..column..' = ? WHERE citizenid = ?', {role, citizenId})
 end
