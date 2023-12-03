@@ -15,7 +15,7 @@ lib.callback.register('qbx_management:server:getEmployees', function(source, gro
 	if not player.PlayerData[group].isboss then return end
 
 	local employees = {}
-	local players = MySQL.query.await("SELECT * FROM `players` WHERE ?? LIKE '%"..groupName.."%'", {group})
+	local players = FetchPlayersByGroup(groupName, group)
 	if not players then return {} end
 	for _, employee in pairs(players) do
 		local isOnline = exports.qbx_core:GetPlayerByCitizenId(employee.citizenid)
@@ -169,7 +169,7 @@ end
 ---@param player Player Player object of player initiating firing action
 ---@param group 'job'|'gang'
 local function fireOfflineEmployee(source, employee, player, group)
-	local offlineEmployee = MySQL.query.await('SELECT * FROM players WHERE citizenid = ? LIMIT 1', {employee})
+	local offlineEmployee = FetchPlayerByCitizenId(employee)
 	if not offlineEmployee[1] then
 		exports.qbx_core:Notify(source, Lang:t('error.person_doesnt_exist'), 'error')
 		return false, nil
@@ -198,7 +198,7 @@ local function fireOfflineEmployee(source, employee, player, group)
 
 	local updateColumn = group == 'gang' and 'gang' or 'job'
 	local employeeFullName = employee.charinfo.firstname..' '..employee.charinfo.lastname
-	local success = MySQL.update.await(string.format('UPDATE players SET %s = ? WHERE citizenid = ?', updateColumn), {json.encode(role), employee.citizenid})
+	local success = UpdatePlayerJob(updateColumn, json.encode(role), employee.citizenid)
 	if success > 0 then
 		return true, employeeFullName
 	end
