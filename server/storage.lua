@@ -1,8 +1,8 @@
----@param groupName string
----@param group string
+---@param name string
+---@param type string
 ---@return Players[]
-function FetchPlayerEntitiesByGroup(groupName, group)
-    return MySQL.query.await("SELECT * FROM `players` WHERE ?? LIKE '%"..groupName.."%'", {group})
+function FetchPlayerEntitiesByGroup(name, type)
+    return MySQL.query.await("SELECT * FROM `players` WHERE ?? LIKE '%"..name.."%'", {type})
 end
 
 ---@param citizenId string
@@ -11,9 +11,9 @@ function FetchPlayerEntityByCitizenId(citizenId)
     return MySQL.query.await('SELECT * FROM players WHERE citizenid = ? LIMIT 1', {citizenId})
 end
 ---@param citizenId string
----@param column gang | job
----@param role string
+---@param type gang | job
+---@param role Gang | Job
 ---@return Player[]
-function UpdatePlayerJob(citizenId, column, role)
-    return MySQL.update.await('UPDATE players SET '..column..' = ? WHERE citizenid = ?', {json.encode(role), citizenId})
+function UpdatePlayerJob(citizenId, type, role)
+    return MySQL.update.await('UPDATE players SET '..type..' = ? WHERE citizenid = ?', {json.encode(role), citizenId})
 end

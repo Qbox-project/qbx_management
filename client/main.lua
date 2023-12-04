@@ -16,27 +16,27 @@ end
 -- Presents a menu to manage a specific employee including changing grade or firing them
 ---@param player table Player data for managing a specific employee
 ---@param groupName string Name of job/gang of employee being managed
----@param group 'job'|'gang'
-local function manageEmployee(player, groupName, group)
+---@param groupType 'job'|'gang'
+local function manageEmployee(player, groupName, groupType)
     local employeeMenu = {}
-    local employeeLoop = group == 'gang' and GANGS[groupName].grades or JOBS[groupName].grades
+    local employeeLoop = groupType == 'gang' and GANGS[groupName].grades or JOBS[groupName].grades
     for groupGrade, gradeTitle in pairs(employeeLoop) do
         employeeMenu[#employeeMenu + 1] = {
             title = gradeTitle.name,
             description = Lang:t('menu.grade')..groupGrade,
             onSelect = function()
-                lib.callback.await('qbx_management:server:updateGrade', false, player.cid, tonumber(groupGrade), group)
-                OpenBossMenu(group)
+                lib.callback.await('qbx_management:server:updateGrade', false, player.cid, tonumber(groupGrade), groupType)
+                OpenBossMenu(groupType)
             end,
         }
     end
 
     employeeMenu[#employeeMenu + 1] = {
-        title = group == 'gang' and Lang:t('menu.expel_gang') or Lang:t('menu.fire_employee'),
+        title = groupType == 'gang' and Lang:t('menu.expel_gang') or Lang:t('menu.fire_employee'),
         icon = 'fa-solid fa-user-large-slash',
         onSelect = function()
-            lib.callback.await('qbx_management:server:fireEmployee', false, player.cid, group)
-            OpenBossMenu(group)
+            lib.callback.await('qbx_management:server:fireEmployee', false, player.cid, groupType)
+            OpenBossMenu(groupType)
         end,
     }
 
@@ -52,24 +52,24 @@ end
 
 -- Presents a menu of employees the work for a job or gang.
 -- Allows selection of an employee to perform further actions
----@param group 'job'|'gang'
-local function employeeList(group)
+---@param groupType 'job'|'gang'
+local function employeeList(groupType)
     local employeesMenu = {}
-    local groupName = QBX.PlayerData[group].name
-    local employees = lib.callback.await('qbx_management:server:getEmployees', false, groupName, group)
+    local groupName = QBX.PlayerData[groupType].name
+    local employees = lib.callback.await('qbx_management:server:getEmployees', false, groupName, groupType)
     for _, employee in pairs(employees) do
         employeesMenu[#employeesMenu + 1] = {
             title = employee.name,
             description = employee.grade.name,
             onSelect = function()
-                manageEmployee(employee, groupName, group)
+                manageEmployee(employee, groupName, groupType)
             end,
         }
     end
     
     lib.registerContext({
         id = 'memberListMenu',
-        title = group == 'gang' and Lang:t('menu.manage_gang') or Lang:t('menu.manage_employees'),
+        title = groupType == 'gang' and Lang:t('menu.manage_gang') or Lang:t('menu.manage_employees'),
         menu = 'openBossMenu',
         options = employeesMenu,
     })
@@ -78,19 +78,19 @@ local function employeeList(group)
 end
 
 -- Presents a list of possible employees to hire for a job or gang.
----@param group 'job'|'gang'
-local function showHireMenu(group)
+---@param groupType 'job'|'gang'
+local function showHireMenu(groupType)
     local hireMenu = {}
     local players = findPlayers()
-    local hireName = QBX.PlayerData[group].name
+    local hireName = QBX.PlayerData[groupType].name
     for _, player in pairs(players) do
-        if player[group].name ~= hireName then
+        if player[groupType].name ~= hireName then
             hireMenu[#hireMenu + 1] = {
                 title = player.name,
                 description = Lang:t('menu.citizen_id')..player.citizenid..' - '..Lang:t('menu.id')..player.source,
                 onSelect = function()
-                    lib.callback.await('qbx_management:server:hireEmployee', false, player.source, group)
-                    OpenBossMenu(group)
+                    lib.callback.await('qbx_management:server:hireEmployee', false, player.source, groupType)
+                    OpenBossMenu(groupType)
                 end,
             }
         end
@@ -98,7 +98,7 @@ local function showHireMenu(group)
 
     lib.registerContext({
         id = 'hireMenu',
-        title = group == 'gang' and Lang:t('menu.hire_gang') or Lang:t('menu.hire_employees'),
+        title = groupType == 'gang' and Lang:t('menu.hire_gang') or Lang:t('menu.hire_employees'),
         menu = 'openBossMenu',
         options = hireMenu,
     })
@@ -107,33 +107,33 @@ local function showHireMenu(group)
 end
 
 -- Opens main boss menu changing function based on the group provided.
----@param group 'job'|'gang'
-function OpenBossMenu(group)
-    if not QBX.PlayerData[group].name or not QBX.PlayerData[group].isboss then return end
+---@param groupType 'job'|'gang'
+function OpenBossMenu(groupType)
+    if not QBX.PlayerData[groupType].name or not QBX.PlayerData[groupType].isboss then return end
 
     local bossMenu = {
         {
-            title = group == 'gang' and Lang:t('menu.manage_gang') or Lang:t('menu.manage_employees'),
-            description = group == 'gang' and Lang:t('menu.check_gang') or Lang:t('menu.check_employee'),
+            title = groupType == 'gang' and Lang:t('menu.manage_gang') or Lang:t('menu.manage_employees'),
+            description = groupType == 'gang' and Lang:t('menu.check_gang') or Lang:t('menu.check_employee'),
             icon = 'fa-solid fa-list',
             onSelect = function()
-                employeeList(group)
+                employeeList(groupType)
             end,
         },
         {
             title = 'Hire Employees',
-            description = group == 'gang' and Lang:t('menu.hire_gang') or Lang:t('menu.hire_civilians'),
+            description = groupType == 'gang' and Lang:t('menu.hire_gang') or Lang:t('menu.hire_civilians'),
             icon = 'fa-solid fa-hand-holding',
             onSelect = function()
-                showHireMenu(group)
+                showHireMenu(groupType)
             end,
         },
         {
             title = 'Storage Access',
-            description = group == 'gang' and Lang:t('menu.gang_storage') or Lang:t('menu.business_storage'),
+            description = groupType == 'gang' and Lang:t('menu.gang_storage') or Lang:t('menu.business_storage'),
             icon = 'fa-solid fa-box-open',
             onSelect = function()
-                local stash = (group == 'gang' and 'gang_' or 'boss_')..QBX.PlayerData[group].name
+                local stash = (groupType == 'gang' and 'gang_' or 'boss_')..QBX.PlayerData[groupType].name
                 exports.ox_inventory:openInventory('stash', stash)
             end,
         },
@@ -141,7 +141,7 @@ function OpenBossMenu(group)
 
     lib.registerContext({
         id = 'openBossMenu',
-        title = group == 'gang' and string.upper(QBX.PlayerData.gang.label) or string.upper(QBX.PlayerData.job.label),
+        title = groupType == 'gang' and string.upper(QBX.PlayerData.gang.label) or string.upper(QBX.PlayerData.job.label),
         options = bossMenu,
     })
     lib.showContext('openBossMenu')
