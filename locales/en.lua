@@ -41,11 +41,6 @@ local Translations = {
         hired_to = 'You have been hired into ',
         hired_into = 'You hired %{who} into %{where}',
     },
-    logs = {
-        recruited = ' successfully recruited ',
-        fired = ' successfully fired ',
-        fire = 'Fire',
-    },
 }
 
 Lang = Lang or Locale:new({
