@@ -93,7 +93,7 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
     end
 
 	local jobName = player.PlayerData[groupType].name
-	local logArea = groupType == 'gang' and 'gang' or 'boss'
+	local logArea = groupType == 'gang' and 'Gang' or 'Boss'
 
     local success = groupType == 'gang' and target.Functions.SetGang(jobName, groupType) or target.Functions.SetJob(jobName, groupType)
     local grade = groupType == 'gang' and GANGS[jobName].grades[0].name or JOBS[jobName].grades[0].name
@@ -104,7 +104,7 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
         local organizationLabel = player.PlayerData[groupType].label
 		exports.qbx_core:Notify(source, Lang:t('success.hired_into', {who = targetFullName, where = organizationLabel}), 'success')
         exports.qbx_core:Notify(target.PlayerData.source, Lang:t('success.hired_to')..organizationLabel, 'success')
-		logger.log({source = source, event = 'hireEmployee', message = string.format('%s hired %s into %s at grade %s', playerFullName, targetFullName, organizationLabel, grade)})
+		logger.log({source = source, event = 'hireEmployee', message = string.format('%s | %s hired %s into %s at grade %s', logArea, playerFullName, targetFullName, organizationLabel, grade)})
     else
         exports.qbx_core:Notify(source, Lang:t('error.couldnt_hire'), 'error')
     end
@@ -228,10 +228,10 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 	end
 	
 	if success then
-		local logArea = groupType == 'gang' and 'gang' or 'boss'
+		local logArea = groupType == 'gang' and 'Gang' or 'Boss'
 		local logType = groupType == 'gang' and Lang:t('error.gang_fired') or Lang:t('error.job_fired')
 		exports.qbx_core:Notify(source, logType, 'success')
-		logger.log({source = source, event = 'fireEmployee', message = string.format('%s fired %s from %s', playerFullName, targetFullName, organizationLabel)})
+		logger.log({source = source, event = 'fireEmployee', message = string.format('%s | %s fired %s from %s', logArea, playerFullName, employeeFullName, organizationLabel)})
 	else
 		exports.qbx_core:Notify(source, Lang:t('error.unable_fire'), 'error')
 	end
