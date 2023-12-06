@@ -1,6 +1,7 @@
 return {
     useTarget = false, -- Enables ox_target interactions
     debugPoly = false,
+    discordWebhook = nil, -- Replace nil with your webhook if you chose to use discord logging over ox_lib logging
     menus = {
         police = {
             coords = vec3(447.04, -974.01, 30.44),
