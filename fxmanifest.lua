@@ -26,6 +26,8 @@ server_scripts {
 
 files {
     'config/shared.lua',
+    'config/client.lua',
+    'config/server.lua'
 }
 
 lua54 'yes'
