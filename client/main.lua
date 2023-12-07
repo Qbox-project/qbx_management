@@ -1,3 +1,4 @@
+local config = require 'config.client'
 local sharedConfig = require 'config.shared'
 local JOBS = exports.qbx_core:GetJobs()
 local GANGS = exports.qbx_core:GetGangs()
@@ -148,13 +149,13 @@ function OpenBossMenu(groupType)
 end
 
 local function createBossZones()
-    if sharedConfig.useTarget then
+    if config.useTarget then
         for groups, group in pairs(sharedConfig.menus) do
             exports.ox_target:addBoxZone({
                 coords = group.coords,
                 size = group.size,
                 rotation = group.rotation,
-                debug = sharedConfig.debugPoly,
+                debug = config.debugPoly,
                 options = {
                     {
                         name = groups..'_menu',
@@ -174,7 +175,7 @@ local function createBossZones()
                 coords = group.coords,
                 rotation = group.rotation,
                 size = group.size,
-                debug = sharedConfig.debugPoly,
+                debug = config.debugPoly,
                 onEnter = function()
                     if groups == QBX.PlayerData[group.group].name and QBX.PlayerData[group.group].isboss then
                         lib.showTextUI(group.group == 'gang' and Lang:t('menu.gang_management') or Lang:t('menu.boss_management'))

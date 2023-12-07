@@ -1,6 +1,4 @@
 return {
-    useTarget = false, -- Enables ox_target interactions
-    debugPoly = false,
     menus = {
         police = {
             coords = vec3(447.04, -974.01, 30.44),

@@ -1,6 +1,8 @@
 lib.versionCheck('Qbox-project/qbx_management')
 
+local config = require 'config.server'
 local sharedConfig = require 'config.shared'
+local logger = require '@qbx_core.modules.logger'
 local JOBS = exports.qbx_core:GetJobs()
 local GANGS = exports.qbx_core:GetGangs()
 
@@ -92,7 +94,7 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
     end
 
 	local jobName = player.PlayerData[groupType].name
-	local logArea = groupType == 'gang' and 'gang' or 'boss'
+	local logArea = groupType == 'gang' and 'Gang' or 'Boss'
 
     local success = groupType == 'gang' and target.Functions.SetGang(jobName, groupType) or target.Functions.SetJob(jobName, groupType)
     local grade = groupType == 'gang' and GANGS[jobName].grades[0].name or JOBS[jobName].grades[0].name
@@ -103,7 +105,7 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
         local organizationLabel = player.PlayerData[groupType].label
 		exports.qbx_core:Notify(source, Lang:t('success.hired_into', {who = targetFullName, where = organizationLabel}), 'success')
         exports.qbx_core:Notify(target.PlayerData.source, Lang:t('success.hired_to')..organizationLabel, 'success')
-        TriggerEvent('qb-log:server:CreateLog', logArea..'menu', grade, 'yellow', playerFullName..Lang:t('logs.recruited')..targetFullName..' ('..organizationLabel..')', false)
+		logger.log({source = 'qbx_management', event = 'hireEmployee', message = string.format('%s | %s hired %s into %s at grade %s', logArea, playerFullName, targetFullName, organizationLabel, grade), webhook = config.discordWebhook})
     else
         exports.qbx_core:Notify(source, Lang:t('error.couldnt_hire'), 'error')
     end
@@ -227,10 +229,10 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 	end
 	
 	if success then
-		local logArea = groupType == 'gang' and 'gang' or 'boss'
+		local logArea = groupType == 'gang' and 'Gang' or 'Boss'
 		local logType = groupType == 'gang' and Lang:t('error.gang_fired') or Lang:t('error.job_fired')
 		exports.qbx_core:Notify(source, logType, 'success')
-		TriggerEvent('qb-log:server:CreateLog', logArea..'menu', groupType..Lang:t('logs.fire'), 'orange', playerFullName..Lang:t('logs.fired')..employeeFullName..' ('..organizationLabel..')', false)
+		logger.log({source = 'qbx_management', event = 'fireEmployee', message = string.format('%s | %s fired %s from %s', logArea, playerFullName, employeeFullName, organizationLabel), webhook = config.discordWebhook})
 	else
 		exports.qbx_core:Notify(source, Lang:t('error.unable_fire'), 'error')
 	end
