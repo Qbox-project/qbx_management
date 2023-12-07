@@ -1,5 +1,6 @@
 lib.versionCheck('Qbox-project/qbx_management')
 
+local config = require 'config.server'
 local sharedConfig = require 'config.shared'
 local logger = require '@qbx_core.modules.logger'
 local JOBS = exports.qbx_core:GetJobs()
@@ -104,7 +105,7 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
         local organizationLabel = player.PlayerData[groupType].label
 		exports.qbx_core:Notify(source, Lang:t('success.hired_into', {who = targetFullName, where = organizationLabel}), 'success')
         exports.qbx_core:Notify(target.PlayerData.source, Lang:t('success.hired_to')..organizationLabel, 'success')
-		logger.log({source = GetInvokingResource(), event = 'hireEmployee', message = string.format('%s | %s hired %s into %s at grade %s', logArea, playerFullName, targetFullName, organizationLabel, grade), webhook = sharedConfig.discordWebhook})
+		logger.log({source = 'qbx_management', event = 'hireEmployee', message = string.format('%s | %s hired %s into %s at grade %s', logArea, playerFullName, targetFullName, organizationLabel, grade), webhook = config.discordWebhook})
     else
         exports.qbx_core:Notify(source, Lang:t('error.couldnt_hire'), 'error')
     end
@@ -231,7 +232,7 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 		local logArea = groupType == 'gang' and 'Gang' or 'Boss'
 		local logType = groupType == 'gang' and Lang:t('error.gang_fired') or Lang:t('error.job_fired')
 		exports.qbx_core:Notify(source, logType, 'success')
-		logger.log({source = GetInvokingResource(), event = 'fireEmployee', message = string.format('%s | %s fired %s from %s', logArea, playerFullName, employeeFullName, organizationLabel), webhook = sharedConfig.discordWebhook})
+		logger.log({source = 'qbx_management', event = 'fireEmployee', message = string.format('%s | %s fired %s from %s', logArea, playerFullName, employeeFullName, organizationLabel), webhook = config.discordWebhook})
 	else
 		exports.qbx_core:Notify(source, Lang:t('error.unable_fire'), 'error')
 	end
