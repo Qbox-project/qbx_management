@@ -1,4 +1,5 @@
 lib.versionCheck('Qbox-project/qbx_management')
+if not lib.checkDependency('qbx_core', '1.3.0', true) then error() return end
 
 local config = require 'config.server'
 local sharedConfig = require 'config.shared'

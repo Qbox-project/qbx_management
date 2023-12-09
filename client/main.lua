@@ -148,34 +148,37 @@ function OpenBossMenu(groupType)
     lib.showContext('openBossMenu')
 end
 
-local function createZones(groupName, groupType, coords, size, rotation)
+local function createZones(groupName, zoneInfo)
+    size = size or vec3(1.5, 1.5, 1.5)
+    rotation = rotation or 0.0
+
     if config.useTarget then
         exports.ox_target:addBoxZone({
-            coords = coords,
-            size = size,
-            rotation = rotation,
+            coords = zoneInfo.coords,
+            size = zoneInfo.size,
+            rotation = zoneInfo.rotation,
             debug = config.debugPoly,
             options = {
                 {
                     name = groupName..'_menu',
                     icon = 'fa-solid fa-right-to-bracket',
-                    label = groupType == 'gang' and Lang:t('menu.gang_menu') or Lang:t('menu.boss_menu'),
+                    label = zoneInfo.type == 'gang' and Lang:t('menu.gang_menu') or Lang:t('menu.boss_menu'),
                     groups = groupName,
                     onSelect = function()
-                        OpenBossMenu(groupType)
+                        OpenBossMenu(zoneInfo.type)
                     end
                 }
             }
         })
     else
         lib.zones.box({
-            coords = coords,
-            rotation = rotation,
-            size = size,
+            coords = zoneInfo.coords,
+            rotation = zoneInfo.rotation,
+            size = zoneInfo.size,
             debug = config.debugPoly,
             onEnter = function()
-                if groupName == QBX.PlayerData[groupType].name and QBX.PlayerData[groupType].isboss then
-                    lib.showTextUI(groupType == 'gang' and Lang:t('menu.gang_management') or Lang:t('menu.boss_management'))
+                if groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss then
+                    lib.showTextUI(zoneInfo.type == 'gang' and Lang:t('menu.gang_management') or Lang:t('menu.boss_management'))
                 end
             end,
             onExit = function()
@@ -183,8 +186,8 @@ local function createZones(groupName, groupType, coords, size, rotation)
             end,
             inside = function()
                 if IsControlJustPressed(0, 51) then -- E
-                    if groupName == QBX.PlayerData[groupType].name and QBX.PlayerData[groupType].isboss then
-                        OpenBossMenu(groupType)
+                    if groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss then
+                        OpenBossMenu(zoneInfo.type)
                         lib.hideTextUI()
                     end
                 end
@@ -194,25 +197,19 @@ local function createZones(groupName, groupType, coords, size, rotation)
 end
 
 local function createConfigBossZones()
-    for groupName, zone in pairs(sharedConfig.menus) do
-        createZones(groupName, zone.group, zone.coords, zone.size, zone.rotation)
+    for groupName, zoneInfo in pairs(sharedConfig.menus) do
+        createZones(groupName, zoneInfo)
     end
 end
 
 ---Creates a boss zone for the specified group
 ---@param groupName string Name of the group
----@param groupType 'job'|'gang' Type of group
----@param coords vector3 Coordinates of the zone
----@param size? vector3 uses vec3(1.5, 1.5, 1.5) if not set
----@param rotation? number uses 0.0 if not set
-local function createBossZones(groupName, groupType, coords, size, rotation)
-    size = size or vec3(1.5, 1.5, 1.5)
-    rotation = rotation or 0.0
-
-    createZones(groupName, groupType, coords, size, rotation)
+---@param zoneInfo table 
+local function createBossZone(groupName, zoneInfo)
+    createZones(groupName, zoneInfo)
 end
 
-exports('CreateBossZones', createBossZones)
+exports('CreateBossZone', createBossZone)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
