@@ -1,5 +1,4 @@
 local config = require 'config.client'
-local sharedConfig = require 'config.shared'
 local JOBS = exports.qbx_core:GetJobs()
 local GANGS = exports.qbx_core:GetGangs()
 local isLoggedIn = LocalPlayer.state.isLoggedIn
@@ -148,7 +147,7 @@ function OpenBossMenu(groupType)
     lib.showContext('openBossMenu')
 end
 
-local function createZone(groupName, zoneInfo)
+local function createZone(zoneInfo)
     if config.useTarget then
         exports.ox_target:addBoxZone({
             coords = zoneInfo.coords,
@@ -157,10 +156,10 @@ local function createZone(groupName, zoneInfo)
             debug = config.debugPoly,
             options = {
                 {
-                    name = groupName..'_menu',
+                    name = zoneInfo.groupName..'_menu',
                     icon = 'fa-solid fa-right-to-bracket',
                     label = zoneInfo.type == 'gang' and Lang:t('menu.gang_menu') or Lang:t('menu.boss_menu'),
-                    groups = groupName,
+                    groups = zoneInfo.groupName,
                     onSelect = function()
                         OpenBossMenu(zoneInfo.type)
                     end
@@ -174,7 +173,7 @@ local function createZone(groupName, zoneInfo)
             rotation = zoneInfo.rotation or 0.0,
             debug = config.debugPoly,
             onEnter = function()
-                if groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss then
+                if zoneInfo.groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss then
                     lib.showTextUI(zoneInfo.type == 'gang' and Lang:t('menu.gang_management') or Lang:t('menu.boss_management'))
                 end
             end,
@@ -183,7 +182,7 @@ local function createZone(groupName, zoneInfo)
             end,
             inside = function()
                 if IsControlJustPressed(0, 51) then -- E
-                    if groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss then
+                    if zoneInfo.groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss then
                         OpenBossMenu(zoneInfo.type)
                         lib.hideTextUI()
                     end
@@ -193,23 +192,22 @@ local function createZone(groupName, zoneInfo)
     end
 end
 
-local function registerConfigBossMenus()
-    for groupName, zoneInfo in pairs(sharedConfig.menus) do
-        createZone(groupName, zoneInfo)
+RegisterNetEvent('qbx_management:client:bossMenuRegistered', function(menuInfo)
+    createZone(menuInfo)
+    print('Created boss menu for '..menuInfo.groupName)
+end)
+
+AddEventHandler('onResourceStart', function(resourceName)
+    if GetCurrentResourceName() ~= resourceName then return end
+    print('The resource ' .. resourceName .. ' has been started.')
+    local menus = lib.callback.await('qbx_management:server:getBossMenus', false)
+    for _, menuInfo in pairs(menus) do
+        createZone(menuInfo)
     end
-end
-
----Creates a boss zone for the specified group
----@param zoneInfo table 
-local function registerBossMenu(zoneInfo)
-    createZone(zoneInfo.groupName, zoneInfo)
-end
-
-exports('RegisterBossMenu', registerBossMenu)
+end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
-    registerConfigBossMenus()
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
@@ -218,5 +216,4 @@ end)
 
 CreateThread(function()
     if not isLoggedIn then return end
-    registerConfigBossMenus()
 end)

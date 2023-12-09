@@ -2,10 +2,15 @@ lib.versionCheck('Qbox-project/qbx_management')
 if not lib.checkDependency('qbx_core', '1.3.0', true) then error() return end
 
 local config = require 'config.server'
-local sharedConfig = require 'config.shared'
 local logger = require '@qbx_core.modules.logger'
 local JOBS = exports.qbx_core:GetJobs()
 local GANGS = exports.qbx_core:GetGangs()
+local menus = {}
+
+for groupName, menuInfo in pairs(config.menus) do
+	menuInfo.groupName = groupName
+	menus[#menus + 1] = menuInfo
+end
 
 -- Get a list of employees for a given group. Currently uses MySQL queries to return offline players.
 -- Once an export is available to reliably return offline players this can rewriten.
@@ -240,12 +245,34 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 	return nil
 end)
 
+lib.callback.register('qbx_management:server:getBossMenus', function()
+	print('qbx_management: Getting boss menus')
+	return menus
+end)
+
+---Creates a boss zone for the specified group
+---@class MenuInfo
+---@field groupName string Name of the group
+---@field type 'job'|'gang' Type of group
+---@field coords vector3 Coordinates of the zone
+---@field size? vector3 uses vec3(1.5, 1.5, 1.5) if not set
+---@field rotation? number uses 0.0 if not set
+
+---@param menuInfo MenuInfo
+local function registerBossMenu(menuInfo)
+    menus[#menus + 1] = menuInfo
+	TriggerClientEvent('qbx_management:client:bossMenuRegistered', -1, menuInfo)
+	print('qbx_management: Registered boss menu for '..menuInfo.groupName)
+end
+
+exports('RegisterBossMenu', registerBossMenu)
+
 -- Event Handlers
 -- Sets up inventory stashes for all groups
 AddEventHandler('onServerResourceStart', function(resourceName)
 	if resourceName ~= 'ox_inventory' and resourceName ~= GetCurrentResourceName() then return end
-
-	local data = sharedConfig.menus
+	print('qbx_management: Setting up stashes')
+	local data = config.menus
 	for groups, group in pairs(data) do
 		local prefix = group.group == 'gang' and 'gang_' or 'boss_'
 		exports.ox_inventory:RegisterStash(prefix..groups, 'Stash: '..groups, 100, 4000000, false)
