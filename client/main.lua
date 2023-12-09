@@ -148,15 +148,15 @@ function OpenBossMenu(groupType)
     lib.showContext('openBossMenu')
 end
 
-local function createZones(groupName, zoneInfo)
+local function createZone(groupName, zoneInfo)
     size = size or vec3(1.5, 1.5, 1.5)
     rotation = rotation or 0.0
 
     if config.useTarget then
         exports.ox_target:addBoxZone({
             coords = zoneInfo.coords,
-            size = zoneInfo.size,
-            rotation = zoneInfo.rotation,
+            size = zoneInfo.size or vec3(1.5, 1.5, 1.5),
+            rotation = zoneInfo.rotation or 0.0,
             debug = config.debugPoly,
             options = {
                 {
@@ -173,8 +173,8 @@ local function createZones(groupName, zoneInfo)
     else
         lib.zones.box({
             coords = zoneInfo.coords,
-            rotation = zoneInfo.rotation,
-            size = zoneInfo.size,
+            size = zoneInfo.size or vec3(1.5, 1.5, 1.5),
+            rotation = zoneInfo.rotation or 0.0,
             debug = config.debugPoly,
             onEnter = function()
                 if groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss then
@@ -196,24 +196,23 @@ local function createZones(groupName, zoneInfo)
     end
 end
 
-local function createConfigBossZones()
+local function registerConfigBossMenus()
     for groupName, zoneInfo in pairs(sharedConfig.menus) do
-        createZones(groupName, zoneInfo)
+        createZone(groupName, zoneInfo)
     end
 end
 
 ---Creates a boss zone for the specified group
----@param groupName string Name of the group
 ---@param zoneInfo table 
-local function createBossZone(groupName, zoneInfo)
-    createZones(groupName, zoneInfo)
+local function registerBossMenu(zoneInfo)
+    createZone(zoneInfo.groupName, zoneInfo)
 end
 
-exports('CreateBossZone', createBossZone)
+exports('RegisterBossMenu', registerBossMenu)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
-    createConfigBossZones()
+    registerConfigBossMenus()
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
@@ -226,5 +225,5 @@ end)
 
 CreateThread(function()
     if not isLoggedIn then return end
-    createConfigBossZones()
+    registerConfigBossMenus()
 end)
