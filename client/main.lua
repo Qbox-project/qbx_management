@@ -216,10 +216,6 @@ RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     isLoggedIn = false
 end)
 
-AddEventHandler('onResourceStart', function(resource)
-    if resource ~= GetCurrentResourceName() then return end
-end)
-
 CreateThread(function()
     if not isLoggedIn then return end
     registerConfigBossMenus()
