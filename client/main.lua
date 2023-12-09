@@ -149,9 +149,6 @@ function OpenBossMenu(groupType)
 end
 
 local function createZone(groupName, zoneInfo)
-    size = size or vec3(1.5, 1.5, 1.5)
-    rotation = rotation or 0.0
-
     if config.useTarget then
         exports.ox_target:addBoxZone({
             coords = zoneInfo.coords,
