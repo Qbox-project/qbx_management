@@ -246,7 +246,6 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 end)
 
 lib.callback.register('qbx_management:server:getBossMenus', function()
-	print('qbx_management: Getting boss menus')
 	return menus
 end)
 
@@ -262,7 +261,6 @@ end)
 local function registerBossMenu(menuInfo)
     menus[#menus + 1] = menuInfo
 	TriggerClientEvent('qbx_management:client:bossMenuRegistered', -1, menuInfo)
-	print('qbx_management: Registered boss menu for '..menuInfo.groupName)
 end
 
 exports('RegisterBossMenu', registerBossMenu)
@@ -271,7 +269,6 @@ exports('RegisterBossMenu', registerBossMenu)
 -- Sets up inventory stashes for all groups
 AddEventHandler('onServerResourceStart', function(resourceName)
 	if resourceName ~= 'ox_inventory' and resourceName ~= GetCurrentResourceName() then return end
-	print('qbx_management: Setting up stashes')
 	local data = config.menus
 	for groups, group in pairs(data) do
 		local prefix = group.group == 'gang' and 'gang_' or 'boss_'
