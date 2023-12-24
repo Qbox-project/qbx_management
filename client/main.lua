@@ -196,8 +196,8 @@ RegisterNetEvent('qbx_management:client:bossMenuRegistered', function(menuInfo)
     createZone(menuInfo)
 end)
 
-AddEventHandler('onResourceStart', function(resourceName)
-    if GetCurrentResourceName() ~= resourceName then return end
+AddEventHandler('onClientResourceStart', function(resourceName)
+    if cache.resource ~= resourceName then return end
     local menus = lib.callback.await('qbx_management:server:getBossMenus', false)
     for _, menuInfo in pairs(menus) do
         createZone(menuInfo)
