@@ -261,17 +261,19 @@ end)
 local function registerBossMenu(menuInfo)
     menus[#menus + 1] = menuInfo
 	TriggerClientEvent('qbx_management:client:bossMenuRegistered', -1, menuInfo)
+	local prefix = menuInfo.type == 'gang' and 'gang_' or 'boss_'
+	exports.ox_inventory:RegisterStash(prefix..menuInfo.groupName, 'Stash: '..menuInfo.groupName, config.storage.slots, config.storage.weight, false)
 end
 
 exports('RegisterBossMenu', registerBossMenu)
 
 -- Event Handlers
--- Sets up inventory stashes for all groups
+-- Sets up inventory stashes for all groups (Used by the config boss menu creation)
 AddEventHandler('onServerResourceStart', function(resourceName)
 	if resourceName ~= 'ox_inventory' and resourceName ~= cache.resource then return end
 	local data = config.menus
 	for groups, group in pairs(data) do
 		local prefix = group.group == 'gang' and 'gang_' or 'boss_'
-		exports.ox_inventory:RegisterStash(prefix..groups, 'Stash: '..groups, 100, 4000000, false)
+		exports.ox_inventory:RegisterStash(prefix..groups, 'Stash: '..groups, config.storage.slots, config.storage.weight, false)
 	end
 end)
