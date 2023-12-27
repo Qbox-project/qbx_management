@@ -256,22 +256,26 @@ end)
 ---@field coords vector3 Coordinates of the zone
 ---@field size? vector3 uses vec3(1.5, 1.5, 1.5) if not set
 ---@field rotation? number uses 0.0 if not set
+---@field stashSlots? number uses 40 if not set
+---@field stashWeight? number uses 400000 if not set
 
 ---@param menuInfo MenuInfo
 local function registerBossMenu(menuInfo)
     menus[#menus + 1] = menuInfo
 	TriggerClientEvent('qbx_management:client:bossMenuRegistered', -1, menuInfo)
+	local prefix = menuInfo.type == 'gang' and 'gang_' or 'boss_'
+	exports.ox_inventory:RegisterStash(prefix..menuInfo.groupName, 'Stash: '..menuInfo.groupName, (menuInfo.stashSlots or 40), (menuInfo.stashWeight or 400000), false)
 end
 
 exports('RegisterBossMenu', registerBossMenu)
 
 -- Event Handlers
--- Sets up inventory stashes for all groups
+-- Sets up inventory stashes for all groups (Used by the config boss menu creation)
 AddEventHandler('onServerResourceStart', function(resourceName)
 	if resourceName ~= 'ox_inventory' and resourceName ~= cache.resource then return end
 	local data = config.menus
 	for groups, group in pairs(data) do
 		local prefix = group.group == 'gang' and 'gang_' or 'boss_'
-		exports.ox_inventory:RegisterStash(prefix..groups, 'Stash: '..groups, 100, 4000000, false)
+		exports.ox_inventory:RegisterStash(prefix..groups, 'Stash: '..groups, (group.slots or 40), (group.weight or 400000), false)
 	end
 end)
