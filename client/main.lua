@@ -66,7 +66,7 @@ local function employeeList(groupType)
             end,
         }
     end
-    
+
     lib.registerContext({
         id = 'memberListMenu',
         title = groupType == 'gang' and Lang:t('menu.manage_gang') or Lang:t('menu.manage_employees'),
@@ -192,17 +192,25 @@ local function createZone(zoneInfo)
     end
 end
 
-RegisterNetEvent('qbx_management:client:bossMenuRegistered', function(menuInfo)
-    createZone(menuInfo)
-end)
-
-AddEventHandler('onClientResourceStart', function(resourceName)
-    if cache.resource ~= resourceName then return end
+local function initZones()
     local menus = lib.callback.await('qbx_management:server:getBossMenus', false)
     for _, menuInfo in pairs(menus) do
         createZone(menuInfo)
     end
+end
+
+RegisterNetEvent('qbx_management:client:bossMenuRegistered', function(menuInfo)
+    createZone(menuInfo)
 end)
+
+AddEventHandler('onClientResourceStart', function(resource)
+    if cache.resource ~= resource then return end
+    initZones()
+end)
+
+RegisterNetEvent('QBCore:Client:OnJobUpdate', initZones)
+
+RegisterNetEvent('QBCore:Client:OnGangUpdate', initZones)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true

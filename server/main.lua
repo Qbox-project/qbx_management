@@ -271,11 +271,11 @@ exports('RegisterBossMenu', registerBossMenu)
 
 -- Event Handlers
 -- Sets up inventory stashes for all groups (Used by the config boss menu creation)
-AddEventHandler('onServerResourceStart', function(resourceName)
-	if resourceName ~= 'ox_inventory' and resourceName ~= cache.resource then return end
+AddEventHandler('onServerResourceStart', function(resource)
+	if resource ~= 'ox_inventory' and resource ~= cache.resource then return end
 	local data = config.menus
-	for groups, group in pairs(data) do
-		local prefix = group.group == 'gang' and 'gang_' or 'boss_'
-		exports.ox_inventory:RegisterStash(prefix..groups, 'Stash: '..groups, (group.slots or 40), (group.weight or 400000), false)
+	for groupName, menuInfo in pairs(data) do
+		local prefix = menuInfo.type == 'gang' and 'gang_' or 'boss_'
+		exports.ox_inventory:RegisterStash(prefix..groupName, 'Stash: '..groupName, (menuInfo.slots or 40), (menuInfo.weight or 400000), false)
 	end
 end)
