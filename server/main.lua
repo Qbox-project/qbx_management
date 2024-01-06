@@ -55,6 +55,43 @@ local function getMenuEntries(groupName, groupType)
 	return menuEntries
 end
 
+local function updatePlayer(type, groupType, grade)
+	local player = exports.qbx_core:GetPlayer(source)
+	local jobName = player.PlayerData[groupType].name
+	local playerJson, jobData
+	if type == 'update' then
+		jobData = groupType == 'gang' and GANGS[jobName] or JOBS[jobName]
+
+		playerJson = {
+			name = jobName,
+			label = jobData.label,
+			payment = jobData.grades[grade].payment,
+			onduty = false,
+			isboss = jobData.grades[grade].isboss,
+			grade = {
+				name = jobData.grades[grade].name,
+				level = grade
+			}
+		}
+	elseif type == 'fire' then
+		jobData = groupType == 'gang' and GANGS['none'] or JOBS['unemployed']
+
+		playerJson = {
+			name = groupType == 'gang' and 'none' or 'unemployed',
+			label = jobData.label,
+			payment = jobData.grades[0].payment,
+			onduty = groupType ~= 'gang',
+			isboss = false,
+			grade = {
+				name = jobData.grades[0].name,
+				level = 0
+			}
+		}
+	end
+
+	return playerJson
+end
+
 -- Get a list of employees for a given group. Currently uses MySQL queries to return offline players.
 -- Once an export is available to reliably return offline players this can rewriten.
 ---@param groupName string Name of job/gang to get employees of
@@ -99,18 +136,7 @@ lib.callback.register('qbx_management:server:updateGrade', function(source, citi
 	if employee then
 		success = groupType == 'gang' and employee.Functions.SetGang(jobName, newGrade) or employee.Functions.SetJob(jobName, newGrade)
 	else
-		local role = {
-			name = jobName,
-			label = groupType == 'gang' and GANGS[jobName].label or JOBS[jobName].label,
-			payment = groupType == 'gang' and GANGS[jobName].grades[newGrade].payment or JOBS[jobName].grades[newGrade].payment,
-			onduty = false,
-			isboss = groupType == 'gang' and GANGS[jobName].grades[newGrade].isboss or JOBS[jobName].grades[newGrade].isboss,
-			grade = {
-				name = groupType == 'gang' and GANGS[jobName].grades[newGrade].name or JOBS[jobName].grades[newGrade].name,
-				level = newGrade
-			}
-		}
-
+		local role = updatePlayer('update', groupType, newGrade)
 		success = UpdatePlayerGroup(citizenId, groupType, role)
 	end
 
@@ -233,18 +259,7 @@ local function fireOfflineEmployee(source, employee, player, groupType)
 		return false, nil
 	end
 
-	local role = {
-		name = groupType == 'gang' and 'none' or 'unemployed',
-		label = groupType == 'gang' and GANGS['none'].label or JOBS['unemployed'].label,
-		payment = groupType == 'gang' and 0 or JOBS['unemployed'].grades[0].payment,
-		onduty = groupType ~= 'gang',
-		isboss = false,
-		grade = {
-			name = groupType == 'gang' and GANGS['none'].grades[0].name or JOBS['unemployed'].grades[0].name,
-			level = 0
-		}
-	}
-
+	local role = updatePlayer('fire', groupType)
 	local updateColumn = groupType == 'gang' and 'gang' or 'job'
 	local employeeFullName = employee.charinfo.firstname..' '..employee.charinfo.lastname
 	local success = UpdatePlayerGroup(employee.citizenid, updateColumn, role)

@@ -19,8 +19,8 @@
         "boss_management": "[E] - Open Boss Management"
     },
     "error": {
-        "cant_promote": "You can't promote this player...",
-        "cant_promote_self": "You can't promote yourself...",
+        "cant_promote": "You can't change this person's grade...",
+        "cant_promote_self": "You can't change your own grade...",
         "not_around": "This person is not in city...",
         "grade_not_exist": "Grade does not exist...",
         "couldnt_hire": "You couldn't hire this person...",
