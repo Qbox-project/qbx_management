@@ -8,7 +8,8 @@ lib.locale()
 -- Finds nearby players and returns a table of server ids
 ---@return table
 local function findPlayers()
-    local closePlayers = lib.getNearbyPlayers(GetEntityCoords(cache.ped), 10, false)
+    local coords = GetEntityCoords(cache.ped)
+    local closePlayers = lib.getNearbyPlayers(coords, 10, false)
     for _, v in pairs(closePlayers) do
         v.id = GetPlayerServerId(v.id)
     end

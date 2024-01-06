@@ -91,9 +91,9 @@ end)
 lib.callback.register('qbx_management:server:hireEmployee', function(source, employee, groupType)
 	local player = exports.qbx_core:GetPlayer(source)
 	local target = exports.qbx_core:GetPlayer(employee)
-	
+
     if not player.PlayerData[groupType].isboss then return end
-	
+
     if not target then
         exports.qbx_core:Notify(source, locale('error.not_around'), 'error')
         return
@@ -104,7 +104,7 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
 
     local success = groupType == 'gang' and target.Functions.SetGang(jobName, groupType) or target.Functions.SetJob(jobName, groupType)
     local grade = groupType == 'gang' and GANGS[jobName].grades[0].name or JOBS[jobName].grades[0].name
-	
+
     if success then
         local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
         local targetFullName = target.PlayerData.charinfo.firstname..' '..target.PlayerData.charinfo.lastname
@@ -162,8 +162,8 @@ local function fireOnlineEmployee(source, employee, player, groupType)
 
 	local success = groupType == 'gang' and employee.Functions.SetGang('none', 0) or employee.Functions.SetJob('unemployed', 0)
 	if success then
-		local notifyMessage = groupType == 'gang' and locale('error.you_gang_fired') or locale('error.you_job_fired')
-		exports.qbx_core:Notify(employee.PlayerData.source, notifyMessage, 'error')
+		local message = groupType == 'gang' and locale('error.you_gang_fired') or locale('error.you_job_fired')
+		exports.qbx_core:Notify(employee.PlayerData.source, message, 'error')
 		return true
 	end
 	exports.qbx_core:Notify(source, locale('error.unable_fire'), 'error')
@@ -223,9 +223,9 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 	local firedEmployee = exports.qbx_core:GetPlayerByCitizenId(employee) or nil
 	local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
 	local organizationLabel = player.PlayerData[groupType].label
-	
+
 	if not player.PlayerData[groupType].isboss then return end
-	
+
 	local success, employeeFullName
 	if firedEmployee then
 		employeeFullName = firedEmployee.PlayerData.charinfo.firstname..' '..firedEmployee.PlayerData.charinfo.lastname
@@ -233,7 +233,7 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 	else
 		success, employeeFullName = fireOfflineEmployee(source, employee, player, groupType)
 	end
-	
+
 	if success then
 		local logArea = groupType == 'gang' and 'Gang' or 'Boss'
 		local logType = groupType == 'gang' and locale('error.gang_fired') or locale('error.job_fired')
