@@ -29,6 +29,6 @@ end
 ---@param type GroupType
 ---@param role Gang | Job
 ---@return table[]
-function UpdatePlayerJob(citizenId, type, role)
+function UpdatePlayerGroup(citizenId, type, role)
     return MySQL.update.await('UPDATE players SET '..type..' = ? WHERE citizenid = ?', {json.encode(role), citizenId})
 end

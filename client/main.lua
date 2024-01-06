@@ -28,7 +28,7 @@ local function manageEmployee(player, groupName, groupType)
             title = gradeTitle.name,
             description = locale('menu.grade')..groupGrade,
             onSelect = function()
-                lib.callback.await('qbx_management:server:updateGrade', false, player.cid, tonumber(groupGrade), groupType)
+                lib.callback.await('qbx_management:server:updateGrade', false, player.cid, player.grade.level, tonumber(groupGrade), groupType)
                 OpenBossMenu(groupType)
             end,
         }
