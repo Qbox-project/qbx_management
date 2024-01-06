@@ -2,6 +2,7 @@ return {
     discordWebhook = nil, -- Replace nil with your webhook if you chose to use discord logging over ox_lib logging
 
     -- While the config boss menu creation still works, it is recommended to use the runtime export instead.
+    ---@type MenuInfo[]
     menus = {
         lostmc = {
             coords = vec3(983.69, -90.92, 74.85),
