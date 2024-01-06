@@ -124,7 +124,7 @@ function OpenBossMenu(groupType)
             end,
         },
         {
-            title = 'Hire Employees',
+            title = groupType == 'gang' and locale('menu.hire_members') or locale('menu.hire_employees'),
             description = groupType == 'gang' and locale('menu.hire_gang') or locale('menu.hire_civilians'),
             icon = 'fa-solid fa-hand-holding',
             onSelect = function()
