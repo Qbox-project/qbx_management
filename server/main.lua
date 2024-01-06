@@ -1,5 +1,6 @@
 lib.versionCheck('Qbox-project/qbx_management')
 if not lib.checkDependency('qbx_core', '1.3.0', true) then error() return end
+if not lib.checkDependency('ox_lib', '3.13.0', true) then error() return end
 
 local config = require 'config.server'
 local logger = require '@qbx_core.modules.logger'
