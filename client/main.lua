@@ -29,7 +29,7 @@ local function manageEmployee(player, groupName, groupType)
             description = locale('menu.grade')..groupGrade,
             onSelect = function()
                 lib.callback.await('qbx_management:server:updateGrade', false, player.cid, tonumber(groupGrade), groupType)
-                OpenBossMenu(groupType)
+                openBossMenu(groupType)
             end,
         }
     end
@@ -39,7 +39,7 @@ local function manageEmployee(player, groupName, groupType)
         icon = 'fa-solid fa-user-large-slash',
         onSelect = function()
             lib.callback.await('qbx_management:server:fireEmployee', false, player.cid, groupType)
-            OpenBossMenu(groupType)
+            openBossMenu(groupType)
         end,
     }
 
@@ -93,7 +93,7 @@ local function showHireMenu(groupType)
                 description = locale('menu.citizen_id')..player.citizenid..' - '..locale('menu.id')..player.source,
                 onSelect = function()
                     lib.callback.await('qbx_management:server:hireEmployee', false, player.source, groupType)
-                    OpenBossMenu(groupType)
+                    openBossMenu(groupType)
                 end,
             }
         end
@@ -111,7 +111,7 @@ end
 
 -- Opens main boss menu changing function based on the group provided.
 ---@param groupType 'job'|'gang'
-function OpenBossMenu(groupType)
+local function openBossMenu(groupType)
     if not QBX.PlayerData[groupType].name or not QBX.PlayerData[groupType].isboss then return end
 
     local bossMenu = {
@@ -157,7 +157,7 @@ local function createZone(zoneInfo)
                         return zoneInfo.groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss
                     end,
                     onSelect = function()
-                        OpenBossMenu(zoneInfo.type)
+                        openBossMenu(zoneInfo.type)
                     end
                 }
             }
@@ -179,7 +179,7 @@ local function createZone(zoneInfo)
             inside = function()
                 if IsControlJustPressed(0, 51) then -- E
                     if zoneInfo.groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss then
-                        OpenBossMenu(zoneInfo.type)
+                        openBossMenu(zoneInfo.type)
                         lib.hideTextUI()
                     end
                 end
