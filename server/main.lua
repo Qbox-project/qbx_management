@@ -7,6 +7,7 @@ local logger = require '@qbx_core.modules.logger'
 local JOBS = exports.qbx_core:GetJobs()
 local GANGS = exports.qbx_core:GetGangs()
 local menus = {}
+lib.locale()
 
 for groupName, menuInfo in pairs(config.menus) do
 	menuInfo.groupName = groupName
@@ -34,14 +35,17 @@ end
 local function getMenuEntries(groupName, groupType)
 	local onlinePlayers = {}
 	local menuEntries = {}
-	for _, qbPlayer in pairs(exports.qbx_core:GetQBPlayers()) do
+
+	local players = exports.qbx_core:GetQBPlayers()
+	for _, qbPlayer in pairs(players) do
 		if qbPlayer.PlayerData[groupType].name == groupName then
-			onlinePlayers[qbPlayer.PlayerData[groupType].citizenid] = true
-			menuEntries[#menuEntries + 1] = getPlayerMenuEntry(false, qbPlayer, groupType)
+			onlinePlayers[qbPlayer.PlayerData.citizenid] = true
+			menuEntries[#menuEntries + 1] = getPlayerMenuEntry(true, qbPlayer, groupType)
 		end
 	end
 
 	local dbPlayers = FetchPlayerEntitiesByGroup(groupName, groupType)
+	lib.print.info(dbPlayers)
 	for _, player in pairs(dbPlayers) do
 		if not onlinePlayers[player.citizenid] then
             menuEntries[#menuEntries + 1] = getPlayerMenuEntry(false, player, groupType)
@@ -224,7 +228,7 @@ local function fireOfflineEmployee(source, employee, player, groupType)
 
 	local updateColumn = groupType == 'gang' and 'gang' or 'job'
 	local employeeFullName = employee.charinfo.firstname..' '..employee.charinfo.lastname
-	local success = UpdatePlayerJob(updateColumn, role, employee.citizenid)
+	local success = UpdatePlayerJob(employee.citizenid, updateColumn, role)
 	if success > 0 then
 		return true, employeeFullName
 	end

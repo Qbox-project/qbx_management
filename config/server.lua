@@ -17,5 +17,5 @@ return {
             rotation = 39.68,
             type = 'gang',
         },
-    },
+            },
 }

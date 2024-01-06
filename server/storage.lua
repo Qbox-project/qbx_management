@@ -6,7 +6,7 @@
 ---@return table[]
 function FetchPlayerEntitiesByGroup(name, type)
     local chars = {}
-    local result = MySQL.query.await("SELECT citizenid, charinfo, gang, job FROM `players` WHERE JSON_VALUE(?,'$.name') = ?", {type, name})
+    local result = MySQL.query.await("SELECT citizenid, charinfo, gang, job FROM `players` WHERE JSON_VALUE("..type..", '$.name') = ?", {name})
     for i = 1, #result do
         chars[i] = result[i]
         chars[i].charinfo = json.decode(result[i].charinfo)
