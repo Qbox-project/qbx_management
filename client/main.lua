@@ -19,7 +19,7 @@ end
 -- Presents a menu to manage a specific employee including changing grade or firing them
 ---@param player table Player data for managing a specific employee
 ---@param groupName string Name of job/gang of employee being managed
----@param groupType 'job'|'gang'
+---@param groupType GroupType
 local function manageEmployee(player, groupName, groupType)
     local employeeMenu = {}
     local employeeLoop = groupType == 'gang' and GANGS[groupName].grades or JOBS[groupName].grades
@@ -55,7 +55,7 @@ end
 
 -- Presents a menu of employees the work for a job or gang.
 -- Allows selection of an employee to perform further actions
----@param groupType 'job'|'gang'
+---@param groupType GroupType
 local function employeeList(groupType)
     local employeesMenu = {}
     local groupName = QBX.PlayerData[groupType].name
@@ -81,7 +81,7 @@ local function employeeList(groupType)
 end
 
 -- Presents a list of possible employees to hire for a job or gang.
----@param groupType 'job'|'gang'
+---@param groupType GroupType
 local function showHireMenu(groupType)
     local hireMenu = {}
     local players = findPlayers()
@@ -110,7 +110,7 @@ local function showHireMenu(groupType)
 end
 
 -- Opens main boss menu changing function based on the group provided.
----@param groupType 'job'|'gang'
+---@param groupType GroupType
 function OpenBossMenu(groupType)
     if not QBX.PlayerData[groupType].name or not QBX.PlayerData[groupType].isboss then return end
 
