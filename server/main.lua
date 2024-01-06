@@ -65,28 +65,33 @@ local function updatePlayer(type, groupType, grade)
 		playerJson = {
 			name = jobName,
 			label = jobData.label,
-			payment = jobData.grades[grade].payment,
-			onduty = false,
 			isboss = jobData.grades[grade].isboss,
 			grade = {
 				name = jobData.grades[grade].name,
 				level = grade
 			}
 		}
+
+		if groupType == 'job' then
+			playerJson.payment = JOBS[jobName].grades[grade].payment
+			playerJson.onduty = false
+		end
 	elseif type == 'fire' then
 		jobData = groupType == 'gang' and GANGS['none'] or JOBS['unemployed']
 
 		playerJson = {
 			name = groupType == 'gang' and 'none' or 'unemployed',
 			label = jobData.label,
-			payment = jobData.grades[0].payment,
-			onduty = groupType ~= 'gang',
 			isboss = false,
 			grade = {
 				name = jobData.grades[0].name,
 				level = 0
 			}
 		}
+
+		if groupType == 'job' then
+			playerJson.payment = JOBS['unemployed'].grades[0].payment
+		end
 	end
 
 	return playerJson
