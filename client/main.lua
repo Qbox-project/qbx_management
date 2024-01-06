@@ -23,9 +23,9 @@ end
 local function manageEmployee(player, groupName, groupType)
     local employeeMenu = {}
     local employeeLoop = groupType == 'gang' and GANGS[groupName].grades or JOBS[groupName].grades
-    for groupGrade = 0, #employeeLoop do
+    for groupGrade, gradeTitle in pairs(employeeLoop) do
         employeeMenu[#employeeMenu + 1] = {
-            title = employeeLoop[groupGrade].name,
+            title = gradeTitle.name,
             description = locale('menu.grade')..groupGrade,
             onSelect = function()
                 lib.callback.await('qbx_management:server:updateGrade', false, player.cid, tonumber(groupGrade), groupType)
@@ -33,6 +33,10 @@ local function manageEmployee(player, groupName, groupType)
             end,
         }
     end
+
+    table.sort(employeeMenu, function(a, b)
+        return a.description < b.description
+    end)
 
     employeeMenu[#employeeMenu + 1] = {
         title = groupType == 'gang' and locale('menu.expel_gang') or locale('menu.fire_employee'),
