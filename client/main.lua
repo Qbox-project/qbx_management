@@ -153,6 +153,9 @@ local function createZone(zoneInfo)
                     name = zoneInfo.groupName..'_menu',
                     icon = 'fa-solid fa-right-to-bracket',
                     label = zoneInfo.type == 'gang' and locale('menu.gang_menu') or locale('menu.boss_menu'),
+                    canInteract = function()
+                        return zoneInfo.groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss
+                    end,
                     groups = zoneInfo.groupName,
                     onSelect = function()
                         OpenBossMenu(zoneInfo.type)
@@ -201,10 +204,6 @@ AddEventHandler('onClientResourceStart', function(resource)
     if cache.resource ~= resource then return end
     initZones()
 end)
-
-RegisterNetEvent('QBCore:Client:OnJobUpdate', initZones)
-
-RegisterNetEvent('QBCore:Client:OnGangUpdate', initZones)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
