@@ -23,9 +23,9 @@ end
 local function manageEmployee(player, groupName, groupType)
     local employeeMenu = {}
     local employeeLoop = groupType == 'gang' and GANGS[groupName].grades or JOBS[groupName].grades
-    for groupGrade, gradeTitle in pairs(employeeLoop) do
+    for groupGrade = 0, #employeeLoop do
         employeeMenu[#employeeMenu + 1] = {
-            title = gradeTitle.name,
+            title = employeeLoop[groupGrade].name,
             description = locale('menu.grade')..groupGrade,
             onSelect = function()
                 lib.callback.await('qbx_management:server:updateGrade', false, player.cid, tonumber(groupGrade), groupType)
