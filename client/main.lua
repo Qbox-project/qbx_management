@@ -156,7 +156,6 @@ local function createZone(zoneInfo)
                     canInteract = function()
                         return zoneInfo.groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss
                     end,
-                    groups = zoneInfo.groupName,
                     onSelect = function()
                         OpenBossMenu(zoneInfo.type)
                     end
