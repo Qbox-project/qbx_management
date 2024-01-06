@@ -28,11 +28,15 @@ local function manageEmployee(player, groupName, groupType)
             title = gradeTitle.name,
             description = locale('menu.grade')..groupGrade,
             onSelect = function()
-                lib.callback.await('qbx_management:server:updateGrade', false, player.cid, tonumber(groupGrade), groupType)
+                lib.callback.await('qbx_management:server:updateGrade', false, player.cid, player.grade.level, tonumber(groupGrade), groupType)
                 OpenBossMenu(groupType)
             end,
         }
     end
+
+    table.sort(employeeMenu, function(a, b)
+        return a.description < b.description
+    end)
 
     employeeMenu[#employeeMenu + 1] = {
         title = groupType == 'gang' and locale('menu.expel_gang') or locale('menu.fire_employee'),
@@ -124,7 +128,7 @@ function OpenBossMenu(groupType)
             end,
         },
         {
-            title = 'Hire Employees',
+            title = groupType == 'gang' and locale('menu.hire_members') or locale('menu.hire_employees'),
             description = groupType == 'gang' and locale('menu.hire_gang') or locale('menu.hire_civilians'),
             icon = 'fa-solid fa-hand-holding',
             onSelect = function()
