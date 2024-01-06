@@ -60,10 +60,10 @@ lib.callback.register('qbx_management:server:updateGrade', function(source, cid,
 	local jobName = player.PlayerData[groupType].name
 
 	if not player.PlayerData[groupType].isboss then return end
-	if grade > player.PlayerData[groupType].grade.level then exports.qbx_core:Notify(source, Lang:t('error.cant_promote'), 'error') return end
+	if grade > player.PlayerData[groupType].grade.level then exports.qbx_core:Notify(source, locale('error.cant_promote'), 'error') return end
 
 	if not employee then
-        exports.qbx_core:Notify(source, Lang:t('error.not_around'), 'error')
+        exports.qbx_core:Notify(source, locale('error.not_around'), 'error')
         return
     end
 
@@ -77,10 +77,10 @@ lib.callback.register('qbx_management:server:updateGrade', function(source, cid,
     end
 
     if success then
-        exports.qbx_core:Notify(source, Lang:t('success.promoted'), 'success')
-        exports.qbx_core:Notify(employee.PlayerData.source, Lang:t('success.promoted_to')..gradeName..'.', 'success')
+        exports.qbx_core:Notify(source, locale('success.promoted'), 'success')
+        exports.qbx_core:Notify(employee.PlayerData.source, locale('success.promoted_to')..gradeName..'.', 'success')
     else
-        exports.qbx_core:Notify(source, Lang:t('error.grade_not_exist'), 'error')
+        exports.qbx_core:Notify(source, locale('error.grade_not_exist'), 'error')
     end
 	return nil
 end)
@@ -95,7 +95,7 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
     if not player.PlayerData[groupType].isboss then return end
 	
     if not target then
-        exports.qbx_core:Notify(source, Lang:t('error.not_around'), 'error')
+        exports.qbx_core:Notify(source, locale('error.not_around'), 'error')
         return
     end
 
@@ -109,11 +109,11 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
         local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
         local targetFullName = target.PlayerData.charinfo.firstname..' '..target.PlayerData.charinfo.lastname
         local organizationLabel = player.PlayerData[groupType].label
-		exports.qbx_core:Notify(source, Lang:t('success.hired_into', {who = targetFullName, where = organizationLabel}), 'success')
-        exports.qbx_core:Notify(target.PlayerData.source, Lang:t('success.hired_to')..organizationLabel, 'success')
+		exports.qbx_core:Notify(source, locale('success.hired_into', {who = targetFullName, where = organizationLabel}), 'success')
+        exports.qbx_core:Notify(target.PlayerData.source, locale('success.hired_to')..organizationLabel, 'success')
 		logger.log({source = 'qbx_management', event = 'hireEmployee', message = string.format('%s | %s hired %s into %s at grade %s', logArea, playerFullName, targetFullName, organizationLabel, grade), webhook = config.discordWebhook})
     else
-        exports.qbx_core:Notify(source, Lang:t('error.couldnt_hire'), 'error')
+        exports.qbx_core:Notify(source, locale('error.couldnt_hire'), 'error')
     end
 	return nil
 end)
@@ -150,23 +150,23 @@ end)
 ---@param groupType 'job'|'gang'
 local function fireOnlineEmployee(source, employee, player, groupType)
 	if employee.PlayerData.citizenid == player.PlayerData.citizenid then
-		local message = groupType == 'gang' and Lang:t('error.kick_yourself') or Lang:t('error.fire_yourself')
+		local message = groupType == 'gang' and locale('error.kick_yourself') or locale('error.fire_yourself')
 		exports.qbx_core:Notify(source, message, 'error')
 		return false
 	end
 
 	if employee.PlayerData[groupType].grade.level > player.PlayerData[groupType].grade.level then
-		exports.qbx_core:Notify(source, Lang:t('error.kick_boss'), 'error')
+		exports.qbx_core:Notify(source, locale('error.kick_boss'), 'error')
 		return false
 	end
 
 	local success = groupType == 'gang' and employee.Functions.SetGang('none', 0) or employee.Functions.SetJob('unemployed', 0)
 	if success then
-		local notifyMessage = groupType == 'gang' and Lang:t('error.you_gang_fired') or Lang:t('error.you_job_fired')
+		local notifyMessage = groupType == 'gang' and locale('error.you_gang_fired') or locale('error.you_job_fired')
 		exports.qbx_core:Notify(employee.PlayerData.source, notifyMessage, 'error')
 		return true
 	end
-	exports.qbx_core:Notify(source, Lang:t('error.unable_fire'), 'error')
+	exports.qbx_core:Notify(source, locale('error.unable_fire'), 'error')
 	return false
 end
 
@@ -179,7 +179,7 @@ end
 local function fireOfflineEmployee(source, employee, player, groupType)
 	local offlineEmployee = FetchPlayerEntityByCitizenId(employee)
 	if not offlineEmployee[1] then
-		exports.qbx_core:Notify(source, Lang:t('error.person_doesnt_exist'), 'error')
+		exports.qbx_core:Notify(source, locale('error.person_doesnt_exist'), 'error')
 		return false, nil
 	end
 
@@ -188,7 +188,7 @@ local function fireOfflineEmployee(source, employee, player, groupType)
 	employee.charinfo = json.decode(employee.charinfo)
 
 	if employee[groupType].grade.level > player.PlayerData[groupType].grade.level then
-		exports.qbx_core:Notify(source, Lang:t('error.fire_boss'), 'error')
+		exports.qbx_core:Notify(source, locale('error.fire_boss'), 'error')
 		return false, nil
 	end
 
@@ -236,11 +236,11 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 	
 	if success then
 		local logArea = groupType == 'gang' and 'Gang' or 'Boss'
-		local logType = groupType == 'gang' and Lang:t('error.gang_fired') or Lang:t('error.job_fired')
+		local logType = groupType == 'gang' and locale('error.gang_fired') or locale('error.job_fired')
 		exports.qbx_core:Notify(source, logType, 'success')
 		logger.log({source = 'qbx_management', event = 'fireEmployee', message = string.format('%s | %s fired %s from %s', logArea, playerFullName, employeeFullName, organizationLabel), webhook = config.discordWebhook})
 	else
-		exports.qbx_core:Notify(source, Lang:t('error.unable_fire'), 'error')
+		exports.qbx_core:Notify(source, locale('error.unable_fire'), 'error')
 	end
 	return nil
 end)
