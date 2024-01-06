@@ -8,7 +8,8 @@ lib.locale()
 -- Finds nearby players and returns a table of server ids
 ---@return table
 local function findPlayers()
-    local closePlayers = lib.getNearbyPlayers(GetEntityCoords(cache.ped), 10, false)
+    local coords = GetEntityCoords(cache.ped)
+    local closePlayers = lib.getNearbyPlayers(coords, 10, false)
     for _, v in pairs(closePlayers) do
         v.id = GetPlayerServerId(v.id)
     end
@@ -128,15 +129,6 @@ function OpenBossMenu(groupType)
             icon = 'fa-solid fa-hand-holding',
             onSelect = function()
                 showHireMenu(groupType)
-            end,
-        },
-        {
-            title = 'Storage Access',
-            description = groupType == 'gang' and locale('menu.gang_storage') or locale('menu.business_storage'),
-            icon = 'fa-solid fa-box-open',
-            onSelect = function()
-                local stash = (groupType == 'gang' and 'gang_' or 'boss_')..QBX.PlayerData[groupType].name
-                exports.ox_inventory:openInventory('stash', stash)
             end,
         },
     }

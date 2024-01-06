@@ -1,5 +1,6 @@
 lib.versionCheck('Qbox-project/qbx_management')
 if not lib.checkDependency('qbx_core', '1.3.0', true) then error() return end
+if not lib.checkDependency('ox_lib', '3.13.0', true) then error() return end
 
 local config = require 'config.server'
 local logger = require '@qbx_core.modules.logger'
@@ -91,9 +92,9 @@ end)
 lib.callback.register('qbx_management:server:hireEmployee', function(source, employee, groupType)
 	local player = exports.qbx_core:GetPlayer(source)
 	local target = exports.qbx_core:GetPlayer(employee)
-	
+
     if not player.PlayerData[groupType].isboss then return end
-	
+
     if not target then
         exports.qbx_core:Notify(source, locale('error.not_around'), 'error')
         return
@@ -104,7 +105,7 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
 
     local success = groupType == 'gang' and target.Functions.SetGang(jobName, groupType) or target.Functions.SetJob(jobName, groupType)
     local grade = groupType == 'gang' and GANGS[jobName].grades[0].name or JOBS[jobName].grades[0].name
-	
+
     if success then
         local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
         local targetFullName = target.PlayerData.charinfo.firstname..' '..target.PlayerData.charinfo.lastname
@@ -162,8 +163,8 @@ local function fireOnlineEmployee(source, employee, player, groupType)
 
 	local success = groupType == 'gang' and employee.Functions.SetGang('none', 0) or employee.Functions.SetJob('unemployed', 0)
 	if success then
-		local notifyMessage = groupType == 'gang' and locale('error.you_gang_fired') or locale('error.you_job_fired')
-		exports.qbx_core:Notify(employee.PlayerData.source, notifyMessage, 'error')
+		local message = groupType == 'gang' and locale('error.you_gang_fired') or locale('error.you_job_fired')
+		exports.qbx_core:Notify(employee.PlayerData.source, message, 'error')
 		return true
 	end
 	exports.qbx_core:Notify(source, locale('error.unable_fire'), 'error')
@@ -223,9 +224,9 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 	local firedEmployee = exports.qbx_core:GetPlayerByCitizenId(employee) or nil
 	local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
 	local organizationLabel = player.PlayerData[groupType].label
-	
+
 	if not player.PlayerData[groupType].isboss then return end
-	
+
 	local success, employeeFullName
 	if firedEmployee then
 		employeeFullName = firedEmployee.PlayerData.charinfo.firstname..' '..firedEmployee.PlayerData.charinfo.lastname
@@ -233,7 +234,7 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 	else
 		success, employeeFullName = fireOfflineEmployee(source, employee, player, groupType)
 	end
-	
+
 	if success then
 		local logArea = groupType == 'gang' and 'Gang' or 'Boss'
 		local logType = groupType == 'gang' and locale('error.gang_fired') or locale('error.job_fired')
@@ -256,26 +257,11 @@ end)
 ---@field coords vector3 Coordinates of the zone
 ---@field size? vector3 uses vec3(1.5, 1.5, 1.5) if not set
 ---@field rotation? number uses 0.0 if not set
----@field stashSlots? number uses 40 if not set
----@field stashWeight? number uses 400000 if not set
 
 ---@param menuInfo MenuInfo
 local function registerBossMenu(menuInfo)
     menus[#menus + 1] = menuInfo
 	TriggerClientEvent('qbx_management:client:bossMenuRegistered', -1, menuInfo)
-	local prefix = menuInfo.type == 'gang' and 'gang_' or 'boss_'
-	exports.ox_inventory:RegisterStash(prefix..menuInfo.groupName, 'Stash: '..menuInfo.groupName, (menuInfo.stashSlots or 40), (menuInfo.stashWeight or 400000), false)
 end
 
 exports('RegisterBossMenu', registerBossMenu)
-
--- Event Handlers
--- Sets up inventory stashes for all groups (Used by the config boss menu creation)
-AddEventHandler('onServerResourceStart', function(resource)
-	if resource ~= 'ox_inventory' and resource ~= cache.resource then return end
-	local data = config.menus
-	for groupName, menuInfo in pairs(data) do
-		local prefix = menuInfo.type == 'gang' and 'gang_' or 'boss_'
-		exports.ox_inventory:RegisterStash(prefix..groupName, 'Stash: '..groupName, (menuInfo.slots or 40), (menuInfo.weight or 400000), false)
-	end
-end)
