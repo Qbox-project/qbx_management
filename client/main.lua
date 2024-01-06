@@ -131,15 +131,6 @@ function OpenBossMenu(groupType)
                 showHireMenu(groupType)
             end,
         },
-        {
-            title = 'Storage Access',
-            description = groupType == 'gang' and locale('menu.gang_storage') or locale('menu.business_storage'),
-            icon = 'fa-solid fa-box-open',
-            onSelect = function()
-                local stash = (groupType == 'gang' and 'gang_' or 'boss_')..QBX.PlayerData[groupType].name
-                exports.ox_inventory:openInventory('stash', stash)
-            end,
-        },
     }
 
     lib.registerContext({
