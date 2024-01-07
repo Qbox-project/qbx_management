@@ -3,7 +3,14 @@ return {
 
     -- While the config boss menu creation still works, it is recommended to use the runtime export instead.
     ---@alias GroupName string
-    ---@type table<GroupName, MenuInfo>
+
+    ---@class ZoneInfo
+    ---@field coords vec3 coordinates of the zone
+    ---@field size vec3 size of the zone
+    ---@field rotation number rotation of the zone
+    ---@field type GroupType
+
+    ---@type table<GroupName, ZoneInfo>
     menus = {
         lostmc = {
             coords = vec3(983.69, -90.92, 74.85),
@@ -17,5 +24,5 @@ return {
             rotation = 39.68,
             type = 'gang',
         },
-            },
+    },
 }
