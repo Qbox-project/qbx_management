@@ -45,7 +45,6 @@ local function getMenuEntries(groupName, groupType)
 	end
 
 	local dbPlayers = FetchPlayerEntitiesByGroup(groupName, groupType)
-	lib.print.info(dbPlayers)
 	for _, player in pairs(dbPlayers) do
 		if not onlinePlayers[player.citizenid] then
             menuEntries[#menuEntries + 1] = getPlayerMenuEntry(false, player, groupType)
@@ -55,9 +54,7 @@ local function getMenuEntries(groupName, groupType)
 	return menuEntries
 end
 
-local function updatePlayer(type, groupType, grade)
-	local player = exports.qbx_core:GetPlayer(source)
-	local jobName = player.PlayerData[groupType].name
+local function updatePlayer(type, jobName, groupType, grade)
 	local playerJson, jobData
 	if type == 'update' then
 		jobData = groupType == 'gang' and GANGS[jobName] or JOBS[jobName]
@@ -82,7 +79,6 @@ local function updatePlayer(type, groupType, grade)
 		playerJson = {
 			name = groupType == 'gang' and 'none' or 'unemployed',
 			label = jobData.label,
-			isboss = false,
 			grade = {
 				name = jobData.grades[0].name,
 				level = 0
@@ -141,7 +137,7 @@ lib.callback.register('qbx_management:server:updateGrade', function(source, citi
 	if employee then
 		success = groupType == 'gang' and employee.Functions.SetGang(jobName, newGrade) or employee.Functions.SetJob(jobName, newGrade)
 	else
-		local role = updatePlayer('update', groupType, newGrade)
+		local role = updatePlayer('update', jobName, groupType, newGrade)
 		success = UpdatePlayerGroup(citizenId, groupType, role)
 	end
 
