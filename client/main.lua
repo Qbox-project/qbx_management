@@ -105,7 +105,7 @@ local function showHireMenu(groupType)
 
     lib.registerContext({
         id = 'hireMenu',
-        title = groupType == 'gang' and locale('menu.hire_gang') or locale('menu.hire_employees'),
+        title = groupType == 'gang' and locale('menu.hire_gang') or locale('menu.hire_civilians'),
         menu = 'openBossMenu',
         options = hireMenu,
     })
