@@ -19,18 +19,17 @@
         "boss_management": "[E] - Open Boss Management"
     },
     "error": {
-        "cant_promote": "You can't change this person's grade...",
+        "cant_promote": "You can't change the grade of a person who's own grade is greater or equal to yours...",
         "cant_promote_self": "You can't change your own grade...",
         "not_around": "This person is not in city...",
-        "grade_not_exist": "Grade does not exist...",
+        "grade_not_exist": "This grade doesn't seem to exist...",
         "couldnt_hire": "You couldn't hire this person...",
-        "kick_yourself": "You cant kick yourself...",
+        "kick_yourself": "You can't kick yourself...",
         "fire_yourself": "You can't fire yourself...",
-        "kick_boss": "You cant kick someone with a higher grade...",
         "fire_boss": "You can't fire someone with a higher grade...",
         "you_gang_fired": "You've been expelled from the gang!",
         "you_job_fired": "You've been fired! Good luck!",
-        "unable_fire": "You are unable to fire this person...",
+        "unable_fire": "You're unable to fire this person...",
         "person_doesnt_exist": "This person doesn't seem to exist...",
         "gang_fired": "Gang member expelled!",
         "job_fired": "Employee fired!"
@@ -41,4 +40,4 @@
         "hired_to": "You've been hired into ",
         "hired_into": "You hired %{who} into %{where}"
     }
-  }
+}

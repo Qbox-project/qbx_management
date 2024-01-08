@@ -224,7 +224,7 @@ local function fireOnlineEmployee(source, employee, player, groupType)
 	end
 
 	if employee.PlayerData[groupType].grade.level >= player.PlayerData[groupType].grade.level then
-		exports.qbx_core:Notify(source, locale('error.kick_boss'), 'error')
+		exports.qbx_core:Notify(source, locale('error.fire_boss'), 'error')
 		return false
 	end
 
@@ -267,6 +267,7 @@ local function fireOfflineEmployee(source, employee, player, groupType)
 	if success > 0 then
 		return true, employeeFullName
 	end
+
 	return false, nil
 end
 
@@ -296,6 +297,8 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 		local logType = groupType == 'gang' and locale('error.gang_fired') or locale('error.job_fired')
 		exports.qbx_core:Notify(source, logType, 'success')
 		logger.log({source = 'qbx_management', event = 'fireEmployee', message = string.format('%s | %s fired %s from %s', logArea, playerFullName, employeeFullName, organizationLabel), webhook = config.discordWebhook})
+	else
+		exports.qbx_core:Notify(source, locale('error.unable_fire'), 'error')
 	end
 	return nil
 end)
