@@ -8,7 +8,6 @@ version '1.0.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
-    '@qbx_core/modules/utils.lua',
 }
 
 client_scripts {
