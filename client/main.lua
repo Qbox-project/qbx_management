@@ -40,7 +40,7 @@ local function manageEmployee(player, groupName, groupType)
 
     employeeMenu[#employeeMenu + 1] = {
         title = groupType == 'gang' and locale('menu.expel_gang') or locale('menu.fire_employee'),
-        icon = 'fa-solid fa-user-large-slash',
+        icon = 'user-large-slash',
         onSelect = function()
             lib.callback.await('qbx_management:server:fireEmployee', false, player.cid, groupType)
             OpenBossMenu(groupType)
@@ -122,7 +122,7 @@ function OpenBossMenu(groupType)
         {
             title = groupType == 'gang' and locale('menu.manage_gang') or locale('menu.manage_employees'),
             description = groupType == 'gang' and locale('menu.check_gang') or locale('menu.check_employee'),
-            icon = 'fa-solid fa-list',
+            icon = 'list',
             onSelect = function()
                 employeeList(groupType)
             end,
@@ -130,10 +130,19 @@ function OpenBossMenu(groupType)
         {
             title = groupType == 'gang' and locale('menu.hire_members') or locale('menu.hire_employees'),
             description = groupType == 'gang' and locale('menu.hire_gang') or locale('menu.hire_civilians'),
-            icon = 'fa-solid fa-hand-holding',
+            icon = 'hand-holding',
             onSelect = function()
                 showHireMenu(groupType)
             end,
+        },
+        {
+            title = locale('menu.outfit_management'),
+            description = groupType == 'gang' and locale('menu.gang_outfits') or locale('menu.job_outfits'),
+            icon = 'shirt',
+            event = 'illenium-appearance:client:OutfitManagementMenu',
+            args = {
+                type = groupType
+            }
         },
     }
 
@@ -142,6 +151,7 @@ function OpenBossMenu(groupType)
         title = groupType == 'gang' and string.upper(QBX.PlayerData.gang.label) or string.upper(QBX.PlayerData.job.label),
         options = bossMenu,
     })
+
     lib.showContext('openBossMenu')
 end
 
@@ -155,7 +165,7 @@ local function createZone(zoneInfo)
             options = {
                 {
                     name = zoneInfo.groupName..'_menu',
-                    icon = 'fa-solid fa-right-to-bracket',
+                    icon = 'right-to-bracket',
                     label = zoneInfo.type == 'gang' and locale('menu.gang_menu') or locale('menu.boss_menu'),
                     canInteract = function()
                         return zoneInfo.groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss
