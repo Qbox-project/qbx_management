@@ -141,7 +141,7 @@ function OpenBossMenu(groupType)
             icon = 'shirt',
             event = 'illenium-appearance:client:OutfitManagementMenu',
             args = {
-                type = groupType
+                type = qbx.string.capitalize(groupType)
             }
         },
     }

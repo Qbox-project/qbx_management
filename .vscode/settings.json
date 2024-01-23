@@ -4,6 +4,7 @@
         "cache",
         "QBX",
         "locale",
-        "MySQL"
+        "MySQL",
+        "qbx"
     ]
 }
