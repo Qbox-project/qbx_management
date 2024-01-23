@@ -11,7 +11,7 @@ lib.locale()
 ---@return number menuId ID of the menu item added
 local function addMenuItem(menuItem)
     local menuId = #dynamicMenuItems + 1
-    if not menuId.args.type then return end
+    if not menuItem.args.type then return end
     dynamicMenuItems[menuId] = lib.table.deepclone(menuItem)
     return menuId
 end
