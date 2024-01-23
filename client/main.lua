@@ -156,15 +156,6 @@ function OpenBossMenu(groupType)
                 showHireMenu(groupType)
             end,
         },
-        {
-            title = locale('menu.outfit_management'),
-            description = groupType == 'gang' and locale('menu.gang_outfits') or locale('menu.job_outfits'),
-            icon = 'shirt',
-            event = 'illenium-appearance:client:OutfitManagementMenu',
-            args = {
-                type = qbx.string.capitalize(groupType)
-            }
-        },
     }
 
 		
