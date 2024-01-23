@@ -2,8 +2,29 @@ local config = require 'config.client'
 local JOBS = exports.qbx_core:GetJobs()
 local GANGS = exports.qbx_core:GetGangs()
 local isLoggedIn = LocalPlayer.state.isLoggedIn
+local dynamicMenuItems = {}
 
 lib.locale()
+
+-- Adds item to the boss/gang menu.
+---@param menuItem ContextMenuItem Requires args.type to be set to know which menu to place in.
+---@return number menuId ID of the menu item added
+local function addMenuItem(menuItem)
+    local menuId = #dynamicMenuItems + 1
+    if not menuId.args.type then return
+    dynamicMenuItems[menuId] = lib.table.deepclone(menuItem)
+    return menuId
+end
+exports('AddBossMenuItem', addMenuItem)
+exports('AddGangMenuItem', addMenuItem)
+
+-- Remove menu item at particular id
+---@param id number Menu ID to remove
+local function removeMenuItem(id)
+    dynamicMenuItems[id] = nil
+end
+exports('RemoveBossMenuItem', removeMenuItem)
+exports('RemoveGangMenuItem', removeMenuItem)
 
 -- Finds nearby players and returns a table of server ids
 ---@return table
@@ -145,6 +166,13 @@ function OpenBossMenu(groupType)
             }
         },
     }
+
+		
+    for _, menuItem in pairs(dynamicMenuItems) do
+        if string.lower(menuItem.args.type) == groupType then
+            bossMenu[#bossMenu + 1] = menuItem
+        end
+    end
 
     lib.registerContext({
         id = 'openBossMenu',
