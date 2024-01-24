@@ -2,8 +2,29 @@ local config = require 'config.client'
 local JOBS = exports.qbx_core:GetJobs()
 local GANGS = exports.qbx_core:GetGangs()
 local isLoggedIn = LocalPlayer.state.isLoggedIn
+local dynamicMenuItems = {}
 
 lib.locale()
+
+-- Adds item to the boss/gang menu.
+---@param menuItem ContextMenuItem Requires args.type to be set to know which menu to place in.
+---@return number menuId ID of the menu item added
+local function addMenuItem(menuItem)
+    local menuId = #dynamicMenuItems + 1
+    if not menuItem.args.type then return end
+    dynamicMenuItems[menuId] = lib.table.deepclone(menuItem)
+    return menuId
+end
+exports('AddBossMenuItem', addMenuItem)
+exports('AddGangMenuItem', addMenuItem)
+
+-- Remove menu item at particular id
+---@param id number Menu ID to remove
+local function removeMenuItem(id)
+    dynamicMenuItems[id] = nil
+end
+exports('RemoveBossMenuItem', removeMenuItem)
+exports('RemoveGangMenuItem', removeMenuItem)
 
 -- Finds nearby players and returns a table of server ids
 ---@return table
@@ -40,7 +61,7 @@ local function manageEmployee(player, groupName, groupType)
 
     employeeMenu[#employeeMenu + 1] = {
         title = groupType == 'gang' and locale('menu.expel_gang') or locale('menu.fire_employee'),
-        icon = 'fa-solid fa-user-large-slash',
+        icon = 'user-large-slash',
         onSelect = function()
             lib.callback.await('qbx_management:server:fireEmployee', false, player.cid, groupType)
             OpenBossMenu(groupType)
@@ -122,7 +143,7 @@ function OpenBossMenu(groupType)
         {
             title = groupType == 'gang' and locale('menu.manage_gang') or locale('menu.manage_employees'),
             description = groupType == 'gang' and locale('menu.check_gang') or locale('menu.check_employee'),
-            icon = 'fa-solid fa-list',
+            icon = 'list',
             onSelect = function()
                 employeeList(groupType)
             end,
@@ -130,18 +151,26 @@ function OpenBossMenu(groupType)
         {
             title = groupType == 'gang' and locale('menu.hire_members') or locale('menu.hire_employees'),
             description = groupType == 'gang' and locale('menu.hire_gang') or locale('menu.hire_civilians'),
-            icon = 'fa-solid fa-hand-holding',
+            icon = 'hand-holding',
             onSelect = function()
                 showHireMenu(groupType)
             end,
         },
     }
 
+		
+    for _, menuItem in pairs(dynamicMenuItems) do
+        if string.lower(menuItem.args.type) == groupType then
+            bossMenu[#bossMenu + 1] = menuItem
+        end
+    end
+
     lib.registerContext({
         id = 'openBossMenu',
         title = groupType == 'gang' and string.upper(QBX.PlayerData.gang.label) or string.upper(QBX.PlayerData.job.label),
         options = bossMenu,
     })
+
     lib.showContext('openBossMenu')
 end
 
@@ -155,7 +184,7 @@ local function createZone(zoneInfo)
             options = {
                 {
                     name = zoneInfo.groupName..'_menu',
-                    icon = 'fa-solid fa-right-to-bracket',
+                    icon = 'right-to-bracket',
                     label = zoneInfo.type == 'gang' and locale('menu.gang_menu') or locale('menu.boss_menu'),
                     canInteract = function()
                         return zoneInfo.groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss
