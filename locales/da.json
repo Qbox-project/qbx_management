@@ -1,0 +1,44 @@
+{
+    "menu": {
+        "grade": "Grad: ",
+        "expel_gang": "Udvis Bandemedlem",
+        "fire_employee": "Opsig Medarbejder",
+        "manage_gang": "Administrer Bandemedlemmer",
+        "manage_employees": "Administrér Medarbejdere",
+        "citizen_id": "Borger ID: ",
+        "id": "ID: ",
+        "hire_gang": "Rekrutter Nærliggende Civile",
+        "hire_members": "Rekrutter Bandemedlemmer",
+        "hire_civilians": "Ansæt Nærliggende Civile",
+        "hire_employees": "Ansæt Medarbejdere",
+        "check_gang": "Tjek din Bandeliste",
+        "check_employee": "Tjek din Medarbejderliste",
+        "gang_menu": "Bandemenu",
+        "boss_menu": "Boss Menu",
+        "gang_management": "[E] - Åbn BandeMenu",
+        "boss_management": "[E] - Åbn BossMenu"
+    },
+    "error": {
+        "cant_promote": "Du kan ikke ændre graden for en person, hvis egen grad er større eller lig med din...",
+        "cant_promote_self": "Du kan ikke ændre din egen grad...",
+        "not_around": "Denne person er ikke i byen...",
+        "grade_not_exist": "Denne grad ser ikke ud til at eksistere...",
+        "couldnt_hire": "Du kunne ikke ansætte denne person...",
+        "kick_yourself": "Du kan ikke sparke dig selv...",
+        "fire_yourself": "Du kan ikke fyre dig selv...",
+        "fire_boss": "Du kan ikke fyre nogen med en højere grad...",
+        "you_gang_fired": "Du er blevet udvist fra banden!",
+        "you_job_fired": "Du er blevet fyret! Held og lykke!",
+        "unable_fire": "Du kan ikke fyre denne person...",
+        "person_doesnt_exist": "Denne person synes ikke at eksistere...",
+        "gang_fired": "Bandemedlem udvist!",
+        "job_fired": "Medarbejder fyret!"
+    },
+    "success": {
+        "promoted": "Forfremmet!",
+        "promoted_to": "Du er blevet forfremmet til ",
+        "hired_to": "Du er blevet ansat i ",
+        "hired_into": "Du ansatte % i %"
+    }
+   
+}
