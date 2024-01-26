@@ -38,6 +38,6 @@
         "promoted": "Successfully promoted!",
         "promoted_to": "You've been promoted to ",
         "hired_to": "You've been hired into ",
-        "hired_into": "You hired %{who} into %{where}"
+        "hired_into": "You hired %s into %s"
     }
 }

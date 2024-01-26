@@ -177,7 +177,7 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
         local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
         local targetFullName = target.PlayerData.charinfo.firstname..' '..target.PlayerData.charinfo.lastname
         local organizationLabel = player.PlayerData[groupType].label
-		exports.qbx_core:Notify(source, locale('success.hired_into', {who = targetFullName, where = organizationLabel}), 'success')
+		exports.qbx_core:Notify(source, locale('success.hired_into', targetFullName, organizationLabel), 'success')
         exports.qbx_core:Notify(target.PlayerData.source, locale('success.hired_to')..organizationLabel, 'success')
 		logger.log({source = 'qbx_management', event = 'hireEmployee', message = string.format('%s | %s hired %s into %s at grade %s', logArea, playerFullName, targetFullName, organizationLabel, grade), webhook = config.discordWebhook})
     else
