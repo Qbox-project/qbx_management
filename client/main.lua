@@ -4,8 +4,6 @@ local GANGS = exports.qbx_core:GetGangs()
 local isLoggedIn = LocalPlayer.state.isLoggedIn
 local dynamicMenuItems = {}
 
-lib.locale()
-
 -- Adds item to the boss/gang menu.
 ---@param menuItem ContextMenuItem Requires args.type to be set to know which menu to place in.
 ---@return number menuId ID of the menu item added
@@ -158,7 +156,7 @@ function OpenBossMenu(groupType)
         },
     }
 
-		
+
     for _, menuItem in pairs(dynamicMenuItems) do
         if string.lower(menuItem.args.type) == groupType then
             bossMenu[#bossMenu + 1] = menuItem
