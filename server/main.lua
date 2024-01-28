@@ -7,6 +7,7 @@ local logger = require '@qbx_core.modules.logger'
 local JOBS = exports.qbx_core:GetJobs()
 local GANGS = exports.qbx_core:GetGangs()
 local menus = {}
+lib.locale()
 
 for groupName, menuInfo in pairs(config.menus) do
 	menuInfo.groupName = groupName
