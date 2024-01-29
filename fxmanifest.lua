@@ -6,6 +6,8 @@ description 'qbx_management'
 repository 'https://github.com/Qbox-project/qbx_management'
 version '1.0.0'
 
+ox_lib 'locale'
+
 shared_scripts {
     '@ox_lib/init.lua',
 }
