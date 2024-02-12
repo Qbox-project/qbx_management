@@ -135,7 +135,7 @@ end
 -- Opens main boss menu changing function based on the group provided.
 ---@param groupType GroupType
 function OpenBossMenu(groupType)
-    if not QBX.PlayerData[groupType].name or not QBX.PlayerData[groupType].isboss then return end
+    if groupType ~= 'gang' and groupType ~= 'job' or not QBX.PlayerData[groupType].name or not QBX.PlayerData[groupType].isboss then return end
 
     local bossMenu = {
         {
@@ -171,6 +171,8 @@ function OpenBossMenu(groupType)
 
     lib.showContext('openBossMenu')
 end
+
+exports('OpenBossMenu', OpenBossMenu)
 
 local function createZone(zoneInfo)
     if config.useTarget then
