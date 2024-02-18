@@ -244,7 +244,7 @@ end
 ---@param player Player Player object of player initiating firing action
 ---@param groupType GroupType
 local function fireOfflineEmployee(source, employee, player, groupType)
-	local offlineEmployee = FetchPlayerEntityByCitizenId(employee)
+	local offlineEmployee = exports.qbx_core:GetOfflinePlayer(employee)
 	if not offlineEmployee[1] then
 		exports.qbx_core:Notify(source, locale('error.person_doesnt_exist'), 'error')
 		return false, nil
