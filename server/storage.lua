@@ -17,13 +17,6 @@ function FetchPlayerEntitiesByGroup(name, type)
     return chars
 end
 
----Fetches DB Player Entity by CitizenId
----@param citizenId string
----@return table[]
-function FetchPlayerEntityByCitizenId(citizenId)
-    return MySQL.query.await('SELECT * FROM players WHERE citizenid = ? LIMIT 1', {citizenId})
-end
-
 ---Updates DB Player Entity
 ---@param citizenId string
 ---@param type GroupType
