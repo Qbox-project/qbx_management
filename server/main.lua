@@ -169,7 +169,7 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
 	local jobName = player.PlayerData[groupType].name
 	local logArea = groupType == 'gang' and 'Gang' or 'Boss'
 
-    local success = groupType == 'gang' and target.Functions.SetGang(jobName, groupType) or target.Functions.SetJob(jobName, groupType)
+    local success = groupType == 'gang' and target.Functions.SetGang(jobName) or target.Functions.SetJob(jobName)
     local grade = groupType == 'gang' and GANGS[jobName].grades[0].name or JOBS[jobName].grades[0].name
 
     if success then
