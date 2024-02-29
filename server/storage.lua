@@ -16,12 +16,3 @@ function FetchPlayerEntitiesByGroup(name, type)
 
     return chars
 end
-
----Updates DB Player Entity
----@param citizenId string
----@param type GroupType
----@param role Gang | Job
----@return table[]
-function UpdatePlayerGroup(citizenId, type, role)
-    return MySQL.update.await('UPDATE players SET '..type..' = ? WHERE citizenid = ?', {json.encode(role), citizenId})
-end
