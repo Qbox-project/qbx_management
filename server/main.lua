@@ -167,9 +167,9 @@ local function fireEmployee(employeeCitizenId, boss, groupName, groupType)
 	end
 
 	if groupType == 'job' then
-    	exports.qbx_core:RemovePlayerFromJob(employee.PlayerData.citizenid, groupName)
+        exports.qbx_core:RemovePlayerFromJob(employee.PlayerData.citizenid, groupName)
 	else
-		exports.qbx_core:RemovePlayerFromGang(employee.PlayerData.citizenid, groupName)
+        exports.qbx_core:RemovePlayerFromGang(employee.PlayerData.citizenid, groupName)
 	end
 
     if not employee.Offline then
