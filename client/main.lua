@@ -47,7 +47,7 @@ local function manageEmployee(player, groupName, groupType)
             title = gradeTitle.name,
             description = locale('menu.grade')..groupGrade,
             onSelect = function()
-                lib.callback.await('qbx_management:server:updateGrade', false, player.cid, player.grade.level, tonumber(groupGrade), groupType)
+                lib.callback.await('qbx_management:server:updateGrade', false, player.cid, player.grade, tonumber(groupGrade), groupType)
                 OpenBossMenu(groupType)
             end,
         }
@@ -86,7 +86,7 @@ local function employeeList(groupType)
     for _, employee in pairs(employees) do
         employeesMenu[#employeesMenu + 1] = {
             title = employee.name,
-            description = employee.grade.name,
+            description = groupType == 'job' and JOBS[groupName].grades[employee.grade].name or GANGS[groupName].grades[employee.grade].name,
             onSelect = function()
                 manageEmployee(employee, groupName, groupType)
             end,
