@@ -73,10 +73,8 @@ lib.callback.register('qbx_management:server:updateGrade', function(source, citi
 
     if groupType == 'job' then
         exports.qbx_core:AddPlayerToJob(citizenId, jobName, newGrade)
-        exports.qbx_core:SetPlayerPrimaryJob(citizenId, jobName)
     else
         exports.qbx_core:AddPlayerToGang(citizenId, jobName, newGrade)
-        exports.qbx_core:SetPlayerPrimaryGang(citizenId, jobName)
     end
 
     if employee then
@@ -168,10 +166,14 @@ local function fireEmployee(employeeCitizenId, boss, groupName, groupType)
 		return false
 	end
 
-    exports.qbx_core:RemovePlayerFromJob(employee.PlayerData.citizenid, employee.PlayerData.job.name)
+	if groupType == 'job' then
+    	exports.qbx_core:RemovePlayerFromJob(employee.PlayerData.citizenid, groupName)
+	else
+		exports.qbx_core:RemovePlayerFromGang(employee.PlayerData.citizenid, groupName)
+	end
 
     if not employee.Offline then
-        local message = groupType == 'gang' and locale('error.you_gang_fired') or locale('error.you_job_fired')
+        local message = groupType == 'gang' and locale('error.you_gang_fired', GANGS[groupName].label) or locale('error.you_job_fired', JOBS[groupName].label)
 		exports.qbx_core:Notify(employee.PlayerData.source, message, 'error')
     end
 
