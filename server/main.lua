@@ -16,7 +16,7 @@ end
 local function getMenuEntries(groupName, groupType)
 	local menuEntries = {}
 
-    local groupEntries = FetchPlayerEntitiesByGroup(groupName, groupType)
+    local groupEntries = FetchPlayersInGroup(groupName, groupType)
     for i = 1, #groupEntries do
         local citizenid = groupEntries[i].citizenid
         local grade = groupEntries[i].grade
