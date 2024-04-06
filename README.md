@@ -1,4 +1,4 @@
-![qbx_management](https://github.com/MafewTM/qbx_management/assets/22198949/8e881428-fef8-4ae5-ab45-f85a01b9534e)
+![qbx_management](https://github.com/Qbox-project/qbx_management/assets/22198949/97380b5b-3954-4aa5-8b67-d73ffc99237f)
 
 # qbx_management
 Business and gang management menu with group stashes
