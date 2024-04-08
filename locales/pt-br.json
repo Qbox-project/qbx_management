@@ -1,0 +1,43 @@
+{
+    "menu": {
+        "grade": "Cargo: ",
+        "expel_gang": "Expulsar Membro da Gangue",
+        "fire_employee": "Demitir Funcionário",
+        "manage_gang": "Gerenciar Membros da Gangue",
+        "manage_employees": "Gerenciar Funcionários",
+        "citizen_id": "ID do Cidadão: ",
+        "id": "ID: ",
+        "hire_gang": "Recrutar Civis Próximos",
+        "hire_members": "Recrutar Membros da Gangue",
+        "hire_civilians": "Contratar Civis Próximos",
+        "hire_employees": "Contratar Funcionários",
+        "check_gang": "Verificar sua Lista de Gangues",
+        "check_employee": "Verificar sua Lista de Funcionários",
+        "gang_menu": "Menu da Gangue",
+        "boss_menu": "Menu do Chefe",
+        "gang_management": "[E] - Abrir Gerenciamento de Gangues",
+        "boss_management": "[E] - Abrir Gerenciamento do Chefe"
+    },
+    "error": {
+        "cant_promote": "Você não pode mudar o cargo de uma pessoa cujo cargo é igual ou superior ao seu...",
+        "cant_promote_self": "Você não pode mudar seu próprio cargo...",
+        "not_around": "Essa pessoa não está na cidade...",
+        "grade_not_exist": "Esse cargo parece não existir...",
+        "couldnt_hire": "Você não pôde contratar essa pessoa...",
+        "kick_yourself": "Você não pode se expulsar...",
+        "fire_yourself": "Você não pode se demitir...",
+        "fire_boss": "Você não pode demitir alguém com um cargo superior...",
+        "you_gang_fired": "Você foi expulso da gangue!",
+        "you_job_fired": "Você foi demitido! Boa sorte!",
+        "unable_fire": "Você não pode demitir esta pessoa...",
+        "person_doesnt_exist": "Essa pessoa parece não existir...",
+        "gang_fired": "Membro da gangue expulso!",
+        "job_fired": "Funcionário demitido!"
+    },
+    "success": {
+        "promoted": "Promoção realizada com sucesso!",
+        "promoted_to": "Você foi promovido a ",
+        "hired_to": "Você foi contratado para ",
+        "hired_into": "Você contratou %{who} para %{where}"
+    }
+}
