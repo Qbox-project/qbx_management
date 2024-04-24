@@ -16,7 +16,8 @@
         "gang_menu": "Gang Menu",
         "boss_menu": "Boss Menu",
         "gang_management": "[E] - Open Gang Management",
-        "boss_management": "[E] - Open Boss Management"
+        "boss_management": "[E] - Open Boss Management",
+        "manage_outfit": "Manage Outfits"
     },
     "error": {
         "cant_promote": "You can't change the grade of a person who's own grade is greater or equal to yours...",
