@@ -1,0 +1,43 @@
+{
+    "menu": {
+        "grade": "Grau: ",
+        "expel_gang": "Expulsar Membro da Gangue",
+        "fire_employee": "Despedir Funcionário",
+        "manage_gang": "Gerir Membros da Gangue",
+        "manage_employees": "Gerir Funcionários",
+        "citizen_id": "ID do Cidadão: ",
+        "id": "ID: ",
+        "hire_gang": "Recrutar Civis Próximos",
+        "hire_members": "Recrutar Membros da Gangue",
+        "hire_civilians": "Contratar Civis Próximos",
+        "hire_employees": "Contratar Funcionários",
+        "check_gang": "Verificar a tua Lista de Gangues",
+        "check_employee": "Verificar a tua Lista de Funcionários",
+        "gang_menu": "Menu de Gangue",
+        "boss_menu": "Menu de Chefia",
+        "gang_management": "[E] - Abrir Gestão de Gangues",
+        "boss_management": "[E] - Abrir Gestão de Chefia"
+    },
+    "error": {
+        "cant_promote": "Não podes mudar o grau de uma pessoa cujo grau seja maior ou igual ao teu...",
+        "cant_promote_self": "Não podes mudar o teu próprio grau...",
+        "not_around": "Esta pessoa não está na cidade...",
+        "grade_not_exist": "Este grau parece não existir...",
+        "couldnt_hire": "Não conseguiste contratar esta pessoa...",
+        "kick_yourself": "Não podes expulsar-te...",
+        "fire_yourself": "Não te podes despedir...",
+        "fire_boss": "Não podes despedir alguém com um grau superior...",
+        "you_gang_fired": "Foste expulso de %s!",
+        "you_job_fired": "Foste despedido de %s! Boa sorte!",
+        "unable_fire": "Não consegues despedir esta pessoa...",
+        "person_doesnt_exist": "Esta pessoa parece não existir...",
+        "gang_fired": "Membro da gangue expulso!",
+        "job_fired": "Funcionário despedido!"
+    },
+    "success": {
+        "promoted": "Promovido com sucesso!",
+        "promoted_to": "Foste promovido a ",
+        "hired_to": "Foste contratado para ",
+        "hired_into": "Contrataste %s para %s"
+    }
+}
