@@ -3,6 +3,36 @@ local JOBS = exports.qbx_core:GetJobs()
 local GANGS = exports.qbx_core:GetGangs()
 local isLoggedIn = LocalPlayer.state.isLoggedIn
 local dynamicMenuItems = {}
+local PlayerJob = {}
+local PlayerGang = {}
+
+local function AttachObject()
+	tab = CreateObject(GetHashKey("prop_cs_tablet"), 0, 0, 0, true, true, true)
+	AttachEntityToEntity(tab, GetPlayerPed(-1), GetPedBoneIndex(GetPlayerPed(-1), 57005), 0.17, 0.10, -0.13, 20.0, 180.0, 180.0, true, true, false, true, 1, true)
+end
+
+local function DeleteObj(entity)
+    if DoesEntityExist(entity) then
+        SetEntityAsMissionEntity(entity, false, true)
+        DeleteEntity(entity)
+    end
+end
+
+local function StopAnim()
+	DeleteObj(tab)
+	StopAnimTask(GetPlayerPed(-1), "amb@world_human_seat_wall_tablet@female@base", "base" ,8.0, -8.0, -1, 50, 0, false, false, false)
+end
+
+local function StartAnim()
+	Citizen.CreateThread(function()
+	  RequestAnimDict("amb@world_human_seat_wall_tablet@female@base")
+	  while not HasAnimDictLoaded("amb@world_human_seat_wall_tablet@female@base") do
+	    Citizen.Wait(0)
+	  end
+		AttachObject()
+		TaskPlayAnim(GetPlayerPed(-1), "amb@world_human_seat_wall_tablet@female@base", "base" ,8.0, -8.0, -1, 50, 0, false, false, false)
+	end)
+end
 
 -- Adds item to the boss/gang menu.
 ---@param menuItem ContextMenuItem Requires args.type to be set to know which menu to place in.
@@ -71,6 +101,11 @@ local function manageEmployee(player, groupName, groupType)
         title = player.name,
         menu = 'memberListMenu',
         options = employeeMenu,
+        onExit = function()
+            if config.holdTablet then
+                StopAnim()
+            end
+        end
     })
 
     lib.showContext('memberMenu')
@@ -98,6 +133,11 @@ local function employeeList(groupType)
         title = groupType == 'gang' and locale('menu.manage_gang') or locale('menu.manage_employees'),
         menu = 'openBossMenu',
         options = employeesMenu,
+        onExit = function()
+            if config.holdTablet then
+                StopAnim()
+            end
+        end
     })
 
     lib.showContext('memberListMenu')
@@ -127,6 +167,11 @@ local function showHireMenu(groupType)
         title = groupType == 'gang' and locale('menu.hire_gang') or locale('menu.hire_civilians'),
         menu = 'openBossMenu',
         options = hireMenu,
+        onExit = function()
+            if config.holdTablet then
+                StopAnim()
+            end
+        end
     })
 
     lib.showContext('hireMenu')
@@ -167,6 +212,11 @@ function OpenBossMenu(groupType)
         id = 'openBossMenu',
         title = groupType == 'gang' and string.upper(QBX.PlayerData.gang.label) or string.upper(QBX.PlayerData.job.label),
         options = bossMenu,
+        onExit = function()
+            if config.holdTablet then
+                StopAnim()
+            end
+        end
     })
 
     lib.showContext('openBossMenu')
@@ -228,6 +278,23 @@ local function initZones()
     end
 end
 
+local function GetGroupsInfo()
+    local result = {}
+    if PlayerJob.isboss then
+        result[#result + 1] = {
+            label = PlayerJob.label,
+            value = 'job'
+        }
+    end
+    if PlayerGang.isboss then
+        result[#result + 1] = {
+            label = PlayerGang.label,
+            value = 'gang'
+        }
+    end
+    return result
+end
+
 RegisterNetEvent('qbx_management:client:bossMenuRegistered', function(menuInfo)
     createZone(menuInfo)
 end)
@@ -235,6 +302,9 @@ end)
 AddEventHandler('onClientResourceStart', function(resource)
     if cache.resource ~= resource then return end
     initZones()
+    PlayerData = QBX.PlayerData
+    PlayerJob = PlayerData.job
+    PlayerGang = PlayerData.gang
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
@@ -243,6 +313,34 @@ end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     isLoggedIn = false
+end)
+
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
+    PlayerJob = JobInfo
+end)
+
+RegisterNetEvent('QBCore:Client:OnGangUpdate', function(GangInfo)
+    PlayerGang = GangInfo
+end)
+
+RegisterNetEvent('qbx_management:client:OpenBossMenu', function(source)
+    StartAnim()
+    local groups = GetGroupsInfo()
+    if #groups <= 0 then
+        return
+    end
+    local group = groups[1]
+    if #groups > 1 then
+        local input = lib.inputDialog('Dialog title', {
+            {type = 'select', label = 'Selecione o grupo', required = true, options = groups},
+          })
+        if not input then
+            StopAnim()
+            return
+        end
+        group = { value = input[1] }
+    end
+    OpenBossMenu(group.value)
 end)
 
 CreateThread(function()
