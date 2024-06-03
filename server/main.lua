@@ -223,3 +223,9 @@ local function registerBossMenu(menuInfo)
 end
 
 exports('RegisterBossMenu', registerBossMenu)
+
+lib.addCommand(config.commandName, {
+    help = config.commandHelp
+}, function(source, args, raw)
+    TriggerClientEvent('qbx_management:client:OpenBossMenu', source)
+end)

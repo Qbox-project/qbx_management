@@ -1,4 +1,6 @@
 return {
+    commandName = 'tablet',
+    commandHelp = 'Este comando gerencia a organização (Somente Chefe).',
     discordWebhook = nil, -- Replace nil with your webhook if you chose to use discord logging over ox_lib logging
 
     -- While the config boss menu creation still works, it is recommended to use the runtime export instead.
