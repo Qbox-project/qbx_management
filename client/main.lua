@@ -5,6 +5,7 @@ local isLoggedIn = LocalPlayer.state.isLoggedIn
 local dynamicMenuItems = {}
 local PlayerJob = {}
 local PlayerGang = {}
+local tab = nil
 
 local function AttachObject()
 	tab = CreateObject(GetHashKey("prop_cs_tablet"), 0, 0, 0, true, true, true)
@@ -302,9 +303,8 @@ end)
 AddEventHandler('onClientResourceStart', function(resource)
     if cache.resource ~= resource then return end
     initZones()
-    PlayerData = QBX.PlayerData
-    PlayerJob = PlayerData.job
-    PlayerGang = PlayerData.gang
+    PlayerJob = QBX.PlayerData.job
+    PlayerGang = QBX.PlayerData.gang
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
