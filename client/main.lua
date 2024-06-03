@@ -281,13 +281,13 @@ end
 
 local function GetGroupsInfo()
     local result = {}
-    if PlayerJob.isboss then
+    if PlayerJob and PlayerJob.isboss then
         result[#result + 1] = {
             label = PlayerJob.label,
             value = 'job'
         }
     end
-    if PlayerGang.isboss then
+    if PlayerGang and PlayerGang.isboss then
         result[#result + 1] = {
             label = PlayerGang.label,
             value = 'gang'
