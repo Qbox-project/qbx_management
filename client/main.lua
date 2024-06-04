@@ -323,24 +323,28 @@ RegisterNetEvent('QBCore:Client:OnGangUpdate', function(GangInfo)
     PlayerGang = GangInfo
 end)
 
-RegisterNetEvent('qbx_management:client:OpenBossMenu', function(source)
+RegisterNetEvent('qbx_management:client:OpenBossMenu', function(source, menuType)
     StartAnim()
-    local groups = GetGroupsInfo()
-    if #groups <= 0 then
-        return
-    end
-    local group = groups[1]
-    if #groups > 1 then
-        local input = lib.inputDialog('Dialog title', {
-            {type = 'select', label = 'Selecione o grupo', required = true, options = groups},
-          })
-        if not input then
-            StopAnim()
+    if menuType then
+        OpenBossMenu(menuType)
+    else
+        local groups = GetGroupsInfo()
+        if #groups <= 0 then
             return
         end
-        group = { value = input[1] }
+        local group = groups[1]
+        if #groups > 1 then
+            local input = lib.inputDialog('Dialog title', {
+                {type = 'select', label = 'Selecione o grupo', required = true, options = groups},
+            })
+            if not input then
+                StopAnim()
+                return
+            end
+            group = { value = input[1] }
+        end
+        OpenBossMenu(group.value)
     end
-    OpenBossMenu(group.value)
 end)
 
 CreateThread(function()
