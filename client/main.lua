@@ -323,7 +323,7 @@ RegisterNetEvent('QBCore:Client:OnGangUpdate', function(GangInfo)
     PlayerGang = GangInfo
 end)
 
-RegisterNetEvent('qbx_management:client:OpenBossMenu', function(source, menuType)
+RegisterNetEvent('qbx_management:client:OpenBossMenu', function(menuType)
     StartAnim()
     if menuType then
         OpenBossMenu(menuType)

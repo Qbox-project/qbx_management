@@ -230,10 +230,10 @@ lib.addCommand(config.commandName, {
     TriggerClientEvent('qbx_management:client:OpenBossMenu', source)
 end)
 
-lib.addCommand('+tablet:job', {}, function(source, args, raw)
+lib.addCommand('+tablet:job', {help = ''}, function(source, args, raw)
     TriggerClientEvent('qbx_management:client:OpenBossMenu', source, 'job')
 end)
 
-lib.addCommand('+tablet:gang', {}, function(source, args, raw)
+lib.addCommand('+tablet:gang', {help = ''}, function(source, args, raw)
     TriggerClientEvent('qbx_management:client:OpenBossMenu', source, 'gang')
 end)
