@@ -14,6 +14,7 @@ return {
 
     ---@type table<GroupName, ZoneInfo>
     menus = {
+        toggle = false, -- false = desativa tudo abaixo
         lostmc = {
             coords = vec3(983.69, -90.92, 74.85),
             size = vec3(1.5, 1.5, 1.5),
