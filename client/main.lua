@@ -119,6 +119,8 @@ local function employeeList(groupType)
     local employeesMenu = {}
     local groupName = QBX.PlayerData[groupType].name
     local employees = lib.callback.await('qbx_management:server:getEmployees', false, groupName, groupType)
+    JOBS = exports.qbx_core:GetJobs()
+    GANGS = exports.qbx_core:GetGangs()
     for _, employee in pairs(employees) do
         employeesMenu[#employeesMenu + 1] = {
             title = employee.name,

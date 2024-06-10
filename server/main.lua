@@ -14,6 +14,7 @@ for groupName, menuInfo in pairs(config.menus) do
 end
 
 local function getMenuEntries(groupName, groupType)
+	print('qbx_management:server:getMenuEntries', groupName, groupType)
 	local menuEntries = {}
 
     local groupEntries = FetchPlayersInGroup(groupName, groupType)
@@ -38,6 +39,7 @@ end
 ---@param groupType GroupType
 ---@return table?
 lib.callback.register('qbx_management:server:getEmployees', function(source, groupName, groupType)
+	print('qbx_management:server:getEmployees', source, groupName, groupType)
 	local player = exports.qbx_core:GetPlayer(source)
 	if not player.PlayerData[groupType].isboss then return end
 
