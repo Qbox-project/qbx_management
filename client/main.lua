@@ -7,34 +7,6 @@ local PlayerJob = {}
 local PlayerGang = {}
 local tab = nil
 
-local function AttachObject()
-	tab = CreateObject(GetHashKey("prop_cs_tablet"), 0, 0, 0, true, true, true)
-	AttachEntityToEntity(tab, GetPlayerPed(-1), GetPedBoneIndex(GetPlayerPed(-1), 57005), 0.17, 0.10, -0.13, 20.0, 180.0, 180.0, true, true, false, true, 1, true)
-end
-
-local function DeleteObj(entity)
-    if DoesEntityExist(entity) then
-        SetEntityAsMissionEntity(entity, false, true)
-        DeleteEntity(entity)
-    end
-end
-
-local function StopAnim()
-	DeleteObj(tab)
-	StopAnimTask(GetPlayerPed(-1), "amb@world_human_seat_wall_tablet@female@base", "base" ,8.0, -8.0, -1, 50, 0, false, false, false)
-end
-
-local function StartAnim()
-	Citizen.CreateThread(function()
-	  RequestAnimDict("amb@world_human_seat_wall_tablet@female@base")
-	  while not HasAnimDictLoaded("amb@world_human_seat_wall_tablet@female@base") do
-	    Citizen.Wait(0)
-	  end
-		AttachObject()
-		TaskPlayAnim(GetPlayerPed(-1), "amb@world_human_seat_wall_tablet@female@base", "base" ,8.0, -8.0, -1, 50, 0, false, false, false)
-	end)
-end
-
 -- Adds item to the boss/gang menu.
 ---@param menuItem ContextMenuItem Requires args.type to be set to know which menu to place in.
 ---@return number menuId ID of the menu item added
@@ -104,7 +76,7 @@ local function manageEmployee(player, groupName, groupType)
         options = employeeMenu,
         onExit = function()
             if config.holdTablet then
-                StopAnim()
+                ExecuteCommand("e c")
             end
         end
     })
@@ -138,7 +110,7 @@ local function employeeList(groupType)
         options = employeesMenu,
         onExit = function()
             if config.holdTablet then
-                StopAnim()
+                ExecuteCommand("e c")
             end
         end
     })
@@ -172,7 +144,7 @@ local function showHireMenu(groupType)
         options = hireMenu,
         onExit = function()
             if config.holdTablet then
-                StopAnim()
+                ExecuteCommand("e c")
             end
         end
     })
@@ -217,7 +189,7 @@ function OpenBossMenu(groupType)
         options = bossMenu,
         onExit = function()
             if config.holdTablet then
-                StopAnim()
+                ExecuteCommand("e c")
             end
         end
     })
@@ -326,7 +298,9 @@ RegisterNetEvent('QBCore:Client:OnGangUpdate', function(GangInfo)
 end)
 
 RegisterNetEvent('qbx_management:client:OpenBossMenu', function(menuType)
-    StartAnim()
+    if config.holdTablet then
+        ExecuteCommand("e tablet")
+    end
     if menuType then
         OpenBossMenu(menuType)
     else
@@ -340,7 +314,7 @@ RegisterNetEvent('qbx_management:client:OpenBossMenu', function(menuType)
                 {type = 'select', label = 'Selecione o grupo', required = true, options = groups},
             })
             if not input then
-                StopAnim()
+                ExecuteCommand("e c")
                 return
             end
             group = { value = input[1] }
