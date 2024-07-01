@@ -1,0 +1,43 @@
+{
+    "menu": {
+        "grade": "Rütbe: ",
+        "expel_gang": "Çete Üyesini Kov",
+        "fire_employee": "Çalışanı Kov",
+        "manage_gang": "Çete Üyelerini Yönet",
+        "manage_employees": "Çalışanları Yönet",
+        "citizen_id": "Vatandaş ID'si: ",
+        "id": "ID: ",
+        "hire_gang": "Yakındaki Sivilleri İşe Al",
+        "hire_members": "Çete Üyelerini İşe Al",
+        "hire_civilians": "Yakındaki Sivilleri İşe Al",
+        "hire_employees": "Çalışanları İşe Al",
+        "check_gang": "Çete Listesini Kontrol Et",
+        "check_employee": "Çalışan Listesini Kontrol Et",
+        "gang_menu": "Çete Menüsü",
+        "boss_menu": "Patron Menüsü",
+        "gang_management": "[E] - Çete Yönetimini Aç",
+        "boss_management": "[E] - Patron Yönetimini Aç"
+    },
+    "error": {
+        "cant_promote": "Kendi rütbeniz eşit veya büyük olan birinin rütbesini değiştiremezsiniz...",
+        "cant_promote_self": "Kendi rütbenizi değiştiremezsiniz...",
+        "not_around": "Bu kişi şehirde değil...",
+        "grade_not_exist": "Bu rütbe mevcut gibi görünmüyor...",
+        "couldnt_hire": "Bu kişiyi işe alamadınız...",
+        "kick_yourself": "Kendinizi kovamazsınız...",
+        "fire_yourself": "Kendinizi kovamazsınız...",
+        "fire_boss": "Daha yüksek bir rütbedeki birini kovamazsınız...",
+        "you_gang_fired": "%s'den kovuldunuz!",
+        "you_job_fired": "%s'den kovuldunuz! İyi şanslar!",
+        "unable_fire": "Bu kişiyi kovamazsınız...",
+        "person_doesnt_exist": "Bu kişi mevcut gibi görünmüyor...",
+        "gang_fired": "Çete üyesi kovuldu!",
+        "job_fired": "Çalışan kovuldu!"
+    },
+    "success": {
+        "promoted": "Başarıyla terfi ettiniz!",
+        "promoted_to": "%s olarak terfi ettiniz",
+        "hired_to": "%s olarak işe alındınız",
+        "hired_into": "%s, %s içine işe alındı"
+    }
+}
