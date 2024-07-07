@@ -154,6 +154,14 @@ function OpenBossMenu(groupType)
                 showHireMenu(groupType)
             end,
         },
+        {
+            title = groupType == 'gang' and locale('menu.manage_outfit') or locale('menu.manage_outfit'),
+            description = groupType == 'gang' and locale('menu.manage_outfit') or locale('menu.manage_outfit'),
+            icon = 'hand-holding',
+            onSelect = function()
+                TriggerEvent('qb-clothing:client:openOutfitMenu')
+            end,
+        },
     }
 
 
@@ -184,7 +192,7 @@ local function createZone(zoneInfo)
             options = {
                 {
                     name = zoneInfo.groupName..'_menu',
-                    icon = 'right-to-bracket',
+                    icon = 'fa-solid fa-clipboard',
                     label = zoneInfo.type == 'gang' and locale('menu.gang_menu') or locale('menu.boss_menu'),
                     canInteract = function()
                         return zoneInfo.groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss

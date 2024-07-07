@@ -16,7 +16,8 @@
         "gang_menu": "Bande Menu",
         "boss_menu": "Boss Menu",
         "gang_management": "[E] - Åbn Bande menu",
-        "boss_management": "[E] - Åbn Boss menu"
+        "boss_management": "[E] - Åbn Boss menu",
+        "manage_outfit": "Administrer outfits"
     },
     "error": {
         "cant_promote": "Du kan ikke ændre graden for en person, hvis egen grad er større eller lig med din...",
