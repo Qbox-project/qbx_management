@@ -104,7 +104,7 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
 	local groupName = player.PlayerData[groupType].name
 	local logArea = groupType == 'gang' and 'Gang' or 'Boss'
 
-    if not lib.callback.await('mri_Qbox:client:request', "Recrutamento", string.format("Você deseja entrar em: %s", organizationLabel)) then
+    if not lib.callback.await('mri_Qbox:client:request', employee, "Recrutamento", string.format("Você deseja entrar em: %s", organizationLabel)) then
         lib.notify(source, {
             title = "Recrutamento",
             type = "error",
