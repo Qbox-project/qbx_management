@@ -91,6 +91,7 @@ end)
 ---@param groupType GroupType
 lib.callback.register('qbx_management:server:hireEmployee', function(source, employee, groupType)
 	local player = exports.qbx_core:GetPlayer(source)
+    local organizationLabel = player.PlayerData[groupType].label
 	local target = exports.qbx_core:GetPlayer(employee)
 
     if not player.PlayerData[groupType].isboss then return end
@@ -103,6 +104,15 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
 	local groupName = player.PlayerData[groupType].name
 	local logArea = groupType == 'gang' and 'Gang' or 'Boss'
 
+    if not lib.callback.await('mri_Qbox:client:request', "Recrutamento", string.format("Você deseja entrar em: %s", organizationLabel)) then
+        lib.notify(source, {
+            title = "Recrutamento",
+            type = "error",
+            description = "Recrutamento recusado pelo candidato."
+        })
+        return
+    end
+
     if groupType == 'job' then
         exports.qbx_core:AddPlayerToJob(target.PlayerData.citizenid, groupName, 0)
         exports.qbx_core:SetPlayerPrimaryJob(target.PlayerData.citizenid, groupName)
@@ -113,7 +123,6 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
 
     local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
     local targetFullName = target.PlayerData.charinfo.firstname..' '..target.PlayerData.charinfo.lastname
-    local organizationLabel = player.PlayerData[groupType].label
     exports.qbx_core:Notify(source, locale('success.hired_into', targetFullName, organizationLabel), 'success')
     exports.qbx_core:Notify(target.PlayerData.source, locale('success.hired_to')..organizationLabel, 'success')
     logger.log({source = 'qbx_management', event = 'hireEmployee', message = string.format('%s | %s hired %s into %s at grade %s', logArea, playerFullName, targetFullName, organizationLabel, 0), webhook = config.discordWebhook})
