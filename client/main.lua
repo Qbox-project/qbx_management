@@ -232,6 +232,15 @@ RegisterNetEvent('qbx_management:client:bossMenuRegistered', function(menuInfo)
     createZone(menuInfo)
 end)
 
+if GetConvar('qbx:enablebridge', 'true') == 'true' then
+    RegisterNetEvent('qb-bossmenu:client:openMenu', function()
+        OpenBossMenu('job')
+    end)
+    RegisterNetEvent('qb-gangmenu:client:openMenu', function()
+        OpenBossMenu('gang')
+    end)
+end
+
 AddEventHandler('onClientResourceStart', function(resource)
     if cache.resource ~= resource then return end
     initZones()
