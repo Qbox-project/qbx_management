@@ -233,10 +233,10 @@ RegisterNetEvent('qbx_management:client:bossMenuRegistered', function(menuInfo)
 end)
 
 if GetConvar('qbx:enablebridge', 'true') == 'true' then
-    RegisterNetEvent('qb-bossmenu:client:openMenu', function()
+    RegisterNetEvent('qb-bossmenu:client:OpenMenu', function()
         OpenBossMenu('job')
     end)
-    RegisterNetEvent('qb-gangmenu:client:openMenu', function()
+    RegisterNetEvent('qb-gangmenu:client:OpenMenu', function()
         OpenBossMenu('gang')
     end)
 end
