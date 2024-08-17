@@ -1,5 +1,5 @@
 lib.versionCheck('Qbox-project/qbx_management')
-if not lib.checkDependency('qbx_core', '1.7.0', true) then error() return end
+if not lib.checkDependency('qbx_core', '1.18.0', true) then error() return end
 if not lib.checkDependency('ox_lib', '3.13.0', true) then error() return end
 
 local config = require 'config.server'
@@ -16,7 +16,7 @@ end
 local function getMenuEntries(groupName, groupType)
 	local menuEntries = {}
 
-    local groupEntries = FetchPlayersInGroup(groupName, groupType)
+    local groupEntries = exports.qbx_core:GetGroupMembers(groupName, groupType)
     for i = 1, #groupEntries do
         local citizenid = groupEntries[i].citizenid
         local grade = groupEntries[i].grade
@@ -32,8 +32,7 @@ local function getMenuEntries(groupName, groupType)
 	return menuEntries
 end
 
--- Get a list of employees for a given group. Currently uses MySQL queries to return offline players.
--- Once an export is available to reliably return offline players this can rewriten.
+-- Get a list of employees for a given group.
 ---@param groupName string Name of job/gang to get employees of
 ---@param groupType GroupType
 ---@return table?
