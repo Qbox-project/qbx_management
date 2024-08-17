@@ -32,8 +32,7 @@ local function getMenuEntries(groupName, groupType)
 	return menuEntries
 end
 
--- Get a list of employees for a given group. Currently uses MySQL queries to return offline players.
--- Once an export is available to reliably return offline players this can rewriten.
+-- Get a list of employees for a given group.
 ---@param groupName string Name of job/gang to get employees of
 ---@param groupType GroupType
 ---@return table?
