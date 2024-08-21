@@ -1,0 +1,43 @@
+{
+    "menu": {
+        "grade": "Rang: ",
+        "expel_gang": "Gangmitglied rauswerfen",
+        "fire_employee": "Angestellten feuern",
+        "manage_gang": "Gangmitglieder verwalten",
+        "manage_employees": "Mitarbeiter verwalten",
+        "citizen_id": "Citizen ID: ",
+        "id": "ID: ",
+        "hire_gang": "Zivilisten in der nähe rekrutieren",
+        "hire_members": "Rekrutiere Gangmitglieder",
+        "hire_civilians": "Zivilisten in der nähe einstellen",
+        "hire_employees": "Mitarbeiter einstellen",
+        "check_gang": "Deine Gangliste überprüfen",
+        "check_employee": "Deine Mitarbeiterliste überprüfen",
+        "gang_menu": "Gangmenü",
+        "boss_menu": "Bossmenü",
+        "gang_management": "[E] - Gangmanagement öffnen",
+        "boss_management": "[E] - Bossmanagement öffnen"
+    },
+    "error": {
+        "cant_promote": "Du kannst nicht von jemandem den Rang ändern der gleich oder höher ist, als du...",
+        "cant_promote_self": "Du kannst deinen eigenen Rang nicht ändern...",
+        "not_around": "Diese Person ist nicht in der Stadt...",
+        "grade_not_exist": "Dieser Rang scheint nicht zu existieren...",
+        "couldnt_hire": "Du konntest diese Person nicht anheuern...",
+        "kick_yourself": "Du kannst dich nicht selbst rauswerfen...",
+        "fire_yourself": "Du kannst dich nicht selst feuern...",
+        "fire_boss": "Du kannst jemanden mit einem höheren Rang nicht rauswerfen...",
+        "you_gang_fired": "Du wurdest aus %s rausgeworfen!",
+        "you_job_fired": "Du wurdest von %s entlassen! Viel Glück!",
+        "unable_fire": "Du kannst diese Person nicht feuern...",
+        "person_doesnt_exist": "Diese Person scheint es nicht zu geben...",
+        "gang_fired": "Gangmitglied rausgeworfen!",
+        "job_fired": "Mitarbeiter entlassen!"
+    },
+    "success": {
+        "promoted": "Erfolgreich befördert!",
+        "promoted_to": "Du wurdest befördert zu ",
+        "hired_to": "Du wurdest angeheurt zu ",
+        "hired_into": "Du hast %s eingeladen %s beizutreten"
+    }
+}
