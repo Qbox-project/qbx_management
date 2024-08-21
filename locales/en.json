@@ -1,7 +1,7 @@
 {
     "menu": {
         "grade": "Grade: ",
-        "expel_gang": "Expel Gang Mebber",
+        "expel_gang": "Expel Gang Member",
         "fire_employee": "Fire Employee",
         "manage_gang": "Manage Gang Members",
         "manage_employees": "Manage Employees",
