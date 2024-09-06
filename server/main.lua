@@ -71,9 +71,11 @@ lib.callback.register('qbx_management:server:updateGrade', function(source, citi
 	end
 
     if groupType == 'job' then
-        exports.qbx_core:AddPlayerToJob(citizenId, jobName, newGrade)
+        local success, errorResult = exports.qbx_core:AddPlayerToJob(citizenId, jobName, newGrade)
+		assert(success, errorResult.message)
     else
-        exports.qbx_core:AddPlayerToGang(citizenId, jobName, newGrade)
+        local success, errorResult = exports.qbx_core:AddPlayerToGang(citizenId, jobName, newGrade)
+		assert(success, errorResult.message)
     end
 
     if employee then
@@ -101,11 +103,15 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
 	local logArea = groupType == 'gang' and 'Gang' or 'Boss'
 
     if groupType == 'job' then
-        exports.qbx_core:AddPlayerToJob(target.PlayerData.citizenid, groupName, 0)
-        exports.qbx_core:SetPlayerPrimaryJob(target.PlayerData.citizenid, groupName)
+        local success, errorResult = exports.qbx_core:AddPlayerToJob(target.PlayerData.citizenid, groupName, 0)
+		assert(success, errorResult.message)
+        success, errorResult = exports.qbx_core:SetPlayerPrimaryJob(target.PlayerData.citizenid, groupName)
+		assert(success, errorResult.message)
     else
-        exports.qbx_core:AddPlayerToGang(target.PlayerData.citizenid, groupName, 0)
-        exports.qbx_core:SetPlayerPrimaryGang(target.PlayerData.citizenid, groupName)
+        local success, errorResult = exports.qbx_core:AddPlayerToGang(target.PlayerData.citizenid, groupName, 0)
+		assert(success, errorResult.message)
+        success, errorResult = exports.qbx_core:SetPlayerPrimaryGang(target.PlayerData.citizenid, groupName)
+		assert(success, errorResult.message)
     end
 
     local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
@@ -166,9 +172,11 @@ local function fireEmployee(employeeCitizenId, boss, groupName, groupType)
 	end
 
 	if groupType == 'job' then
-        exports.qbx_core:RemovePlayerFromJob(employee.PlayerData.citizenid, groupName)
+        local success, errorResult = exports.qbx_core:RemovePlayerFromJob(employee.PlayerData.citizenid, groupName)
+		assert(success, errorResult.message)
 	else
-        exports.qbx_core:RemovePlayerFromGang(employee.PlayerData.citizenid, groupName)
+        local success, errorResult = exports.qbx_core:RemovePlayerFromGang(employee.PlayerData.citizenid, groupName)
+		assert(success, errorResult.message)
 	end
 
     if not employee.Offline then
