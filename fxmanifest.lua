@@ -1,10 +1,10 @@
 fx_version 'cerulean'
 game 'gta5'
-version '1.2.0'
+version '1.2.1'
 
 description 'qbx_management'
 repository 'https://github.com/Qbox-project/qbx_management'
-version '1.2.0'
+version '1.2.1'
 
 ox_lib 'locale'
 
