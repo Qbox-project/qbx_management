@@ -9,6 +9,12 @@
 ---@field size? vector3 uses vec3(1.5, 1.5, 1.5) if not set
 ---@field rotation? number uses 0.0 if not set
 
+---@class ZoneInfo
+---@field coords vector3 coordinates of the zone
+---@field size vector3 size of the zone
+---@field rotation number rotation of the zone
+---@field type GroupType
+
 ---@class ContextMenuItem
 ---@field title? string
 ---@field menu? string
