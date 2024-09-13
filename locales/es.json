@@ -1,0 +1,43 @@
+{
+    "menu": {
+        "grade": "Grado: ",
+        "expel_gang": "Expulsar Miembro de la Banda",
+        "fire_employee": "Despedir Empleado",
+        "manage_gang": "Gestionar Miembros de la Banda",
+        "manage_employees": "Gestionar Empleados",
+        "citizen_id": "ID de Ciudadano: ",
+        "id": "ID: ",
+        "hire_gang": "Reclutar Civiles Cercanos",
+        "hire_members": "Reclutar Miembros de la Banda",
+        "hire_civilians": "Contratar Civiles Cercanos",
+        "hire_employees": "Contratar Empleados",
+        "check_gang": "Revisar tu Lista de la Banda",
+        "check_employee": "Revisar tu Lista de Empleados",
+        "gang_menu": "Menú de la Banda",
+        "boss_menu": "Menú del Jefe",
+        "gang_management": "[E] - Abrir Gestión de la Banda",
+        "boss_management": "[E] - Abrir Gestión del Jefe"
+    },
+    "error": {
+        "cant_promote": "No puedes cambiar el grado de una persona cuyo grado es mayor o igual al tuyo...",
+        "cant_promote_self": "No puedes cambiar tu propio grado...",
+        "not_around": "Esta persona no está en la ciudad...",
+        "grade_not_exist": "Este grado parece no existir...",
+        "couldnt_hire": "No pudiste contratar a esta persona...",
+        "kick_yourself": "No puedes expulsarte a ti mismo...",
+        "fire_yourself": "No puedes despedirte a ti mismo...",
+        "fire_boss": "No puedes despedir a alguien con un grado superior...",
+        "you_gang_fired": "¡Has sido expulsado de %s!",
+        "you_job_fired": "¡Has sido despedido de %s! ¡Buena suerte!",
+        "unable_fire": "No puedes despedir a esta persona...",
+        "person_doesnt_exist": "Esta persona parece no existir...",
+        "gang_fired": "¡Miembro de la banda expulsado!",
+        "job_fired": "¡Empleado despedido!"
+    },
+    "success": {
+        "promoted": "¡Ascendido con éxito!",
+        "promoted_to": "Has sido ascendido a ",
+        "hired_to": "Has sido contratado en ",
+        "hired_into": "Contrataste a %s en %s"
+    }
+}
