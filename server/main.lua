@@ -220,13 +220,6 @@ lib.callback.register('qbx_management:server:getBossMenus', function()
 end)
 
 ---Creates a boss zone for the specified group
----@class MenuInfo
----@field groupName string Name of the group
----@field type GroupType Type of group
----@field coords vector3 Coordinates of the zone
----@field size? vector3 uses vec3(1.5, 1.5, 1.5) if not set
----@field rotation? number uses 0.0 if not set
-
 ---@param menuInfo MenuInfo
 local function registerBossMenu(menuInfo)
     menus[#menus + 1] = menuInfo
