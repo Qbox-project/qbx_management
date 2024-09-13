@@ -5,8 +5,8 @@ return {
     ---@alias GroupName string
 
     ---@class ZoneInfo
-    ---@field coords vec3 coordinates of the zone
-    ---@field size vec3 size of the zone
+    ---@field coords vector3 coordinates of the zone
+    ---@field size vector3 size of the zone
     ---@field rotation number rotation of the zone
     ---@field type GroupType
 
