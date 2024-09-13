@@ -151,7 +151,8 @@ end)
 
 
 ---@param employeeCitizenId string
----@param boss table The player object
+---@diagnostic disable-next-line: undefined-doc-name
+---@param boss Player | table
 ---@param groupName string
 ---@param groupType GroupType
 ---@return boolean success
