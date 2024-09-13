@@ -6,7 +6,7 @@ local dynamicMenuItems = {}
 
 -- Adds item to the boss/gang menu.
 ---@param menuItem ContextMenuItem Requires args.type to be set to know which menu to place in.
----@return number menuId ID of the menu item added
+---@return number? menuId ID of the menu item added
 local function addMenuItem(menuItem)
     local menuId = #dynamicMenuItems + 1
     if not menuItem.args.type then return end

@@ -9,6 +9,7 @@ local GANGS = exports.qbx_core:GetGangs()
 local menus = {}
 
 for groupName, menuInfo in pairs(config.menus) do
+    ---@diagnostic disable-next-line: inject-field
 	menuInfo.groupName = groupName
 	menus[#menus + 1] = menuInfo
 end
@@ -49,8 +50,10 @@ lib.callback.register('qbx_management:server:getEmployees', function(source, gro
 end)
 
 -- Callback for updating the grade information of online players
+---@param source number
 ---@param citizenId string CitizenId of player who is being promoted/demoted
----@param grade integer Grade number target for target employee
+---@param oldGrade integer Old grade number of target employee
+---@param newGrade integer New grade number of target employee
 ---@param groupType GroupType
 lib.callback.register('qbx_management:server:updateGrade', function(source, citizenId, oldGrade, newGrade, groupType)
 	local player = exports.qbx_core:GetPlayer(source)
@@ -148,7 +151,8 @@ end)
 
 
 ---@param employeeCitizenId string
----@param boss Player
+---@diagnostic disable-next-line: undefined-doc-name
+---@param boss Player | table
 ---@param groupName string
 ---@param groupType GroupType
 ---@return boolean success
@@ -216,13 +220,6 @@ lib.callback.register('qbx_management:server:getBossMenus', function()
 end)
 
 ---Creates a boss zone for the specified group
----@class MenuInfo
----@field groupName string Name of the group
----@field type GroupType Type of group
----@field coords vector3 Coordinates of the zone
----@field size? vector3 uses vec3(1.5, 1.5, 1.5) if not set
----@field rotation? number uses 0.0 if not set
-
 ---@param menuInfo MenuInfo
 local function registerBossMenu(menuInfo)
     menus[#menus + 1] = menuInfo
