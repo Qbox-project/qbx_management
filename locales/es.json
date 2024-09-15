@@ -16,7 +16,10 @@
         "gang_menu": "Menú de la Banda",
         "boss_menu": "Menú del Jefe",
         "gang_management": "[E] - Abrir Gestión de la Banda",
-        "boss_management": "[E] - Abrir Gestión del Jefe"
+        "boss_management": "[E] - Abrir Gestión del Jefe",
+		"hours_in_days": "Hours worked in 30 days",
+		"last_checkin": "Last check in",
+		"bonus_employee": "Give Employee Bonus"
     },
     "error": {
         "cant_promote": "No puedes cambiar el grado de una persona cuyo grado es mayor o igual al tuyo...",
@@ -32,12 +35,15 @@
         "unable_fire": "No puedes despedir a esta persona...",
         "person_doesnt_exist": "Esta persona parece no existir...",
         "gang_fired": "¡Miembro de la banda expulsado!",
-        "job_fired": "¡Empleado despedido!"
+        "job_fired": "¡Empleado despedido!",
+		"invalid_amount": "You've entered an invalid amount",
+		"invalid_balance": "There is not enough balance for the bonus amount"
     },
     "success": {
         "promoted": "¡Ascendido con éxito!",
         "promoted_to": "Has sido ascendido a ",
         "hired_to": "Has sido contratado en ",
-        "hired_into": "Contrataste a %s en %s"
+        "hired_into": "Contrataste a %s en %s",
+		"amount_send": "You have send %s,- bonus to %s"
     }
 }

@@ -57,6 +57,19 @@ local function manageEmployee(player, groupName, groupType)
         return a.description < b.description
     end)
 
+	if groupType == 'job' and config.societyBonusReward then
+		employeeMenu[#employeeMenu + 1] = {
+			title =  locale('menu.bonus_employee'),
+			icon = 'fas fa-dollar-sign',
+			onSelect = function()
+				local input = lib.inputDialog(locale('menu.bonus_employee'), {{type = 'number', label = 'Amount', icon = 'fas fa-dollar-sign'}})
+				if not input then OpenBossMenu(groupType) return end
+				lib.callback.await('qbx_management:server:bonusEmployee', false, player.cid, groupType, groupName, input[1])
+				OpenBossMenu(groupType)
+			end,
+		}
+	end
+
     employeeMenu[#employeeMenu + 1] = {
         title = groupType == 'gang' and locale('menu.expel_gang') or locale('menu.fire_employee'),
         icon = 'user-large-slash',
@@ -84,13 +97,20 @@ local function employeeList(groupType)
     local groupName = QBX.PlayerData[groupType].name
     local employees = lib.callback.await('qbx_management:server:getEmployees', false, groupName, groupType)
     for _, employee in pairs(employees) do
-        employeesMenu[#employeesMenu + 1] = {
+        local employeesData = {
             title = employee.name,
             description = groupType == 'job' and JOBS[groupName].grades[employee.grade].name or GANGS[groupName].grades[employee.grade].name,
             onSelect = function()
                 manageEmployee(employee, groupName, groupType)
             end,
         }
+		if employee.hours and employee.last_checkin then
+			employeesData.metadata = {
+				{ label = locale('menu.hours_in_days'), value = employee.hours },
+				{ label = locale('menu.last_checkin'), value = employee.last_checkin },
+			}
+		end
+		employeesMenu[#employeesMenu + 1] = employeesData
     end
 
     lib.registerContext({

@@ -6,6 +6,7 @@ local config = require 'config.server'
 local logger = require '@qbx_core.modules.logger'
 local JOBS = exports.qbx_core:GetJobs()
 local GANGS = exports.qbx_core:GetGangs()
+local PlayersClockedIn = {}
 local menus = {}
 
 for groupName, menuInfo in pairs(config.menus) do
@@ -23,10 +24,13 @@ local function getMenuEntries(groupName, groupType)
         local grade = groupEntries[i].grade
         local player = exports.qbx_core:GetPlayerByCitizenId(citizenid) or exports.qbx_core:GetOfflinePlayer(citizenid)
         local namePrefix = player.Offline and '❌ ' or '🟢 '
+		local playerActivityData = groupType == 'job' and getPlayerActivityData(citizenid, groupName) or nil
         menuEntries[#menuEntries + 1] = {
             cid = citizenid,
 			grade = grade,
-			name = namePrefix..player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
+			name = namePrefix..player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname,
+			hours = playerActivityData?.hours,
+			last_checkin = playerActivityData?.last_checkin
         }
     end
 
@@ -215,6 +219,32 @@ lib.callback.register('qbx_management:server:fireEmployee', function(source, emp
 	end
 end)
 
+-- Callback for giving a player a bonus from a given society.
+---@param employee string citizenid of employee to get the bonus
+---@param groupType GroupType
+---@param groupName string
+---@param amount number
+lib.callback.register('qbx_management:server:bonusEmployee', function(source, employee, groupType, groupName, amount)
+	local player = exports.qbx_core:GetPlayer(source)
+	local bonusEmployee = exports.qbx_core:GetPlayerByCitizenId(employee) or exports.qbx_core:GetOfflinePlayer(employee)
+	local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
+	local organizationLabel = player.PlayerData[groupType].label
+	local societyAccount = config.getSocietyAccount(groupName)
+
+	if not player.PlayerData[groupType].isboss then return end
+	if not bonusEmployee then lib.print.error("not able to find player with citizenid", employee) return end
+	if not amount or tonumber(amount) <= 0 then exports.qbx_core:Notify(source, locale('error.invalid_amount'), 'error') return end
+	if not societyAccount or societyAccount < tonumber(amount) then exports.qbx_core:Notify(source, locale('error.invalid_balance'), 'error') return end
+	local employeeFullName = bonusEmployee.PlayerData.charinfo.firstname..' '..bonusEmployee.PlayerData.charinfo.lastname
+
+	config.removeSocietyMoney(groupName, tonumber(amount))
+	bonusEmployee.Functions.AddMoney('bank', tonumber(amount), 'society-bonus')
+	bonusEmployee.Functions.Save()
+
+	exports.qbx_core:Notify(source, locale('success.amount_send', amount, employeeFullName), 'success')
+	logger.log({source = 'qbx_management', event = 'bonusEmployee', message = string.format('%s | %s gave a bonus to %s from account %s with amount %s', 'Boss', playerFullName, employeeFullName, organizationLabel, amount), webhook = config.discordWebhook})
+end)
+
 lib.callback.register('qbx_management:server:getBossMenus', function()
 	return menus
 end)
@@ -227,3 +257,52 @@ local function registerBossMenu(menuInfo)
 end
 
 exports('RegisterBossMenu', registerBossMenu)
+
+---@param source number
+---@param citizenid string
+---@param job string
+local function doPlayerCheckIn(source, citizenid, job)
+	PlayersClockedIn[source] = { citizenid = citizenid, job = job }
+	onPlayerCheckIn(citizenid, job)
+end
+
+---@param source number
+local function onPlayerUnload(source)
+	if PlayersClockedIn[source] then
+        onPlayerCheckOut(PlayersClockedIn[source].citizenid, PlayersClockedIn[source].job)
+		PlayersClockedIn[source] = nil
+    end
+end
+
+---@param source number
+RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function()
+    local Player = exports.qbx_core:GetPlayer(source)
+	if Player ~= nil then
+		if Player.PlayerData.job.onduty then
+			doPlayerCheckIn(Player.PlayerData.source, Player.PlayerData.citizenid, Player.PlayerData.job.name)
+		end
+	end
+end)
+
+---@param source number
+---@param duty boolean
+AddEventHandler('QBCore:Server:SetDuty', function(source, duty)
+	local Player = exports.qbx_core:GetPlayer(source)
+    if Player ~= nil then
+		if duty then
+			doPlayerCheckIn(Player.PlayerData.source, Player.PlayerData.citizenid, Player.PlayerData.job.name)
+		else
+			onPlayerUnload(Player.PlayerData.source)
+		end
+	end
+end)
+
+---@param source number
+AddEventHandler('QBCore:Server:OnPlayerUnload', function()
+    onPlayerUnload(source)
+end)
+
+---@param source number
+AddEventHandler('playerDropped', function()
+	onPlayerUnload(source)
+end)
