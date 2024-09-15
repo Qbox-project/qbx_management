@@ -6,7 +6,7 @@ local config = require 'config.server'
 local logger = require '@qbx_core.modules.logger'
 local JOBS = exports.qbx_core:GetJobs()
 local GANGS = exports.qbx_core:GetGangs()
-local PlayersClockedIn = {}
+local playersClockedIn = {}
 local menus = {}
 
 for groupName, menuInfo in pairs(config.menus) do
@@ -24,7 +24,7 @@ local function getMenuEntries(groupName, groupType)
         local grade = groupEntries[i].grade
         local player = exports.qbx_core:GetPlayerByCitizenId(citizenid) or exports.qbx_core:GetOfflinePlayer(citizenid)
         local namePrefix = player.Offline and '❌ ' or '🟢 '
-		local playerActivityData = groupType == 'job' and getPlayerActivityData(citizenid, groupName) or nil
+		local playerActivityData = groupType == 'job' and GetPlayerActivityData(citizenid, groupName) or nil
         menuEntries[#menuEntries + 1] = {
             cid = citizenid,
 			grade = grade,
@@ -262,38 +262,51 @@ exports('RegisterBossMenu', registerBossMenu)
 ---@param citizenid string
 ---@param job string
 local function doPlayerCheckIn(source, citizenid, job)
-	PlayersClockedIn[source] = { citizenid = citizenid, job = job }
-	onPlayerCheckIn(citizenid, job)
+	playersClockedIn[source] = { citizenid = citizenid, job = job }
+	OnPlayerCheckIn(citizenid, job)
 end
 
 ---@param source number
 local function onPlayerUnload(source)
-	if PlayersClockedIn[source] then
-        onPlayerCheckOut(PlayersClockedIn[source].citizenid, PlayersClockedIn[source].job)
-		PlayersClockedIn[source] = nil
+	if playersClockedIn[source] then
+        OnPlayerCheckOut(playersClockedIn[source].citizenid)
+		playersClockedIn[source] = nil
     end
 end
 
 ---@param source number
 RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function()
-    local Player = exports.qbx_core:GetPlayer(source)
-	if Player ~= nil then
-		if Player.PlayerData.job.onduty then
-			doPlayerCheckIn(Player.PlayerData.source, Player.PlayerData.citizenid, Player.PlayerData.job.name)
-		end
+    local player = exports.qbx_core:GetPlayer(source)
+	if player == nil then return end
+	if player.PlayerData.job.onduty then
+		doPlayerCheckIn(player.PlayerData.source, player.PlayerData.citizenid, player.PlayerData.job.name)
+	end
+end)
+
+---@param source number
+---@param groupName string
+---@param groupGrade number
+AddEventHandler('qbx_core:server:onGroupUpdate', function(source, groupName, groupGrade)
+	if playersClockedIn[source] then
+		onPlayerUnload(source)
+		return
+	end
+	local player = exports.qbx_core:GetPlayer(source)
+	if player == nil then return end
+	if player.PlayerData.job.onduty then
+		doPlayerCheckIn(player.PlayerData.source, player.PlayerData.citizenid, groupName)
 	end
 end)
 
 ---@param source number
 ---@param duty boolean
 AddEventHandler('QBCore:Server:SetDuty', function(source, duty)
-	local Player = exports.qbx_core:GetPlayer(source)
-    if Player ~= nil then
-		if duty then
-			doPlayerCheckIn(Player.PlayerData.source, Player.PlayerData.citizenid, Player.PlayerData.job.name)
-		else
-			onPlayerUnload(Player.PlayerData.source)
-		end
+	local player = exports.qbx_core:GetPlayer(source)
+    if player == nil then return end
+	if duty then
+		doPlayerCheckIn(player.PlayerData.source, player.PlayerData.citizenid, player.PlayerData.job.name)
+	else
+		onPlayerUnload(player.PlayerData.source)
 	end
 end)
 
