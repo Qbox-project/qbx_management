@@ -18,8 +18,7 @@
         "gang_management": "[E] - Çete Yönetimini Aç",
         "boss_management": "[E] - Patron Yönetimini Aç",
 		"hours_in_days": "Hours worked in 30 days",
-		"last_checkin": "Last check in",
-		"bonus_employee": "Give Employee Bonus"
+		"last_checkin": "Last check in"
     },
     "error": {
         "cant_promote": "Kendi rütbeniz eşit veya büyük olan birinin rütbesini değiştiremezsiniz...",
@@ -35,15 +34,12 @@
         "unable_fire": "Bu kişiyi kovamazsınız...",
         "person_doesnt_exist": "Bu kişi mevcut gibi görünmüyor...",
         "gang_fired": "Çete üyesi kovuldu!",
-        "job_fired": "Çalışan kovuldu!",
-		"invalid_amount": "You've entered an invalid amount",
-		"invalid_balance": "There is not enough balance for the bonus amount"
+        "job_fired": "Çalışan kovuldu!"
     },
     "success": {
         "promoted": "Başarıyla terfi ettiniz!",
         "promoted_to": "%s olarak terfi ettiniz",
         "hired_to": "%s olarak işe alındınız",
-        "hired_into": "%s, %s içine işe alındı",
-		"amount_send": "You have send %s,- bonus to %s"
+        "hired_into": "%s, %s içine işe alındı"
     }
 }

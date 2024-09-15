@@ -18,8 +18,7 @@
         "gang_management": "[E] - Gangmanagement öffnen",
         "boss_management": "[E] - Bossmanagement öffnen",
 		"hours_in_days": "Hours worked in 30 days",
-		"last_checkin": "Last check in",
-		"bonus_employee": "Give Employee Bonus"
+		"last_checkin": "Last check in"
     },
     "error": {
         "cant_promote": "Du kannst nicht von jemandem den Rang ändern der gleich oder höher ist, als du...",
@@ -35,15 +34,12 @@
         "unable_fire": "Du kannst diese Person nicht feuern...",
         "person_doesnt_exist": "Diese Person scheint es nicht zu geben...",
         "gang_fired": "Gangmitglied rausgeworfen!",
-        "job_fired": "Mitarbeiter entlassen!",
-		"invalid_amount": "You've entered an invalid amount",
-		"invalid_balance": "There is not enough balance for the bonus amount"
+        "job_fired": "Mitarbeiter entlassen!"
     },
     "success": {
         "promoted": "Erfolgreich befördert!",
         "promoted_to": "Du wurdest befördert zu ",
         "hired_to": "Du wurdest angeheurt zu ",
-        "hired_into": "Du hast %s eingeladen %s beizutreten",
-		"amount_send": "You have send %s,- bonus to %s"
+        "hired_into": "Du hast %s eingeladen %s beizutreten"
     }
 }

@@ -18,8 +18,7 @@
         "gang_management": "[E] - Abrir Gestão de Gangues",
         "boss_management": "[E] - Abrir Gestão de Chefia",
 		"hours_in_days": "Hours worked in 30 days",
-		"last_checkin": "Last check in",
-		"bonus_employee": "Give Employee Bonus"
+		"last_checkin": "Last check in"
     },
     "error": {
         "cant_promote": "Não podes mudar o grau de uma pessoa cujo grau seja maior ou igual ao teu...",
@@ -35,15 +34,12 @@
         "unable_fire": "Não consegues despedir esta pessoa...",
         "person_doesnt_exist": "Esta pessoa parece não existir...",
         "gang_fired": "Membro da gangue expulso!",
-        "job_fired": "Funcionário despedido!",
-		"invalid_amount": "You've entered an invalid amount",
-		"invalid_balance": "There is not enough balance for the bonus amount"
+        "job_fired": "Funcionário despedido!"
     },
     "success": {
         "promoted": "Promovido com sucesso!",
         "promoted_to": "Foste promovido a ",
         "hired_to": "Foste contratado para ",
-        "hired_into": "Contrataste %s para %s",
-		"amount_send": "You have send %s,- bonus to %s"
+        "hired_into": "Contrataste %s para %s"
     }
 }

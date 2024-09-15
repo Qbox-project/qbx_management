@@ -18,8 +18,7 @@
         "gang_management": "[E] - Open Gang Management",
         "boss_management": "[E] - Open Boss Management",
 		"hours_in_days": "Hours worked in 30 days",
-		"last_checkin": "Last check in",
-		"bonus_employee": "Give Employee Bonus"
+		"last_checkin": "Last check in"
     },
     "error": {
         "cant_promote": "You can't change the grade of a person who's own grade is greater or equal to yours...",
@@ -35,15 +34,12 @@
         "unable_fire": "You're unable to fire this person...",
         "person_doesnt_exist": "This person doesn't seem to exist...",
         "gang_fired": "Gang member expelled!",
-        "job_fired": "Employee fired!",
-		"invalid_amount": "You've entered an invalid amount",
-		"invalid_balance": "There is not enough balance for the bonus amount"
+        "job_fired": "Employee fired!"
     },
     "success": {
         "promoted": "Successfully promoted!",
         "promoted_to": "You've been promoted to ",
         "hired_to": "You've been hired into ",
-        "hired_into": "You hired %s into %s",
-		"amount_send": "You have send %s,- bonus to %s"
+        "hired_into": "You hired %s into %s"
     }
 }

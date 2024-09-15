@@ -18,8 +18,7 @@
         "gang_management": "[E] - Åbn Bande menu",
         "boss_management": "[E] - Åbn Boss menu",
 		"hours_in_days": "Hours worked in 30 days",
-		"last_checkin": "Last check in",
-		"bonus_employee": "Give Employee Bonus"
+		"last_checkin": "Last check in"
     },
     "error": {
         "cant_promote": "Du kan ikke ændre graden for en person, hvis egen grad er større eller lig med din...",
@@ -35,15 +34,12 @@
         "unable_fire": "Du kan ikke fyre denne person...",
         "person_doesnt_exist": "Denne person ser ikke ud til at eksistere...",
         "gang_fired": "Bandemedlem udvist!",
-        "job_fired": "Ansat fyret!",
-		"invalid_amount": "You've entered an invalid amount",
-		"invalid_balance": "There is not enough balance for the bonus amount"
+        "job_fired": "Ansat fyret!"
     },
     "success": {
         "promoted": "Fremmet med succes!",
         "promoted_to": "Du er blevet forfremmet til ",
         "hired_to": "Du er blevet ansat i ",
-        "hired_into": "Du ansatte %s i %s",
-		"amount_send": "You have send %s,- bonus to %s"
+        "hired_into": "Du ansatte %s i %s"
     }
 }

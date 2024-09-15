@@ -57,19 +57,6 @@ local function manageEmployee(player, groupName, groupType)
         return a.description < b.description
     end)
 
-	if groupType == 'job' and config.societyBonusReward then
-		employeeMenu[#employeeMenu + 1] = {
-			title =  locale('menu.bonus_employee'),
-			icon = 'fas fa-dollar-sign',
-			onSelect = function()
-				local input = lib.inputDialog(locale('menu.bonus_employee'), {{type = 'number', label = 'Amount', icon = 'fas fa-dollar-sign'}})
-				if not input then OpenBossMenu(groupType) return end
-				lib.callback.await('qbx_management:server:bonusEmployee', false, player.cid, groupType, groupName, input[1])
-				OpenBossMenu(groupType)
-			end,
-		}
-	end
-
     employeeMenu[#employeeMenu + 1] = {
         title = groupType == 'gang' and locale('menu.expel_gang') or locale('menu.fire_employee'),
         icon = 'user-large-slash',
