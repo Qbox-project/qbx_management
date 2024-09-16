@@ -258,9 +258,8 @@ RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function()
 end)
 
 ---@param source number
----@param groupName string
----@param groupGrade number
-AddEventHandler('qbx_core:server:onGroupUpdate', function(source, groupName, groupGrade)
+---@param job table?
+AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
 	if playersClockedIn[source] then
 		onPlayerUnload(source)
 		return
@@ -268,7 +267,7 @@ AddEventHandler('qbx_core:server:onGroupUpdate', function(source, groupName, gro
 	local player = exports.qbx_core:GetPlayer(source)
 	if player == nil then return end
 	if player.PlayerData.job.onduty then
-		doPlayerCheckIn(player.PlayerData.source, player.PlayerData.citizenid, groupName)
+		doPlayerCheckIn(player.PlayerData.source, player.PlayerData.citizenid, job.name)
 	end
 end)
 
