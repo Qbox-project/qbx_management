@@ -2,16 +2,19 @@ local config = require 'config.server'
 
 MySQL.query('DELETE FROM `player_jobs_activity` WHERE `last_checkout` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 31 DAY)) OR `last_checkout` IS NULL')
 
----Fast implementation for tracking activity hours for now, might need runtime tracking and storing once per day instead per onduty.
----@param citizenid string
----@param job string
-function OnPlayerCheckIn(citizenid, job)
-	MySQL.insert("INSERT INTO `player_jobs_activity` (`citizenid`, `job`, `last_checkin`) VALUES (?, ?, ?)", { citizenid, job, os.time() })
-end
+function OnPlayerCheckOut(clockInPayload)
+    local checkOutTime = os.time()
+    local checkInTime = clockInPayload.time
+    if (checkOutTime - checkInTime) / 60 < config.minOnDutyLogTimeMinutes then
+        return
+    end
 
----@param citizenid string
-function OnPlayerCheckOut(citizenid)
-	MySQL.update('UPDATE `player_jobs_activity` SET `last_checkout` = ? WHERE `citizenid` = ? AND `last_checkout` IS NULL ORDER BY `id` DESC LIMIT 1', { os.time(), citizenid })
+    MySQL.insert("INSERT INTO `player_jobs_activity` (`citizenid`, `job`, `last_checkin`, `last_checkout`) VALUES (?, ?, ?, ?)", {
+        clockInPayload.citizenid,
+        clockInPayload.job,
+        checkInTime,
+        checkOutTime,
+    })
 end
 
 ---@param citizenid string
