@@ -1,6 +1,6 @@
 return {
     discordWebhook = nil, -- Replace nil with your webhook if you chose to use discord logging over ox_lib logging
-
+    minOnDutyLogTimeMinutes = 30,
 	formatDateTime = '%m-%d-%Y %H:%M',
 
     -- While the config boss menu creation still works, it is recommended to use the runtime export instead.

@@ -236,14 +236,13 @@ exports('RegisterBossMenu', registerBossMenu)
 ---@param citizenid string
 ---@param job string
 local function doPlayerCheckIn(source, citizenid, job)
-	playersClockedIn[source] = { citizenid = citizenid, job = job }
-	OnPlayerCheckIn(citizenid, job)
+	playersClockedIn[source] = { citizenid = citizenid, job = job, time = os.time() }
 end
 
 ---@param source number
 local function onPlayerUnload(source)
 	if playersClockedIn[source] then
-        OnPlayerCheckOut(playersClockedIn[source].citizenid)
+        OnPlayerCheckOut(playersClockedIn[source])
 		playersClockedIn[source] = nil
     end
 end
