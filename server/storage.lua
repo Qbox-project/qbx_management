@@ -21,6 +21,6 @@ end
 ---@param job string
 ---@return table?
 function GetPlayerActivityData(citizenid, job)
-	local result = MySQL.single.await('SELECT `last_checkin`, sum(last_checkout-last_checkin) as `seconds` FROM `player_jobs_activity` WHERE `citizenid` = ? AND `job` = ? GROUP BY `citizenid`', { citizenid, job })
-	return result and { hours = string.format("%.2f", tonumber(result.seconds)/3600), last_checkin = os.date(config.formatDateTime, result.last_checkin) } or { hours = 0, last_checkin = 'N/A' }
+	local result = MySQL.single.await('SELECT `last_checkin`, ROUND(COALESCE(SUM(last_checkout-last_checkin) / 3600, 0), 2) AS `hours` FROM `player_jobs_activity` WHERE `citizenid` = ? AND `job` = ? GROUP BY `citizenid`', { citizenid, job })
+	return { hours = result.hours, last_checkin = result.last_checkin and os.date(config.formatDateTime, result.last_checkin) or 'N/A' }
 end

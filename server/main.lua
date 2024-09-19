@@ -25,12 +25,15 @@ local function getMenuEntries(groupName, groupType)
         local player = exports.qbx_core:GetPlayerByCitizenId(citizenid) or exports.qbx_core:GetOfflinePlayer(citizenid)
         local namePrefix = player.Offline and '❌ ' or '🟢 '
 		local playerActivityData = groupType == 'job' and GetPlayerActivityData(citizenid, groupName) or nil
+		local playerClockData = playersClockedIn[player.PlayerData.source]
+		local playerLastCheckIn = playerClockData and os.date(config.formatDateTime, playerClockData.time) or playerActivityData?.last_checkin
         menuEntries[#menuEntries + 1] = {
             cid = citizenid,
 			grade = grade,
 			name = namePrefix..player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname,
+			onduty = player.PlayerData.job.onduty,
 			hours = playerActivityData?.hours,
-			last_checkin = playerActivityData?.last_checkin
+			last_checkin = playerLastCheckIn
         }
     end
 

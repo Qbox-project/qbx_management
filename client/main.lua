@@ -93,6 +93,7 @@ local function employeeList(groupType)
         }
 		if employee.hours and employee.last_checkin then
 			employeesData.metadata = {
+				{ label = locale('menu.employee_status'), value = employee.onduty and locale('menu.on_duty') or locale('menu.off_duty') },
 				{ label = locale('menu.hours_in_days'), value = employee.hours },
 				{ label = locale('menu.last_checkin'), value = employee.last_checkin },
 			}
