@@ -264,7 +264,6 @@ end)
 AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
     if playersClockedIn[source] then
         onPlayerUnload(source)
-        return
     end
     local player = exports.qbx_core:GetPlayer(source)
     if player == nil then return end
