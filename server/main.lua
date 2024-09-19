@@ -31,7 +31,7 @@ local function getMenuEntries(groupName, groupType)
             cid = citizenid,
 			grade = grade,
 			name = namePrefix..player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname,
-			onduty = player.PlayerData.job.onduty,
+			onduty = player.PlayerData.job.onduty and not player.Offline,
 			hours = playerActivityData?.hours,
 			last_checkin = playerLastCheckIn
         }
