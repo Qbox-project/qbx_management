@@ -17,11 +17,11 @@
         "boss_menu": "Menu de Chefia",
         "gang_management": "[E] - Abrir Gestão de Gangues",
         "boss_management": "[E] - Abrir Gestão de Chefia",
-		"hours_in_days": "Hours worked in 30 days",
-		"last_checkin": "Last check in",
-		"employee_status": "Employee status",
-		"on_duty": "On Duty",
-		"off_duty": "Off Duty"
+        "hours_in_days": "Hours worked in 30 days",
+        "last_checkin": "Last check in",
+        "employee_status": "Employee status",
+        "on_duty": "On Duty",
+        "off_duty": "Off Duty"
     },
     "error": {
         "cant_promote": "Não podes mudar o grau de uma pessoa cujo grau seja maior ou igual ao teu...",

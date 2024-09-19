@@ -32,7 +32,7 @@ local function findPlayers()
     for _, v in pairs(closePlayers) do
         v.id = GetPlayerServerId(v.id)
     end
-	return lib.callback.await('qbx_management:server:getPlayers', false, closePlayers)
+    return lib.callback.await('qbx_management:server:getPlayers', false, closePlayers)
 end
 
 -- Presents a menu to manage a specific employee including changing grade or firing them
@@ -91,14 +91,14 @@ local function employeeList(groupType)
                 manageEmployee(employee, groupName, groupType)
             end,
         }
-		if employee.hours and employee.last_checkin then
-			employeesData.metadata = {
-				{ label = locale('menu.employee_status'), value = employee.onduty and locale('menu.on_duty') or locale('menu.off_duty') },
-				{ label = locale('menu.hours_in_days'), value = employee.hours },
-				{ label = locale('menu.last_checkin'), value = employee.last_checkin },
-			}
-		end
-		employeesMenu[#employeesMenu + 1] = employeesData
+        if employee.hours and employee.last_checkin then
+            employeesData.metadata = {
+                { label = locale('menu.employee_status'), value = employee.onduty and locale('menu.on_duty') or locale('menu.off_duty') },
+                { label = locale('menu.hours_in_days'), value = employee.hours },
+                { label = locale('menu.last_checkin'), value = employee.last_checkin },
+            }
+        end
+        employeesMenu[#employeesMenu + 1] = employeesData
     end
 
     lib.registerContext({
