@@ -16,7 +16,12 @@
         "gang_menu": "Bande Menu",
         "boss_menu": "Boss Menu",
         "gang_management": "[E] - Åbn Bande menu",
-        "boss_management": "[E] - Åbn Boss menu"
+        "boss_management": "[E] - Åbn Boss menu",
+        "hours_in_days": "Hours worked in 30 days",
+        "last_checkin": "Last check in",
+        "employee_status": "Employee status",
+        "on_duty": "On Duty",
+        "off_duty": "Off Duty"
     },
     "error": {
         "cant_promote": "Du kan ikke ændre graden for en person, hvis egen grad er større eller lig med din...",

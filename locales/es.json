@@ -16,7 +16,12 @@
         "gang_menu": "Menú de la Banda",
         "boss_menu": "Menú del Jefe",
         "gang_management": "[E] - Abrir Gestión de la Banda",
-        "boss_management": "[E] - Abrir Gestión del Jefe"
+        "boss_management": "[E] - Abrir Gestión del Jefe",
+        "hours_in_days": "Hours worked in 30 days",
+        "last_checkin": "Last check in",
+        "employee_status": "Employee status",
+        "on_duty": "On Duty",
+        "off_duty": "Off Duty"
     },
     "error": {
         "cant_promote": "No puedes cambiar el grado de una persona cuyo grado es mayor o igual al tuyo...",
