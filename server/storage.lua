@@ -22,5 +22,5 @@ end
 ---@return table?
 function GetPlayerActivityData(citizenid, job)
     local result = MySQL.single.await('SELECT `last_checkin`, ROUND(COALESCE(SUM(last_checkout-last_checkin) / 3600, 0), 2) AS `hours` FROM `player_jobs_activity` WHERE `citizenid` = ? AND `job` = ? GROUP BY `citizenid`', { citizenid, job })
-    return { hours = result.hours, last_checkin = result.last_checkin and os.date(config.formatDateTime, result.last_checkin) or 'N/A' }
+    return { hours = result?.hours or 0, last_checkin = result?.last_checkin and os.date(config.formatDateTime, result.last_checkin) or 'N/A' }
 end
