@@ -1,0 +1,48 @@
+{
+    "menu": {
+        "grade": "Cargo: ",
+        "expel_gang": "Expulsar Membro da Gangue",
+        "fire_employee": "Demitir Funcionário",
+        "manage_gang": "Gerenciar Membros da Gangue",
+        "manage_employees": "Gerenciar Funcionários",
+        "citizen_id": "ID do Cidadão: ",
+        "id": "ID: ",
+        "hire_gang": "Recrutar Civis Próximos",
+        "hire_members": "Recrutar Membros da Gangue",
+        "hire_civilians": "Contratar Civis Próximos",
+        "hire_employees": "Contratar Funcionários",
+        "check_gang": "Verificar Lista da Gangue",
+        "check_employee": "Verificar Lista de Funcionários",
+        "gang_menu": "Menu da Gangue",
+        "boss_menu": "Menu do Chefe",
+        "gang_management": "[E] - Abrir Gerenciamento da Gangue",
+        "boss_management": "[E] - Abrir Gerenciamento do Chefe",
+        "hours_in_days": "Horas trabalhadas nos últimos 30 dias",
+        "last_checkin": "Última verificação",
+        "employee_status": "Status do Funcionário",
+        "on_duty": "Em Serviço",
+        "off_duty": "Fora de Serviço"
+    },
+    "error": {
+        "cant_promote": "Você não pode alterar o cargo de uma pessoa cujo cargo é maior ou igual ao seu...",
+        "cant_promote_self": "Você não pode mudar seu próprio cargo...",
+        "not_around": "Essa pessoa não está na cidade...",
+        "grade_not_exist": "Esse cargo não parece existir...",
+        "couldnt_hire": "Você não conseguiu contratar essa pessoa...",
+        "kick_yourself": "Você não pode se expulsar...",
+        "fire_yourself": "Você não pode se demitir...",
+        "fire_boss": "Você não pode demitir alguém com um cargo superior...",
+        "you_gang_fired": "Você foi expulso da %s!",
+        "you_job_fired": "Você foi demitido da %s! Boa sorte!",
+        "unable_fire": "Você não pode demitir essa pessoa...",
+        "person_doesnt_exist": "Essa pessoa não parece existir...",
+        "gang_fired": "Membro da gangue expulso!",
+        "job_fired": "Funcionário demitido!"
+    },
+    "success": {
+        "promoted": "Promovido com sucesso!",
+        "promoted_to": "Você foi promovido a ",
+        "hired_to": "Você foi contratado para ",
+        "hired_into": "Você contratou %s para %s"
+    }
+}
