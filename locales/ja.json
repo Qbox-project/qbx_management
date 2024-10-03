@@ -1,0 +1,48 @@
+{
+    "menu": {
+        "grade": "ランク: ",
+        "expel_gang": "ギャングメンバーを追放",
+        "fire_employee": "従業員を解雇",
+        "manage_gang": "ギャングメンバーを管理",
+        "manage_employees": "従業員を管理",
+        "citizen_id": "市民ID: ",
+        "id": "ID: ",
+        "hire_gang": "近くの市民を勧誘",
+        "hire_members": "ギャングメンバーを勧誘",
+        "hire_civilians": "近くの市民を雇用",
+        "hire_employees": "従業員を雇用",
+        "check_gang": "ギャングリストを確認",
+        "check_employee": "従業員リストを確認",
+        "gang_menu": "ギャングメニュー",
+        "boss_menu": "ボスメニュー",
+        "gang_management": "[E] - ギャング管理を開く",
+        "boss_management": "[E] - ボス管理を開く",
+        "hours_in_days": "30日間の労働時間",
+        "last_checkin": "最終チェックイン",
+        "employee_status": "従業員ステータス",
+        "on_duty": "勤務中",
+        "off_duty": "勤務外"
+    },
+    "error": {
+        "cant_promote": "自分と同じかそれ以上のランクの人のランクは変更できません...",
+        "cant_promote_self": "自分自身のランクは変更できません...",
+        "not_around": "この人物は現在街にいません...",
+        "grade_not_exist": "このランクは存在しないようです...",
+        "couldnt_hire": "この人物を雇用できませんでした...",
+        "kick_yourself": "自分自身を追放することはできません...",
+        "fire_yourself": "自分自身を解雇することはできません...",
+        "fire_boss": "自分より上のランクの人を解雇することはできません...",
+        "you_gang_fired": "あなたは%sから追放されました！",
+        "you_job_fired": "あなたは%sから解雇されました！頑張ってください！",
+        "unable_fire": "この人物を解雇することができません...",
+        "person_doesnt_exist": "この人物は存在しないようです...",
+        "gang_fired": "ギャングメンバーを追放しました！",
+        "job_fired": "従業員を解雇しました！"
+    },
+    "success": {
+        "promoted": "昇格に成功しました！",
+        "promoted_to": "あなたは昇格しました：",
+        "hired_to": "あなたは雇用されました：",
+        "hired_into": "%s を %s から雇用しました"
+    }
+}
