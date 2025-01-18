@@ -1,0 +1,48 @@
+{
+    "menu": {
+        "grade": "Grade: ",
+        "expel_gang": "Expulser un membre du gang",
+        "fire_employee": "Licencier un employé",
+        "manage_gang": "Gérer les membres du gang",
+        "manage_employees": "Gérer les employés",
+        "citizen_id": "ID du citoyen: ",
+        "id": "ID: ",
+        "hire_gang": "Recruter des civils à proximité",
+        "hire_members": "Recruter des membres du gang",
+        "hire_civilians": "Embaucher des civils à proximité",
+        "hire_employees": "Embaucher des employés",
+        "check_gang": "Vérifier votre liste de gang",
+        "check_employee": "Vérifier votre liste d'employés",
+        "gang_menu": "Menu du gang",
+        "boss_menu": "Menu du patron",
+        "gang_management": "[E] - Ouvrir la gestion du gang",
+        "boss_management": "[E] - Ouvrir la gestion du patron",
+        "hours_in_days": "Heures travaillées en 30 jours",
+        "last_checkin": "Dernière vérification",
+        "employee_status": "Statut de l'employé",
+        "on_duty": "En service",
+        "off_duty": "Hors service"
+    },
+    "error": {
+        "cant_promote": "Vous ne pouvez pas changer le grade d'une personne dont le grade est supérieur ou égal au vôtre...",
+        "cant_promote_self": "Vous ne pouvez pas changer votre propre grade...",
+        "not_around": "Cette personne n'est pas en ville...",
+        "grade_not_exist": "Ce grade ne semble pas exister...",
+        "couldnt_hire": "Vous n'avez pas pu embaucher cette personne...",
+        "kick_yourself": "Vous ne pouvez pas vous expulser vous-même...",
+        "fire_yourself": "Vous ne pouvez pas vous licencier vous-même...",
+        "fire_boss": "Vous ne pouvez pas licencier quelqu'un avec un grade supérieur...",
+        "you_gang_fired": "Vous avez été expulsé de %s!",
+        "you_job_fired": "Vous avez été licencié de %s! Bonne chance!",
+        "unable_fire": "Vous ne pouvez pas licencier cette personne...",
+        "person_doesnt_exist": "Cette personne ne semble pas exister...",
+        "gang_fired": "Membre du gang expulsé!",
+        "job_fired": "Employé licencié!"
+    },
+    "success": {
+        "promoted": "Promu avec succès!",
+        "promoted_to": "Vous avez été promu à ",
+        "hired_to": "Vous avez été embauché dans ",
+        "hired_into": "Vous avez embauché %s dans %s"
+    }
+}
