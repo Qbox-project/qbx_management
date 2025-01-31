@@ -77,9 +77,9 @@ local function manageEmployee(player, groupName, groupType)
 end
 
 ---Opens a menu to edit a grade
----@param groupType any
----@param groupData any
----@param grade any
+---@param groupType GroupType
+---@param groupData Job|Gang
+---@param grade integer
 local function editGrade(groupType, groupData, grade)
     local gradeData = groupData.grades[grade]
     local rows = {
