@@ -226,6 +226,22 @@ lib.callback.register('qbx_management:server:getBossMenus', function()
     return menus
 end)
 
+lib.callback.register('qbx_management:server:modifyGrade', function(source, groupType, grade, gradeData)
+    if GetConvar('qbx:enableGroupManagement', 'false') ~= 'true' then return end
+    local player = exports.qbx_core:GetPlayer(source)
+    if not player.PlayerData[groupType].isboss or player.PlayerData[groupType].grade.level < grade then return end
+
+    if groupType == 'job' then
+        local jobData = exports.qbx_core:GetJob(player.PlayerData[groupType].name)
+        jobData.grades[grade] = gradeData
+        exports.qbx_core:UpdateJob(player.PlayerData[groupType].name, jobData)
+    else
+        local gangData = exports.qbx_core:GetGang(player.PlayerData[groupType].name)
+        gangData.grades[grade] = gradeData
+        exports.qbx_core:UpdateGang(player.PlayerData[groupType].name, gangData)
+    end
+end)
+
 ---Creates a boss zone for the specified group
 ---@param menuInfo MenuInfo
 local function registerBossMenu(menuInfo)
