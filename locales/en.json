@@ -33,7 +33,8 @@
         "label": "Title",
         "pay": "Wage",
         "boss": "Boss",
-        "bank": "Bank access"
+        "bank": "Bank access",
+        "success": "Update successful"
     },
     "error": {
         "cant_promote": "You can't change the grade of a person who's own grade is greater or equal to yours...",
