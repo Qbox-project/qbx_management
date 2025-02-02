@@ -329,6 +329,20 @@ RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     isLoggedIn = false
 end)
 
+---Receive job updates from core
+---@param jobName string
+---@param job Job
+RegisterNetEvent('qbx_core:client:onJobUpdate', function(jobName, job)
+    JOBS[jobName] = job
+end)
+
+---Receive gang updates from core
+---@param gangName string
+---@param gang Gang
+RegisterNetEvent('qbx_core:client:onGangUpdate', function(gangName, gang)
+    GANGS[gangName] = gang
+end)
+
 CreateThread(function()
     initZones()
     if not isLoggedIn then return end
