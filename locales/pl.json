@@ -1,0 +1,48 @@
+{
+    "menu": {
+        "grade": "Stopień: ",
+        "expel_gang": "Wyrzuć członka gangu",
+        "fire_employee": "Zwolnij pracownika",
+        "manage_gang": "Zarządzaj członkami gangu",
+        "manage_employees": "Zarządzaj pracownikami",
+        "citizen_id": "ID Obywatela: ",
+        "id": "ID: ",
+        "hire_gang": "Zwerbuj pobliskich cywili",
+        "hire_members": "Zwerbuj członków gangu",
+        "hire_civilians": "Zatrudnij pobliskich cywili",
+        "hire_employees": "Zatrudnij pracowników",
+        "check_gang": "Sprawdź listę członków gangu",
+        "check_employee": "Sprawdź listę pracowników",
+        "gang_menu": "Menu gangu",
+        "boss_menu": "Menu szefa",
+        "gang_management": "[E] - Otwórz zarządzanie gangiem",
+        "boss_management": "[E] - Otwórz zarządzanie szefem",
+        "hours_in_days": "Godziny przepracowane w ciągu 30 dni",
+        "last_checkin": "Ostatnie zameldowanie",
+        "employee_status": "Status pracownika",
+        "on_duty": "Na służbie",
+        "off_duty": "Poza służbą"
+    },
+    "error": {
+        "cant_promote": "Nie można zmienić stopnia osoby, której stopień jest wyższy lub równy...",
+        "cant_promote_self": "Nie można zmienić własnego stopnia...",
+        "not_around": "Ta osoba nie jest w mieście...",
+        "grade_not_exist": "Ten stopień nie istnieje...",
+        "couldnt_hire": "Nie udało się zatrudnić tej osoby...",
+        "kick_yourself": "Nie można wyrzucić siebie...",
+        "fire_yourself": "Nie można zwolnić siebie...",
+        "fire_boss": "Nie można zwolnić osoby z wyższym stopniem...",
+        "you_gang_fired": "Otrzymano wyrzucenie z %s!",
+        "you_job_fired": "Otrzymano zwolnienie z %s! Powodzenia!",
+        "unable_fire": "Nie można zwolnić tej osoby...",
+        "person_doesnt_exist": "Ta osoba nie istnieje...",
+        "gang_fired": "Członek gangu wyrzucony!",
+        "job_fired": "Pracownik zwolniony!"
+    },
+    "success": {
+        "promoted": "Pomyślnie awansowano!",
+        "promoted_to": "Otrzymano awans na ",
+        "hired_to": "Otrzymano zatrudnienie do ",
+        "hired_into": "Zatrudniono %s do %s"
+    }
+}
