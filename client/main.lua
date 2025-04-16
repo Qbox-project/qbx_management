@@ -143,6 +143,8 @@ end
 -- Opens main boss menu changing function based on the group provided.
 ---@param groupType GroupType
 function OpenBossMenu(groupType)
+    JOBS = exports.qbx_core:GetJobs()
+    GANGS = exports.qbx_core:GetGangs()
     if groupType ~= 'gang' and groupType ~= 'job' or not QBX.PlayerData[groupType].name or not QBX.PlayerData[groupType].isboss then return end
 
     local bossMenu = {
