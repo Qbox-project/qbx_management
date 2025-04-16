@@ -80,6 +80,11 @@ end
 -- Allows selection of an employee to perform further actions
 ---@param groupType GroupType
 local function employeeList(groupType)
+    if groupType == 'job' then
+        JOBS = exports.qbx_core:GetJobs()
+    else
+        GANGS = exports.qbx_core:GetGangs()
+    end
     local employeesMenu = {}
     local groupName = QBX.PlayerData[groupType].name
     local employees = lib.callback.await('qbx_management:server:getEmployees', false, groupName, groupType)
