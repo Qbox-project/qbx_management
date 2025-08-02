@@ -9,10 +9,22 @@ local GANGS = exports.qbx_core:GetGangs()
 local playersClockedIn = {}
 local menus = {}
 
-for groupName, menuInfo in pairs(config.menus) do
-    ---@diagnostic disable-next-line: inject-field
-    menuInfo.groupName = groupName
-    menus[#menus + 1] = menuInfo
+for groupName, menuData in pairs(config.menus) do
+    -- This checks if it is using the updated format to allow for multiple locations
+    if type(menuData) == "table" and not menuData.coords then
+        -- Iterates through all locations, adding them to the menus array
+        for i = 1, #menuData do
+            local menuInfo = menuData[i]
+            ---@diagnostic disable-next-line: inject-field
+            menuInfo.groupName = groupName
+            menus[#menus + 1] = menuInfo
+        end
+    else
+        -- Traditional format, adds the single menu location to the menus array
+        ---@diagnostic disable-next-line: inject-field
+        menuData.groupName = groupName
+        menus[#menus + 1] = menuData
+    end
 end
 
 local function getMenuEntries(groupName, groupType)
