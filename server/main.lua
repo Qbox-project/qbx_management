@@ -16,7 +16,7 @@ local ready = false
 local function init()
     storage.createActivityTable()
 
-    for groupName, menuInfo in pairs(config.menus) do
+    for groupName, menuData in pairs(config.menus) do
         if type(menuData) == "table" and not menuData.coords then
             for i = 1, #menuData do
                 local menuInfo = menuData[i]
