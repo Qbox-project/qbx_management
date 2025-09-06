@@ -176,7 +176,7 @@ local function showGradeMenu(groupType)
     local groupName = QBX.PlayerData[groupType].name
     local groupData = groupType == 'gang' and GANGS[groupName] or JOBS[groupName]
 
-    for i = 1, #groupData.grades do
+    for i = 0, #groupData.grades do
         local grade = groupData.grades[i]
         gradeOpts[#gradeOpts+1] = {
             title = grade.name,
