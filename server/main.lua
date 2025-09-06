@@ -16,10 +16,19 @@ local ready = false
 local function init()
     storage.createActivityTable()
 
-    for groupName, menuInfo in pairs(config.menus) do
-        ---@diagnostic disable-next-line: inject-field
-        menuInfo.groupName = groupName
-        menus[#menus + 1] = menuInfo
+    for groupName, menuData in pairs(config.menus) do
+        if type(menuData) == "table" and not menuData.coords then
+            for i = 1, #menuData do
+                local menuInfo = menuData[i]
+                ---@diagnostic disable-next-line: inject-field
+                menuInfo.groupName = groupName
+                menus[#menus + 1] = menuInfo
+            end
+        else
+            ---@diagnostic disable-next-line: inject-field
+            menuData.groupName = groupName
+            menus[#menus + 1] = menuData
+        end
     end
 
     storage.cleanupActivity()
