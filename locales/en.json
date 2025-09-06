@@ -27,7 +27,9 @@
         "manage_job_grades_desc": "Adjust job positions & pay",
         "manage_gang_grades_desc": "Adjust gang ranks",
         "manage_job_grade": "Modify job position",
-        "manage_gang_grade": "Modify gang rank"
+        "manage_gang_grade": "Modify gang rank",
+        "confirm_hire_header": "Confirm Hire",
+        "confirm_hire_content": "%s wants you to join them in %s"
     },
     "grade" : {
         "label": "Title",
@@ -50,7 +52,9 @@
         "unable_fire": "You're unable to fire this person...",
         "person_doesnt_exist": "This person doesn't seem to exist...",
         "gang_fired": "Gang member expelled!",
-        "job_fired": "Employee fired!"
+        "job_fired": "Employee fired!",
+        "too_far": "This person is too far away...",
+        "hire_declined": "The person declined your offer."
     },
     "success": {
         "promoted": "Successfully promoted!",

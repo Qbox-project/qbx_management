@@ -347,3 +347,13 @@ CreateThread(function()
     initZones()
     if not isLoggedIn then return end
 end)
+
+lib.callback.register('qbx_management:client:confirmHire', function(targetFullName, organizationLabel)
+    local alert = lib.alertDialog({
+        header = locale('menu.confirm_hire_header'),
+        content = locale('menu.confirm_hire_content', targetFullName, organizationLabel),
+        centered = true,
+        cancel = true
+    })
+    return alert
+end)

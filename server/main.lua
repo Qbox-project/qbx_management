@@ -157,8 +157,22 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
         return
     end
 
+    if #(GetEntityCoords(GetPlayerPed(source)) - GetEntityCoords(GetPlayerPed(employee))) > 10.0 then
+        exports.qbx_core:Notify(source, locale('error.too_far'), 'error')
+        return
+    end
+
     local groupName = player.PlayerData[groupType].name
     local logArea = groupType == 'gang' and 'Gang' or 'Boss'
+    local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
+    local targetFullName = target.PlayerData.charinfo.firstname..' '..target.PlayerData.charinfo.lastname
+    local organizationLabel = player.PlayerData[groupType].label
+    local targetAgreed = lib.callback.await('qbx_management:client:confirmHire', employee, playerFullName, organizationLabel)
+
+    if targetAgreed == 'cancel' then
+        exports.qbx_core:Notify(source, locale('error.hire_declined'), 'error')
+        return
+    end
 
     if groupType == 'job' then
         local success, errorResult = exports.qbx_core:AddPlayerToJob(target.PlayerData.citizenid, groupName, 0)
@@ -171,10 +185,6 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
         success, errorResult = exports.qbx_core:SetPlayerPrimaryGang(target.PlayerData.citizenid, groupName)
         assert(success, errorResult?.message)
     end
-
-    local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
-    local targetFullName = target.PlayerData.charinfo.firstname..' '..target.PlayerData.charinfo.lastname
-    local organizationLabel = player.PlayerData[groupType].label
 
     exports.qbx_core:Notify(source, locale('success.hired_into', targetFullName, organizationLabel), 'success')
     exports.qbx_core:Notify(target.PlayerData.source, locale('success.hired_to')..organizationLabel, 'success')
