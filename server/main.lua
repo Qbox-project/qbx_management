@@ -11,6 +11,15 @@ local GANGS = exports.qbx_core:GetGangs()
 local playersClockedIn = {}
 local menus = {}
 local ready = false
+local validGroupTypes = { job = true, gang = true }
+
+---@param player Player?
+---@param groupType any
+---@return table?
+local function getPlayerGroup(player, groupType)
+    if not player or type(groupType) ~= 'string' or not validGroupTypes[groupType] then return end
+    return player.PlayerData[groupType]
+end
 
 ---Initialize storage, menus & managed groups
 local function init()
@@ -80,7 +89,8 @@ end
 ---@return table?
 lib.callback.register('qbx_management:server:getEmployees', function(source, groupName, groupType)
     local player = exports.qbx_core:GetPlayer(source)
-    if not player.PlayerData[groupType].isboss then return end
+    local group = getPlayerGroup(player, groupType)
+    if not group or not group.isboss or group.name ~= groupName then return end
 
     local menuEntries = getMenuEntries(groupName, groupType)
     table.sort(menuEntries, function(a, b)
@@ -103,34 +113,42 @@ end)
 ---@param oldGrade integer Old grade number of target employee
 ---@param newGrade integer New grade number of target employee
 ---@param groupType GroupType
-lib.callback.register('qbx_management:server:updateGrade', function(source, citizenId, oldGrade, newGrade, groupType)
+lib.callback.register('qbx_management:server:updateGrade', function(source, citizenId, _, newGrade, groupType)
     local player = exports.qbx_core:GetPlayer(source)
-    local employee = exports.qbx_core:GetPlayerByCitizenId(citizenId)
-    local jobName = player.PlayerData[groupType].name
-    local gradeLevel = player.PlayerData[groupType].grade.level
+    local group = getPlayerGroup(player, groupType)
+    if not group or not group.isboss or type(citizenId) ~= 'string' or math.type(newGrade) ~= 'integer' or newGrade < 0 then return end
 
-    if not player.PlayerData[groupType].isboss then return end
+    local employee = exports.qbx_core:GetPlayerByCitizenId(citizenId)
+    local employeeData = employee or exports.qbx_core:GetOfflinePlayer(citizenId)
+    if not employeeData then return end
+
+    local groupName = group.name
+    local gradeLevel = group.grade.level
+    local employeeGrade = groupType == 'job' and employeeData.PlayerData.jobs?[groupName] or employeeData.PlayerData.gangs?[groupName]
+    local groupDefinition = groupType == 'job' and JOBS[groupName] or GANGS[groupName]
+
+    if employeeGrade == nil or not groupDefinition?.grades[newGrade] then return end
 
     if player.PlayerData.citizenid == citizenId then
         exports.qbx_core:Notify(source, locale('error.cant_promote_self'), 'error')
         return
     end
 
-    if oldGrade >= gradeLevel or newGrade >= gradeLevel then
+    if employeeGrade >= gradeLevel or newGrade >= gradeLevel then
         exports.qbx_core:Notify(source, locale('error.cant_promote'), 'error')
         return
     end
 
     if groupType == 'job' then
-        local success, errorResult = exports.qbx_core:AddPlayerToJob(citizenId, jobName, newGrade)
+        local success, errorResult = exports.qbx_core:AddPlayerToJob(citizenId, groupName, newGrade)
         assert(success, errorResult?.message)
     else
-        local success, errorResult = exports.qbx_core:AddPlayerToGang(citizenId, jobName, newGrade)
+        local success, errorResult = exports.qbx_core:AddPlayerToGang(citizenId, groupName, newGrade)
         assert(success, errorResult?.message)
     end
 
     if employee then
-        local gradeName = groupType == 'gang' and GANGS[jobName].grades[newGrade].name or JOBS[jobName].grades[newGrade].name
+        local gradeName = groupDefinition.grades[newGrade].name
         exports.qbx_core:Notify(employee.PlayerData.source, locale('success.promoted_to')..gradeName..'.', 'success')
     end
     exports.qbx_core:Notify(source, locale('success.promoted'), 'success')
@@ -138,7 +156,7 @@ lib.callback.register('qbx_management:server:updateGrade', function(source, citi
     logger.log({
         source = source,
         event = 'qbx_management:server:updateGrade',
-        message = locale('logs.updated_grade', citizenId, oldGrade, newGrade, jobName, groupType),
+        message = locale('logs.updated_grade', citizenId, employeeGrade, newGrade, groupName, groupType),
         webhook = config.discordWebhook
     })
 end)
@@ -148,9 +166,10 @@ end)
 ---@param groupType GroupType
 lib.callback.register('qbx_management:server:hireEmployee', function(source, employee, groupType)
     local player = exports.qbx_core:GetPlayer(source)
-    local target = exports.qbx_core:GetPlayer(employee)
+    local group = getPlayerGroup(player, groupType)
+    if not group or not group.isboss or math.type(employee) ~= 'integer' then return end
 
-    if not player.PlayerData[groupType].isboss then return end
+    local target = exports.qbx_core:GetPlayer(employee)
 
     if not target then
         exports.qbx_core:Notify(source, locale('error.not_around'), 'error')
@@ -162,14 +181,14 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
         return
     end
 
-    local groupName = player.PlayerData[groupType].name
+    local groupName = group.name
     local logArea = groupType == 'gang' and 'Gang' or 'Boss'
     local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
     local targetFullName = target.PlayerData.charinfo.firstname..' '..target.PlayerData.charinfo.lastname
-    local organizationLabel = player.PlayerData[groupType].label
+    local organizationLabel = group.label
     local targetAgreed = lib.callback.await('qbx_management:client:confirmHire', employee, playerFullName, organizationLabel)
 
-    if targetAgreed == 'cancel' then
+    if targetAgreed ~= 'confirm' then
         exports.qbx_core:Notify(source, locale('error.hire_declined'), 'error')
         return
     end
@@ -200,18 +219,25 @@ end)
 -- Returns playerdata for a given table of player server ids.
 ---@param closePlayers table Table of player data for possible hiring
 ---@return table
-lib.callback.register('qbx_management:server:getPlayers', function(_, closePlayers)
+lib.callback.register('qbx_management:server:getPlayers', function(source, closePlayers)
+    local requester = exports.qbx_core:GetPlayer(source)
+    if not requester or not (requester.PlayerData.job.isboss or requester.PlayerData.gang.isboss) or type(closePlayers) ~= 'table' then return {} end
+
     local players = {}
-    for _, v in pairs(closePlayers) do
-        local player = exports.qbx_core:GetPlayer(v.id)
-        players[#players + 1] = {
-            id = v.id,
-            name = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname,
-            citizenid = player.PlayerData.citizenid,
-            job = player.PlayerData.job,
-            gang = player.PlayerData.gang,
-            source = player.PlayerData.source
-        }
+    local requesterCoords = GetEntityCoords(GetPlayerPed(source))
+    for i = 1, math.min(#closePlayers, 64) do
+        local playerId = closePlayers[i]?.id
+        local player = math.type(playerId) == 'integer' and exports.qbx_core:GetPlayer(playerId)
+        if player and #(requesterCoords - GetEntityCoords(GetPlayerPed(playerId))) <= 10.0 then
+            players[#players + 1] = {
+                id = playerId,
+                name = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname,
+                citizenid = player.PlayerData.citizenid,
+                job = player.PlayerData.job,
+                gang = player.PlayerData.gang,
+                source = player.PlayerData.source
+            }
+        end
     end
 
     table.sort(players, function(a, b)
@@ -285,14 +311,16 @@ end
 ---@param groupType GroupType
 lib.callback.register('qbx_management:server:fireEmployee', function(source, employee, groupType)
     local player = exports.qbx_core:GetPlayer(source)
+    local group = getPlayerGroup(player, groupType)
+    if not group or not group.isboss or type(employee) ~= 'string' then return end
+
     local firedEmployee = exports.qbx_core:GetPlayerByCitizenId(employee) or exports.qbx_core:GetOfflinePlayer(employee)
     local playerFullName = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname
-    local organizationLabel = player.PlayerData[groupType].label
+    local organizationLabel = group.label
 
-    if not player.PlayerData[groupType].isboss then return end
     if not firedEmployee then lib.print.error("not able to find player with citizenid", employee) return end
 
-    local success = fireEmployee(employee, player, player.PlayerData[groupType].name, groupType)
+    local success = fireEmployee(employee, player, group.name, groupType)
     local employeeFullName = firedEmployee.PlayerData.charinfo.firstname..' '..firedEmployee.PlayerData.charinfo.lastname
 
     if success then
@@ -328,18 +356,29 @@ end)
 lib.callback.register('qbx_management:server:modifyGrade', function(source, groupType, grade, gradeData)
     if not managementEnabled then return end
     local player = exports.qbx_core:GetPlayer(source)
-    if not player.PlayerData[groupType].isboss or player.PlayerData[groupType].grade.level < grade then
-        lib.print.error("User attempted to update grade without permission. Possible exploit: ", player.PlayerData.citizenid)
+    local playerGroup = getPlayerGroup(player, groupType)
+    if not playerGroup or not playerGroup.isboss or math.type(grade) ~= 'integer' or grade < 0 or playerGroup.grade.level <= grade or type(gradeData) ~= 'table' then
+        lib.print.error("User attempted to update grade without permission. Possible exploit: ", player?.PlayerData.citizenid or source)
         return
     end
-    local groupName = player.PlayerData[groupType].name
+    local groupName = playerGroup.name
     local group = groupType == 'job' and JOBS[groupName] or GANGS[groupName]
     if not (group and group.grades[grade]) then return end
 
+    if type(gradeData.name) ~= 'string' or #gradeData.name < 1 or #gradeData.name > 50 then return end
+    local sanitizedGrade = lib.table.deepclone(group.grades[grade])
+    sanitizedGrade.name = gradeData.name
     if groupType == 'job' then
-        exports.qbx_core:UpsertJobGrade(groupName, grade, gradeData)
+        if type(gradeData.payment) ~= 'number' or gradeData.payment ~= gradeData.payment or gradeData.payment < 0 or gradeData.payment > 100000 then return end
+        sanitizedGrade.payment = math.floor(gradeData.payment)
+        sanitizedGrade.isboss = gradeData.isboss == true
+        sanitizedGrade.bankAuth = gradeData.bankAuth == true
+    end
+
+    if groupType == 'job' then
+        exports.qbx_core:UpsertJobGrade(groupName, grade, sanitizedGrade)
     else
-        exports.qbx_core:UpsertGangGrade(groupName, grade, gradeData)
+        exports.qbx_core:UpsertGangGrade(groupName, grade, sanitizedGrade)
     end
 
     exports.qbx_core:Notify(source, locale('grade.success'), 'success')
