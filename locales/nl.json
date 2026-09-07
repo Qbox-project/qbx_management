@@ -1,12 +1,12 @@
 {
     "menu": {
-        "grade": "Cijfer:",
+        "grade": "Rang:",
         "expel_gang": "Bendelid uitsluiten",
-        "fire_employee": "Brand medewerker",
+        "fire_employee": "Medewerker ontslaan",
         "manage_gang": "Beheer bendeleden",
         "manage_employees": "Beheer medewerkers",
         "citizen_id": "Burger-ID:",
-        "id": "Identiteitskaart:",
+        "id": "ID:",
         "hire_gang": "Rekruteer burgers uit de buurt",
         "hire_members": "Rekruteer bendeleden",
         "hire_civilians": "Huur burgers in de buurt in",
@@ -28,7 +28,7 @@
         "manage_gang_grades_desc": "Pas de gelederen van de bendes aan",
         "manage_job_grade": "Wijzig functie",
         "manage_gang_grade": "Wijzig de rang van de bende",
-        "confirm_hire_header": "Bevestig de huur",
+        "confirm_hire_header": "Aanwerving bevestigen",
         "confirm_hire_content": "%swil dat je meedoet aan%s"
     },
     "grade": {
@@ -39,14 +39,14 @@
         "success": "Update succesvol"
     },
     "error": {
-        "cant_promote": "Je kunt het cijfer van iemand die zijn eigen cijfer hoger of gelijk is aan het jouwe niet wijzigen...",
-        "cant_promote_self": "Je kunt je eigen cijfer niet wijzigen...",
+        "cant_promote": "Je kunt de rang van iemand met een gelijke of hogere rang dan jij niet wijzigen...",
+        "cant_promote_self": "Je kunt je eigen rang niet wijzigen...",
         "not_around": "Deze persoon is niet in de stad...",
-        "grade_not_exist": "Dit cijfer lijkt niet te bestaan...",
+        "grade_not_exist": "Deze rang lijkt niet te bestaan...",
         "couldnt_hire": "Je kon deze persoon niet inhuren...",
         "kick_yourself": "Je kunt jezelf niet schoppen...",
         "fire_yourself": "Je kunt jezelf niet ontslaan...",
-        "fire_boss": "Je kunt iemand met een hoger cijfer niet ontslaan...",
+        "fire_boss": "Je kunt iemand met een hogere rang niet ontslaan...",
         "you_gang_fired": "Je bent verwijderd uit%s!",
         "you_job_fired": "Je bent ontslagen bij%s! Succes!",
         "unable_fire": "Je kunt deze persoon niet ontslaan...",
