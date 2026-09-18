@@ -12,7 +12,7 @@
         "hire_civilians": "Huur burgers in de buurt in",
         "hire_employees": "Huur werknemers in",
         "check_gang": "Controleer je bendelijst",
-        "check_employee": "Controleer uw werknemerslijst",
+        "check_employee": "Controleer je werknemerslijst",
         "gang_menu": "Bendemenu",
         "boss_menu": "Baasmenu",
         "gang_management": "[E] - Open bendebeheer",
@@ -22,14 +22,14 @@
         "employee_status": "Werknemersstatus",
         "on_duty": "In dienst",
         "off_duty": "Buiten dienst",
-        "manage_job_grades": "Beheer posities",
-        "manage_gang_grades": "Beheer benderangen",
-        "manage_job_grades_desc": "Pas functieposities en salaris aan",
-        "manage_gang_grades_desc": "Pas de gelederen van de bendes aan",
-        "manage_job_grade": "Wijzig functie",
-        "manage_gang_grade": "Wijzig de rang van de bende",
+        "manage_job_grades": "Functierangen beheren",
+        "manage_gang_grades": "Benderangen beheren",
+        "manage_job_grades_desc": "Functierangen en salarissen aanpassen",
+        "manage_gang_grades_desc": "Benderangen aanpassen",
+        "manage_job_grade": "Functierang wijzigen",
+        "manage_gang_grade": "Benderang wijzigen",
         "confirm_hire_header": "Aanwerving bevestigen",
-        "confirm_hire_content": "%swil dat je meedoet aan%s"
+        "confirm_hire_content": "%s wil dat je bij %s komt"
     },
     "grade": {
         "label": "Titel",
@@ -44,34 +44,34 @@
         "not_around": "Deze persoon is niet in de stad...",
         "grade_not_exist": "Deze rang lijkt niet te bestaan...",
         "couldnt_hire": "Je kon deze persoon niet inhuren...",
-        "kick_yourself": "Je kunt jezelf niet schoppen...",
+        "kick_yourself": "Je kunt jezelf niet uit de groep verwijderen...",
         "fire_yourself": "Je kunt jezelf niet ontslaan...",
         "fire_boss": "Je kunt iemand met een hogere rang niet ontslaan...",
-        "you_gang_fired": "Je bent verwijderd uit%s!",
-        "you_job_fired": "Je bent ontslagen bij%s! Succes!",
+        "you_gang_fired": "Je bent uit %s gezet!",
+        "you_job_fired": "Je bent ontslagen bij %s! Succes!",
         "unable_fire": "Je kunt deze persoon niet ontslaan...",
         "person_doesnt_exist": "Deze persoon lijkt niet te bestaan...",
         "gang_fired": "Bendelid uitgesloten!",
         "job_fired": "Medewerker ontslagen!",
         "too_far": "Deze persoon is te ver weg...",
-        "hire_declined": "De persoon heeft uw aanbod afgewezen."
+        "hire_declined": "De persoon heeft je aanbod afgewezen."
     },
     "success": {
         "promoted": "Succesvol gepromoveerd!",
         "promoted_to": "Je bent gepromoveerd tot",
-        "hired_to": "Je bent ingehuurd",
-        "hired_into": "U heeft%singehuurd voor%s"
+        "hired_to": "Je bent aangenomen bij ",
+        "hired_into": "Je hebt %s aangenomen bij %s"
     },
     "logs": {
-        "retrieved_employees": "Opgehaalde medewerkers voor groep%svan het type%s",
-        "updated_grade": "Cijfer voor burgerId%sbijgewerkt van%dnaar%din groep%svan het type%s",
-        "hired_employee": "%s|%shuurde%sin bij%sin de rang%s",
+        "retrieved_employees": "Medewerkers opgehaald voor groep %s van type %s",
+        "updated_grade": "Rang voor burger-ID %s bijgewerkt van %d naar %d in groep %s van type %s",
+        "hired_employee": "%s | %s heeft %s aangenomen bij %s in rang %s",
         "retrieved_players": "Lijst met spelers opgehaald voor mogelijke aanwerving",
-        "fired_employee": "Ontslagen medewerker%suit groep%svan het type%s",
-        "fired_employee_success": "%s|%svuurde%saf vanuit%s",
+        "fired_employee": "Medewerker %s ontslagen uit groep %s van type %s",
+        "fired_employee_success": "%s | %s heeft %s ontslagen uit %s",
         "retrieved_boss_menus": "Baasmenu's opgehaald",
-        "registered_boss_menu": "Geregistreerd baasmenu voor groep%s",
-        "player_checkin": "Speler%sheeft ingecheckt voor taak%s",
+        "registered_boss_menu": "Baasmenu geregistreerd voor groep %s",
+        "player_checkin": "Speler %s heeft zich aangemeld voor taak %s",
         "player_unload": "Speler%dis verwijderd"
     }
 }
