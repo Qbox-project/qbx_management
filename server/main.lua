@@ -124,7 +124,8 @@ lib.callback.register('qbx_management:server:updateGrade', function(source, citi
 
     local groupName = group.name
     local gradeLevel = group.grade.level
-    local employeeGrade = groupType == 'job' and employeeData.PlayerData.jobs?[groupName] or employeeData.PlayerData.gangs?[groupName]
+    local employeeGroups = employeeData.PlayerData[groupType == 'job' and 'jobs' or 'gangs']
+    local employeeGrade = employeeGroups and employeeGroups[groupName]
     local groupDefinition = groupType == 'job' and JOBS[groupName] or GANGS[groupName]
 
     if employeeGrade == nil or not groupDefinition?.grades[newGrade] then return end
@@ -193,6 +194,13 @@ lib.callback.register('qbx_management:server:hireEmployee', function(source, emp
         return
     end
 
+    player = exports.qbx_core:GetPlayer(source)
+    target = exports.qbx_core:GetPlayer(employee)
+    local currentGroup = getPlayerGroup(player, groupType)
+    if not currentGroup or not currentGroup.isboss or currentGroup.name ~= groupName or not target
+        or GetPlayerRoutingBucket(source) ~= GetPlayerRoutingBucket(employee)
+        or #(GetEntityCoords(GetPlayerPed(source)) - GetEntityCoords(GetPlayerPed(employee))) > 10.0 then return end
+
     if groupType == 'job' then
         local success, errorResult = exports.qbx_core:AddPlayerToJob(target.PlayerData.citizenid, groupName, 0)
         assert(success, errorResult?.message)
@@ -228,7 +236,7 @@ lib.callback.register('qbx_management:server:getPlayers', function(source, close
     for i = 1, math.min(#closePlayers, 64) do
         local playerId = closePlayers[i]?.id
         local player = math.type(playerId) == 'integer' and exports.qbx_core:GetPlayer(playerId)
-        if player and #(requesterCoords - GetEntityCoords(GetPlayerPed(playerId))) <= 10.0 then
+        if player and GetPlayerRoutingBucket(source) == GetPlayerRoutingBucket(playerId) and #(requesterCoords - GetEntityCoords(GetPlayerPed(playerId))) <= 10.0 then
             players[#players + 1] = {
                 id = playerId,
                 name = player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname,
