@@ -1,8 +1,18 @@
 local config = require 'config.client'
-local JOBS = exports.qbx_core:GetJobs()
-local GANGS = exports.qbx_core:GetGangs()
 local isLoggedIn = LocalPlayer.state.isLoggedIn
 local dynamicMenuItems = {}
+
+-- Always read groups from core instead of caching them on start. On join this script starts before
+-- core has received the server's groups, so a cached copy holds the default shared/jobs.lua data
+---@param groupName string
+---@param groupType GroupType
+---@return Job|Gang?
+local function getGroup(groupName, groupType)
+    if groupType == 'gang' then
+        return exports.qbx_core:GetGangs()[groupName]
+    end
+    return exports.qbx_core:GetJobs()[groupName]
+end
 
 -- Adds item to the boss/gang menu.
 ---@param menuItem ContextMenuItem Requires args.type to be set to know which menu to place in.
@@ -41,7 +51,7 @@ end
 ---@param groupType GroupType
 local function manageEmployee(player, groupName, groupType)
     local employeeMenu = {}
-    local employeeLoop = groupType == 'gang' and GANGS[groupName].grades or JOBS[groupName].grades
+    local employeeLoop = getGroup(groupName, groupType).grades
     for groupGrade, gradeTitle in pairs(employeeLoop) do
         employeeMenu[#employeeMenu + 1] = {
             title = gradeTitle.name,
@@ -112,10 +122,15 @@ local function employeeList(groupType)
     local employeesMenu = {}
     local groupName = QBX.PlayerData[groupType].name
     local employees = lib.callback.await('qbx_management:server:getEmployees', false, groupName, groupType)
+    if not employees then return end
+
+    local grades = getGroup(groupName, groupType).grades
     for _, employee in pairs(employees) do
+        local gradeData = grades[employee.grade]
         local employeesData = {
             title = employee.name,
-            description = groupType == 'job' and JOBS[groupName].grades[employee.grade].name or GANGS[groupName].grades[employee.grade].name,
+            -- Fall back to the grade number so one employee with a removed grade doesn't break the whole list
+            description = gradeData and gradeData.name or locale('menu.grade')..employee.grade,
             onSelect = function()
                 manageEmployee(employee, groupName, groupType)
             end,
@@ -174,7 +189,7 @@ end
 local function showGradeMenu(groupType)
     local gradeOpts = {}
     local groupName = QBX.PlayerData[groupType].name
-    local groupData = groupType == 'gang' and GANGS[groupName] or JOBS[groupName]
+    local groupData = getGroup(groupName, groupType)
 
     for i = 0, #groupData.grades do
         local grade = groupData.grades[i]
@@ -254,9 +269,20 @@ end
 
 exports('OpenBossMenu', OpenBossMenu)
 
+local zones = {}
+local zoneGeneration = 0
+
+-- Player data is empty until a character is loaded, so every lookup here must be nil safe
+---@param zoneInfo table
+---@return boolean
+local function canOpenMenu(zoneInfo)
+    local group = QBX.PlayerData[zoneInfo.type]
+    return group and group.name == zoneInfo.groupName and group.isboss or false
+end
+
 local function createZone(zoneInfo)
     if config.useTarget then
-        exports.ox_target:addBoxZone({
+        zones[#zones + 1] = exports.ox_target:addBoxZone({
             coords = zoneInfo.coords,
             size = zoneInfo.size or vec3(1.5, 1.5, 1.5),
             rotation = zoneInfo.rotation or 0.0,
@@ -267,7 +293,7 @@ local function createZone(zoneInfo)
                     icon = 'right-to-bracket',
                     label = zoneInfo.type == 'gang' and locale('menu.gang_menu') or locale('menu.boss_menu'),
                     canInteract = function()
-                        return zoneInfo.groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss
+                        return canOpenMenu(zoneInfo)
                     end,
                     onSelect = function()
                         OpenBossMenu(zoneInfo.type)
@@ -276,39 +302,69 @@ local function createZone(zoneInfo)
             }
         })
     else
-        lib.zones.box({
+        zones[#zones + 1] = lib.zones.box({
             coords = zoneInfo.coords,
             size = zoneInfo.size or vec3(1.5, 1.5, 1.5),
             rotation = zoneInfo.rotation or 0.0,
             debug = config.debugPoly,
-            onEnter = function()
-                if zoneInfo.groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss then
-                    lib.showTextUI(zoneInfo.type == 'gang' and locale('menu.gang_management') or locale('menu.boss_management'))
-                end
-            end,
-            onExit = function()
+            onExit = function(self)
+                if not self.textShown then return end
+                self.textShown = false
                 lib.hideTextUI()
             end,
-            inside = function()
-                if IsControlJustPressed(0, 51) then -- E
-                    if zoneInfo.groupName == QBX.PlayerData[zoneInfo.type].name and QBX.PlayerData[zoneInfo.type].isboss then
-                        OpenBossMenu(zoneInfo.type)
+            -- Checked every frame instead of only on enter, so the prompt still appears if player data
+            -- arrives or the job changes while standing in the zone
+            inside = function(self)
+                if not canOpenMenu(zoneInfo) then
+                    if self.textShown then
+                        self.textShown = false
                         lib.hideTextUI()
                     end
+                    return
+                end
+
+                if not self.textShown then
+                    self.textShown = true
+                    lib.showTextUI(zoneInfo.type == 'gang' and locale('menu.gang_management') or locale('menu.boss_management'))
+                end
+
+                if IsControlJustPressed(0, 51) then -- E
+                    OpenBossMenu(zoneInfo.type)
+                    lib.hideTextUI()
                 end
             end
         })
     end
 end
 
+local function removeZones()
+    for i = 1, #zones do
+        if config.useTarget then
+            exports.ox_target:removeZone(zones[i])
+        else
+            zones[i]:remove()
+        end
+    end
+    zones = {}
+end
+
 local function initZones()
+    zoneGeneration = zoneGeneration + 1
+    local generation = zoneGeneration
+    removeZones()
+
     local menus = lib.callback.await('qbx_management:server:getBossMenus', false)
+    -- Drop the result if the player logged out or zones were re-initialized while waiting on the server
+    if generation ~= zoneGeneration or not isLoggedIn or not menus then return end
+
     for _, menuInfo in pairs(menus) do
         createZone(menuInfo)
     end
 end
 
 RegisterNetEvent('qbx_management:client:bossMenuRegistered', function(menuInfo)
+    -- Zones are built from the full menu list once the player loads in
+    if not isLoggedIn then return end
     createZone(menuInfo)
 end)
 
@@ -323,29 +379,19 @@ end
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
+    initZones()
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     isLoggedIn = false
+    removeZones()
+    lib.hideTextUI()
 end)
 
----Receive job updates from core
----@param jobName string
----@param job Job
-RegisterNetEvent('qbx_core:client:onJobUpdate', function(jobName, job)
-    JOBS[jobName] = job
-end)
-
----Receive gang updates from core
----@param gangName string
----@param gang Gang
-RegisterNetEvent('qbx_core:client:onGangUpdate', function(gangName, gang)
-    GANGS[gangName] = gang
-end)
-
+-- Covers a resource restart while already logged in; a fresh join is handled by OnPlayerLoaded
 CreateThread(function()
-    initZones()
     if not isLoggedIn then return end
+    initZones()
 end)
 
 lib.callback.register('qbx_management:client:confirmHire', function(targetFullName, organizationLabel)
